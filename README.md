@@ -1,39 +1,33 @@
-# N2Nmc_GUI for N2N
+# N2Nmc
 
-#### 介绍
+### 介绍
 N2Nmc是N2N的一个图形化界面，可以用于各种局域网联机游戏
 
-#### 软件架构
-软件架构说明
-本软件采用WPF编写
-使用N2N开源代码
+### 软件架构
+本项目/仓库遵循 [GPL3.0](LICENSE) 协议
 
-#### 安装教程
+### 构建教程
+暂无
 
-1.  设置 文件View/MainView.xaml.cs中的这两项
-   `public static string severip = "";//N2N服务器地址`
-   `public static string severapi = "";//api地址`
-    
-2.  设置 文件View/Page/Page1.xaml.cs中的这四项
-    `public static string serverall = ""; //mysql服务器地址`
-    `public static int portall = ; //mysql端口`
-    `public static string usernameall = ""; //mysql用户名`
-    `public static string passwordall = ""; //mysql密码`
-    `public static string databaseall = "n2n"; //mysql数据库名`
-    
-#### 展示
-![输入图片说明](%E5%B1%95%E7%A4%BA%E5%9B%BE%E7%89%87/Snipaste_2023-08-26_10-07-25.png)
-![输入图片说明](%E5%B1%95%E7%A4%BA%E5%9B%BE%E7%89%87/Snipaste_2023-08-26_10-07-34.png)
-![输入图片说明](%E5%B1%95%E7%A4%BA%E5%9B%BE%E7%89%87/Snipaste_2023-08-26_10-07-43.png)
-![输入图片说明](%E5%B1%95%E7%A4%BA%E5%9B%BE%E7%89%87/Snipaste_2023-08-26_10-08-05.png)
-![输入图片说明](%E5%B1%95%E7%A4%BA%E5%9B%BE%E7%89%87/Snipaste_2023-08-26_10-08-14.png)
-#### 参与贡献
+### 项目引用 & 参与贡献
+>开源项目: [ntop - n2n](github.com/ntop/n2n) (GPL 3.0)
 
-1.  感谢N2N开源项目
-2.  个人开发者： @薛江彬 
+>开发者: 薛江彬 [薛江彬@gitee](gitee.com/xue-jiangbin)\
+>开发者: LGF (LGF-Studio) [LGF@gitee](gitee.com/lgf-studio) \| [LGF@github](github.com/control0forver)
 
 
-#### 作者信息
-1.邮件：483188479@qq.com
-2.QQ群：856112671
-3.作者QQ：483188479
+### 联系
+#### N2Nmc交流群组 & 频道
+
+| QQ交流群 主群 | QQ交流群 分群 ① | QQ频道 |
+| :---: | :---: | :---: |
+| ![QQ交流群 主群](README_Data/qq_group_0.JPG) | ![QQ交流群 分群 ①](README_Data/qq_group_1.JPG) | ![QQ频道](README_Data/qq_channel.JPG) |
+| 856112671 | 456045451 | 8128729wjw |
+
+
+#### 联系开发者（加入开发）
+
+| 开发者 | QQ | Email |
+| :--- | :---: | :---: |
+| 薛江彬 | 483188479 | 483188479@qq.com |
+| LGF | 3239215385 | 3239215385@qq.com \| qwe3239215385@163.com |
