@@ -1,0 +1,49 @@
+﻿# NewsOffline.txt
+# 2023/10/6 20:30
+
+离线更新日志 for Ver.3.6.8
+
+ID	作者	日期	消息
+0badb8de289572191bb75b142bf00d9876db7cd1	To ling <sjzbjs@outlook.com>	2023/10/6 12:29:14 +00:00	修复N2Nmc服务器通信bug引起的一些错误，以及N2Nmc客户端的线程同步死锁导致的关闭无响应
+ac1655086751af1fb7c38d0323410b2dfb9e032e	To ling <sjzbjs@outlook.com>	2023/10/6 7:38:32 +00:00	完善开启UAC的Windows用户在更新和安装TapWindows时出现崩溃和安装失败的情况的异常处理；修复可能与服务器通通信异常的bug
+364d5c389b7be84a768cf5efc7748cf2cffa8f94	To ling <sjzbjs@outlook.com>	2023/10/5 17:05:14 +00:00	修复更新器问题
+f1323458e941f4f3ac09254c5cd3cc4cc7fe3408	To ling <sjzbjs@outlook.com>	2023/10/5 16:49:07 +00:00	更新版本信息，优化界面；修复更新bug；
+6a502ad6195f0b1b82053f5dcf7871ec98901e5f	To ling <sjzbjs@outlook.com>	2023/10/5 15:20:48 +00:00	优化一些逻辑问题；修改发布方式，加快应用启动速度；更换配置文件方案；新增在线自动更新功能
+6c433f21b92fb1fd6bd6590aed9ff77cc15e9578	To ling <sjzbjs@outlook.com>	2023/10/5 13:47:23 +00:00	优化一些逻辑问题；修改发布方式，加快应用启动速度；更换配置文件方案；新增在线自动更新功能
+1b9bffe228641510d7a409b77155b4d054639b8e	To ling <sjzbjs@outlook.com>	2023/10/5 0:08:13 +00:00	修改Tap驱动检测逻辑；优化界面；优化edge启动兼容；自动结束edge冲突；房间列表自动刷新；防止多开房间；大厅界面优化；减少无用引用；下一次开源计划将推迟到4.0版本
+20f4278129f4260b569c003f9055b1ce7d38a489	薛江彬 <483188479@qq.com>	2023/10/3 12:16:08 +00:00	更换服务器
+ad5327686779a229f5d1915fbdc6584b9114178c	薛江彬 <483188479@qq.com>	2023/10/3 12:13:20 +00:00	Merge branch 'main' of https://gitee.com/xue-jiangbin/n2nmc-private
+52c7b9afd30cd6f47f4977ece640a7ec175a141d	To ling <sjzbjs@outlook.com>	2023/10/1 12:52:54 +00:00	# Uncomplete commit
+5c4a957f1790367bf33e26f29ba92cac715a52aa	薛江彬 <483188479@qq.com>	2023/10/3 12:12:56 +00:00	服务器更改
+3dc8526b989099c8293efc19084820cc15aadfe9	薛江彬 <483188479@qq.com>	2023/10/1 15:22:49 +00:00	更换服务器
+56b3d28185fd9db5db352597ced44b5b70707382	To ling <sjzbjs@outlook.com>	2023/9/2 16:13:35 +00:00	修复快速加入的错误；修复创建房间后自动进入房间后空无一人；优化搜索和刷新之间的逻辑；修复房间检测；在3.5版本后将会继续开源；版本号更新至3.4.5；下一个版本为3.5
+fcdafd1ad625461abc72da78a8f014309549637c	To ling <sjzbjs@outlook.com>	2023/9/2 15:19:55 +00:00	marge
+2660ea7bff9b0069abb324bbad2944bbc8494ac2	To ling <sjzbjs@outlook.com>	2023/9/2 15:05:00 +00:00	准备使用新的房间服务器通信协议和方式，加入卡片弹出动画；修复房间逻辑；优化Timer逻辑；运行代码清理；修复弹出多个房间窗口的bug；更改新的房间代码逻辑；添加手动重连Sql服务器按钮；修改LogPage文字排版；在3.5版本后将会继续开源；版本号更新至3.4；下一个版本为3.5
+8a77883cb6a6c58b3d4f22b99c3863239d542d5c	To ling <sjzbjs@outlook.com>	2023/9/2 15:05:00 +00:00	准备使用新的房间服务器通信协议和方式，加入卡片弹出动画；修复房间逻辑；优化Timer逻辑；运行代码清理；修复弹出多个房间窗口的bug；更改新的房间代码逻辑；添加手动重连Sql服务器按钮；修改LogPage文字排版；在3.5版本后将会继续开源；版本号更新至3.4；下一个版本为3.5
+851fcdae425d7698a28c58d07d6c03197437bc77	To ling <sjzbjs@outlook.com>	2023/8/31 8:55:41 +00:00	更新解决方案文件夹结构
+831808b49b1a24769596bfa4624c9dae7ca8eb5a	To ling <sjzbjs@outlook.com>	2023/8/31 8:28:41 +00:00	多线程，异步，逻辑加强，解决错误
+a71508aee7d86438f7521d9b5f0a24b7e796ccad	To ling <sjzbjs@outlook.com>	2023/8/31 7:47:00 +00:00	优化项目代码；删除Page3；优化启动和日志分析
+0290d7f83f33dcdcc280d157aa163d80c7bf932e	To ling <sjzbjs@outlook.com>	2023/8/31 6:41:50 +00:00	优化Tap检测和处理逻辑
+70179da55f0c8bad4e3eb82e104df52d83389273	To ling <sjzbjs@outlook.com>	2023/8/31 6:17:10 +00:00	优化房间号算法；优化窗口关闭逻辑
+114610ff1bf21f1dec6c32827c8e7d5d78aecc1f	To ling <sjzbjs@outlook.com>	2023/8/30 21:03:20 +00:00	房间卡样式更新；新增房间卡片对话框；联机大厅加入排序及过滤;加入房间名特殊字符支持；更改离线更新日志显示方式；加入隐私房间（不展示在大厅）；更改Rooms的MySql连接方式和添加守护逻辑自动重连；使用新的数据库和新的数据库格式；删除房间名尽量用英文；完全重写逻辑；删除房间公开密码提示
+5ae6cf39f9a38b3245cdf19d51a8d355c8a07aff	To ling <sjzbjs@outlook.com>	2023/8/29 19:39:47 +00:00	界面细节改动；阴影性能优化
+8da73eb86b5ce0fb6233d43376a035346777f40e	To ling <sjzbjs@outlook.com>	2023/8/29 17:08:23 +00:00	恢复了关闭动画
+a07151b0949c59f4c4a8ed04ee01daefa7d6429b	To ling <sjzbjs@outlook.com>	2023/8/29 16:43:22 +00:00	懵了个大b——这次没改动，但是证明我找过名字这玩意是什么鬼
+4a5720a87718be5a145ac651fdbd20b9402d592d	To ling <sjzbjs@outlook.com>	2023/8/29 16:23:32 +00:00	更新Run方法及其引用调用static void Run(string command)-> static void Run(string command, bool noWindow = false)
+4676b8a6879d71f89dc97cf3f896a55a94ecc513	To ling <sjzbjs@outlook.com>	2023/8/29 16:16:57 +00:00	卡片细节变更
+4d70f5efe3eeb8dc2ff37b368166b86032f0e01e	To ling <sjzbjs@outlook.com>	2023/8/29 16:10:10 +00:00	卡片样式修改；修复房间操作逻辑
+bc0cbec83b6e591b70a2ebc786f31438418c7624	To ling <sjzbjs@outlook.com>	2023/8/29 14:48:25 +00:00	左侧按钮实现改为Border
+198b4f8cfe331626dd6c216f2951596ef459710e	To ling <sjzbjs@outlook.com>	2023/8/29 13:09:53 +00:00	整理Resources文件夹；加入离线更新日志
+299246e314d628ef8b3c1e63c10e546d5a669ecf	To ling <sjzbjs@outlook.com>	2023/8/29 12:51:52 +00:00	更改edge判断逻辑，修复房间加入无响应
+113e26f518f851f0f8f5c44b741939e780a562e5	To ling <sjzbjs@outlook.com>	2023/8/29 12:11:29 +00:00	暂时移除启动器路径提示
+873bce40883105394782c40592e5c2237dbce397	To ling <sjzbjs@outlook.com>	2023/8/29 12:01:18 +00:00	添加背景；添加按钮动画
+db9cabcb0fa0aa01530a62fc85fcb32e57df1d60	To ling <sjzbjs@outlook.com>	2023/8/29 7:26:38 +00:00	整理命名空间
+7d2476ca15aedf407ffa4fab28116d59deeb03b0	To ling <sjzbjs@outlook.com>	2023/8/29 6:35:25 +00:00	运行代码清理
+3a3085c8cd112d58db699566f2436f583dc95245	To ling <sjzbjs@outlook.com>	2023/8/29 6:30:13 +00:00	警告消除；删除快速联机链接
+66cd629ba4fcc957e4d2a01fd99c9a1938f2b02f	To ling <sjzbjs@outlook.com>	2023/8/28 20:20:56 +00:00	重写MainView room界面设计代码；加入启动动画；更多过渡细节动画；界面优化；界面性能优化；解决大量编译警告；启动性能优化
+70408ad7bab04aae685f93fa5e398cbe52fc416c	To ling <sjzbjs@outlook.com>	2023/8/28 9:03:04 +00:00	优化界面
+b7698bffbab6d6205fdf94e598963c54b649edad	To ling <sjzbjs@outlook.com>	2023/8/28 7:47:14 +00:00	修复 设置-禁用动画效果开关 的配置保存
+78a29901ad2adb2caf3df7f2c432922f89325122	To ling <sjzbjs@outlook.com>	2023/8/28 7:28:04 +00:00	优化命名空间，类等命名
+62d8ad91a691996ed032d238be862c63311e56e2	To ling <sjzbjs@outlook.com>	2023/8/28 6:30:18 +00:00	恢复防火墙规则设置功能，加入提示：建议用户关闭防火墙
+20026a3986bddd2d250d2e828950505de6bd471f	To ling <sjzbjs@outlook.com>	2023/8/28 4:16:57 +00:00	添加项目文件。
+2fed91a34fc97094f87ab6788d11fdf7563bb6f5	To ling <sjzbjs@outlook.com>	2023/8/28 4:16:51 +00:00	添加 .gitattributes、.gitignore、README.md 和 LICENSE.txt

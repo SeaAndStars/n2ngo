@@ -1,0 +1,171 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+    <ApplicationIcon>Data\image\logo13.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Data\image\ai.jpg" />
+    <None Remove="Data\image\ai.png" />
+    <None Remove="Data\image\cjf.png" />
+    <None Remove="Data\image\icon\join.png" />
+    <None Remove="Data\image\icon\log.png" />
+    <None Remove="Data\image\icon\room.png" />
+    <None Remove="Data\image\icon\rooming.png" />
+    <None Remove="Data\image\icon\rooms.png" />
+    <None Remove="Data\image\icon\root.png" />
+    <None Remove="Data\image\icon\settings.png" />
+    <None Remove="Data\image\ind.png" />
+    <None Remove="Data\image\kslj.png" />
+    <None Remove="Data\image\lj.png" />
+    <None Remove="Data\image\logo13.ico" />
+    <None Remove="Data\image\rzfw.png" />
+    <None Remove="Data\image\sz.png" />
+    <None Remove="Views\SubPages\Page3.xaml.cs.removed" />
+    <None Remove="Views\SubPages\Page3.xaml.removed" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <COMReference Include="NETCONLib">
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>1</VersionMajor>
+      <Guid>43e734ca-043d-4a70-9a2c-a8f254063d91</Guid>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Data\image\ai.jpg" />
+    <Resource Include="Data\image\ai.png" />
+    <Resource Include="Data\image\icon\join.png" />
+    <Resource Include="Data\image\icon\log.png" />
+    <Resource Include="Data\image\icon\room.png" />
+    <Resource Include="Data\image\icon\rooming.png" />
+    <Resource Include="Data\image\icon\rooms.png" />
+    <Resource Include="Data\image\icon\root.png" />
+    <Resource Include="Data\image\icon\settings.png" />
+    <Resource Include="Data\image\ind.png" />
+    <Resource Include="Data\image\logo13.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HandyControl" Version="3.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\N2Nmc_Protocol\N2Nmc_Protocol.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\BinRef\Windows\N2NmcClientUpdate.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\BinRef\Windows\n2n\edge.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\NewsOffline.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TAP-Windows.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\9.21.2.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\openvpn.cer">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\x32\OemVista.inf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\x32\tap0901.cat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\x32\tap0901.sys">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\x32\tapinstall.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\x64\OemVista.inf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\x64\tap0901.cat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\x64\tap0901.sys">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TapWindowsInstaller\x64\tapinstall.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\BinRef\Windows\WinIPBroadcast\WinIPBroadcast.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\9.21.2.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\openvpn.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\x32\OemVista.inf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\x32\tap0901.cat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\x32\tap0901.sys">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\x32\tapinstall.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\x64\OemVista.inf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\x64\tap0901.cat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\x64\tap0901.sys">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TAP-Windows\x64\tapinstall.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\MainResc.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MainResc.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\MainResc.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MainResc.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\BinRef\Linux\" />
+    <Folder Include="Data\BinRef\Windows\n2n\" />
+    <Folder Include="Resources\MainResc\" />
+  </ItemGroup>
+
+</Project>

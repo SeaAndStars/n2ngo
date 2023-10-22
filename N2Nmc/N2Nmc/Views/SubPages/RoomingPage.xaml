@@ -1,0 +1,26 @@
+﻿<Page x:Class="N2Nmc.Views.SubPages.RoomingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:N2Nmc.Views.SubPages"
+      xmlns:hc="https://handyorg.github.io/handycontrol"
+      mc:Ignorable="d"
+      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}"
+      Title="Page2">
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="320,178,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"><Run Language="zh-cn" Text="房间名称"/></TextBlock>
+        <TextBox x:Name="roomname" HorizontalAlignment="Left" Margin="382,172,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="170" TextBlock.FontSize="14" Background="{DynamicResource MainColorDarkSolidDarkAlphaBrush}" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"/>
+        <Label HorizontalAlignment="Left" Margin="251,74,0,0" VerticalAlignment="Top" Height="23" Width="97" FontSize="8" Padding="0,0,0,0" Content="注：房间名称尽量用英文" Visibility="Collapsed"/>
+
+        <TextBlock HorizontalAlignment="Left" Margin="348,233,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"><Run Language="zh-cn" Text="密码"/></TextBlock>
+        <TextBox x:Name="roompassword" HorizontalAlignment="Left" Margin="382,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="130" TextBlock.FontSize="14" Background="{DynamicResource MainColorDarkSolidDarkAlphaBrush}" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"/>
+        <CheckBox x:Name="CheckIsRoomPasswordNeeded" Content="需要密码" HorizontalAlignment="Left" Margin="382,266,0,0" VerticalAlignment="Top" TextBlock.FontSize="14" Foreground="{DynamicResource MainColorDarkSolidFontBrush}" Background="{DynamicResource MainColorDarkSolidDarkAlphaBrush}"/>
+        <CheckBox x:Name="CheckIsRoomInvisible" Content="不在大厅中公开" HorizontalAlignment="Left" Margin="382,285,0,0" VerticalAlignment="Top" Click="CheckIsRoomInvisible_Click" TextBlock.FontSize="14" Foreground="{DynamicResource MainColorDarkSolidFontBrush}" Background="{DynamicResource MainColorDarkSolidDarkAlphaBrush}"/>
+
+        <Button x:Name="ButtonCreateRoom" Style="{StaticResource ButtonPrimary}" Background="{StaticResource MainColorDarkSolidBrush}" Content="创建房间" HorizontalAlignment="Left" Margin="382,323,0,0" Height="40" Width="115" Click="ButtonCreateRoom_Click" BorderBrush="White" TextBlock.FontSize="14" VerticalAlignment="Top"/>
+        <!--Button x:Name="ButtonCloseRoom" Style="{StaticResource ButtonDanger}" Content="关闭房间" HorizontalAlignment="Left" Margin="393,300,0,0" Height="40" Width="115" Click="ButtonCloseRoom_Click" TextBlock.FontSize="14" VerticalAlignment="Top"/-->
+
+        <hc:SimpleStackPanel x:Name="PanelMsg" Margin="0,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+    </Grid>
+</Page>

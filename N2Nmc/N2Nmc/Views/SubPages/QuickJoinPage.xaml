@@ -1,0 +1,22 @@
+﻿<Page x:Class="N2Nmc.Views.SubPages.QuickJoinPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:N2Nmc.Views.SubPages"
+      xmlns:hc="https://handyorg.github.io/handycontrol"
+      mc:Ignorable="d" 
+      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}"
+      Title="Page4">
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="324,180,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"><Run Language="zh-cn" Text="房间代码"/></TextBlock>
+        <TextBox x:Name="RoomConnectText" HorizontalAlignment="Left" Margin="388,174,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="168" Height="25" TextBlock.FontSize="14" Background="{DynamicResource MainColorDarkSolidAlphaBrush}" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"/>
+
+        <TextBlock HorizontalAlignment="Left" Margin="324,226,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"><Run Language="zh-cn" Text="房间密码"/></TextBlock>
+        <TextBox x:Name="RoomPasswordText" HorizontalAlignment="Left" Margin="388,220,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="168" TextBlock.FontSize="14" Background="{DynamicResource MainColorDarkSolidAlphaBrush}" Foreground="{DynamicResource MainColorDarkSolidFontBrush}" />
+
+        <CheckBox x:Name="CheckIsPasswdNeeded" HorizontalAlignment="Left" VerticalAlignment="Top" Content="需要密码" Margin="388,258,0,0" TextBlock.FontSize="14" Foreground="{DynamicResource MainColorDarkSolidFontBrush}" Background="{DynamicResource MainColorDarkSolidAlphaBrush}"/>
+
+        <Button Content="快速进入" Margin="388,300,0,0" Height="35" Width="124" Click="Button_Click" VerticalAlignment="Top" Background="{DynamicResource MainColorDarkSolidAlphaBrush}" HorizontalAlignment="Left" TextBlock.FontSize="14" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"/>
+    </Grid>
+</Page>
