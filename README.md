@@ -1,4 +1,4 @@
-# N2Nmc ![Version](https://img.shields.io/badge/Version-3.8.5-lightblue) [![star](https://gitee.com/xue-jiangbin/n2nmc/badge/star.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/stargazers) [![fork](https://gitee.com/xue-jiangbin/n2nmc/badge/fork.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/members) [![License](https://img.shields.io/badge/license-GPL3.0-blue)](LICENSE) ![Language](https://img.shields.io/badge/language-csharp-brightgreen)![Version](https://img.shields.io/badge/language-csharp-brightgreen)
+# N2Nmc ![Version](https://img.shields.io/badge/Version-3.8.4.4-lightblue) [![star](https://gitee.com/xue-jiangbin/n2nmc/badge/star.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/stargazers) [![fork](https://gitee.com/xue-jiangbin/n2nmc/badge/fork.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/members) [![License](https://img.shields.io/badge/license-GPL3.0-blue)](LICENSE) ![Language](https://img.shields.io/badge/language-csharp-brightgreen)![Version](https://img.shields.io/badge/language-csharp-brightgreen)
 
 ### 简介
 N2Nmc是N2N的一个图形化界面，可以用于各种局域网联机游戏
