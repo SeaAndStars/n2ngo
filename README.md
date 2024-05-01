@@ -1,7 +1,7 @@
-# N2Nmc ![Version](https://img.shields.io/badge/Version-3.8.4.4-lightblue) [![star](https://gitee.com/xue-jiangbin/n2nmc/badge/star.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/stargazers) [![fork](https://gitee.com/xue-jiangbin/n2nmc/badge/fork.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/members) [![License](https://img.shields.io/badge/license-GPL3.0-blue)](LICENSE) ![Language](https://img.shields.io/badge/language-csharp-brightgreen)![Version](https://img.shields.io/badge/language-csharp-brightgreen)
+# N2N GO Develop ![Version](https://img.shields.io/badge/Version-4.0.0-lightblue) [![star](https://gitee.com/xue-jiangbin/n2nmc/badge/star.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/stargazers) [![fork](https://gitee.com/xue-jiangbin/n2nmc/badge/fork.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/members) [![License](https://img.shields.io/badge/license-GPL3.0-blue)](LICENSE) ![Language](https://img.shields.io/badge/language-csharp-brightgreen)![Version](https://img.shields.io/badge/language-csharp-brightgreen)
 
 ### 简介
-N2Nmc是N2N的一个图形化界面，可以用于各种局域网联机游戏
+N2N GO是N2N的一个图形化界面，可以用于各种局域网联机游戏
 
 ### 软件架构
 本项目/仓库遵循 [GPL3.0](LICENSE) 协议
@@ -19,7 +19,7 @@ N2Nmc是N2N的一个图形化界面，可以用于各种局域网联机游戏
 
 
 ### 联系
-#### N2Nmc交流群组 & 频道
+#### N2N GO交流群组 & 频道
 
 | QQ交流群 主群 | QQ交流群 分群 ① | QQ频道 |
 | :---: | :---: | :---: |
