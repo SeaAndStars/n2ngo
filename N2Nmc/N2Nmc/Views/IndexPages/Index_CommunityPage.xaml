@@ -1,0 +1,48 @@
+﻿<local1:BaseIndexPage x:Class="N2Nmc.Views.SubPages.Index_CommunityPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:hc="https://handyorg.github.io/handycontrol"
+      xmlns:local="clr-namespace:N2Nmc.Views.SubPages"
+      xmlns:local1="clr-namespace:N2Nmc.UtilsClass"
+      mc:Ignorable="d" 
+      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
+      Title="Index_CommunityPage" Loaded="Page_Loaded">
+
+    <Grid>
+        <Image Source="/Data/image/Community.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
+
+        <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" IsInertiaEnabled="True">
+            <ItemsControl x:Name="Indexers" Margin="8,15,8,15">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border x:Name="ItemMainParent" Margin="5" Width="240" Height="500"  Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+            Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp">
+                            <Grid x:Name="TempGrid">
+                                <Image Name="ContentBackgroundImage" Opacity="0.5" Source="{Binding IndexerCBI}" Stretch="UniformToFill" Margin="25,250,0,0">
+                                    <Image.Effect>
+                                        <BlurEffect KernelType="Box" RenderingBias="Performance" Radius="4"/>
+                                    </Image.Effect>
+                                </Image>
+                                <TextBlock Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" TextWrapping="Wrap">
+                                    <Run Text="{Binding IndexerTitle}" FontWeight="Bold" FontSize="34"/>
+                                    <LineBreak/>
+                                    <Run Text="{Binding IndexerDescription}" FontSize="16" Foreground="#FF313131"/>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+                <local1:Indexer nagivKey="goback"  IndexerTitle="返回" IndexerDescription="返回至上一个索引"/>
+                <local1:Indexer nagivKey="Rooms"  IndexerTitle="查看" IndexerDescription="在这里查看公开的房间" IndexerCBI="/Data/image/Community.png"/>
+            </ItemsControl>
+        </hc:ScrollViewer>
+    </Grid>
+</local1:BaseIndexPage>

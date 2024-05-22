@@ -18,9 +18,8 @@ N2Nmc服务器命令：
       如果 参数1 room_code 未提供 将会输出 所有房间 及距离控制块上一次Access的时间
        否则 输出 指定的房间及其详细信息
     
-    list_tcp (int id[] = null)
-      如果 参数1 id 未提供 将会输出 所有TCP客户端及详细信息
-       否则 输出 指定的Tcp客户端及详细信息
+    list_tcp ()
+      将会输出 所有TCP客户端及详细信息
 
     close (string room_code[])
       如果 参数1 room_code 未提供 则会返回
@@ -29,7 +28,7 @@ N2Nmc服务器命令：
     close_all (void)
       关闭所有房间（危险！）
 
-    create (string room_code, string room_name, int IRI = 0, int IRP = 0, string room_passwd = "null")
+    create (string room_code, string room_name, int IRI = 0, int IRP = 0, string room_passwd = "null", uint32 MajorColor = 0x00000000, uint32 MinorColor = 0x00000000)
       注：IRI -- 为房间是否隐藏
       注：IRP -- 房间是否需要密码
       注：room_passwd默认为"null"而非null

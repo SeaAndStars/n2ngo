@@ -6,14 +6,16 @@
       xmlns:local="clr-namespace:N2Nmc.Views.SubPages"
       xmlns:hc="https://handyorg.github.io/handycontrol"
       mc:Ignorable="d" 
-      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}"
+      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
       Title="Page6">
     <Grid>
-        <!--Button x:Name="SelectBackgroundImageButton" FontSize="14" Background="{StaticResource MainColorDarkSolidBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,19,0,0" Height="40" Width="125" Content="选取背景图片" Foreground="White" Click="SelectBackgroundImageButton_Click" /-->
-        <ToggleButton x:Name="DisableAnimationTB" FontSize="14" Style="{StaticResource ToggleButtonSwitch}" IsChecked="False" Content="禁用动画效果（部分）" Width="150" Height="35" Margin="10,10,0,0" Unchecked="DisableAnimationTB_Unchecked" Checked="DisableAnimationTB_Checked" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{DynamicResource MainColorDarkSolidFontBrush}" Background="{DynamicResource MainColorDarkSolidAlphaBrush}"/>
+        <!--Button x:Name="SelectBackgroundImageButton" FontSize="14" Background="{StaticResource MainColorSolidBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,19,0,0" Height="40" Width="125" Content="选取背景图片" Foreground="White" Click="SelectBackgroundImageButton_Click" /-->
+        <Button x:Name="InstallTapButton" Style="{DynamicResource ButtonStyle}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,182,0,0" Height="43" Width="326" Content="安装Tap驱动" Click="InstallTapButton_Click" />
+        <Button x:Name="ClearShaderCacheButton" Style="{DynamicResource ButtonStyle}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,230,0,0" Height="43" Width="326" Content="清除着色器缓存" Click="ClearShaderCacheButton_Click" />
+        <Button x:Name="DisableAnimationTB" Visibility="Collapsed" Style="{DynamicResource ButtonStyle}" FontSize="16" Content="禁用/启用动画" Click="DisableAnimationTB_Click" Width="326" Height="43" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+        <Label x:Name="OSliderInd" Background="{DynamicResource MainColorSolidAlphaBrush}" BorderBrush="{x:Null}" Foreground="{DynamicResource MainColorSolidFontBrush}" Margin="0,318,0,0" VerticalAlignment="Top" Width="326" Content="背景不透明度" FontSize="16" Height="35" HorizontalContentAlignment="Center" Padding="150,0,0,0"/>
+        <Slider x:Name="BackgroundOSlider" Value="50" Minimum="0" Maximum="255" Background="{DynamicResource MainColorBrush}" ValueChanged="BackgroundOSlider_ValueChanged" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,326,145,0" Width="149"/>
 
-        <Button x:Name="InstallTapButton" FontSize="14" Background="{DynamicResource MainColorDarkSolidAlphaBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="730,480,0,0" Height="40" Width="125" Content="安装Tap驱动" Foreground="{DynamicResource MainColorDarkSolidFontBrush}" Click="InstallTapButton_Click" />
-
-        <Label VerticalAlignment="Top" Height="68" Width="362" Content="始创：未来之乡 贡献： LGF ☺    库引用：n2n" Background="{StaticResource MainColorDarkSolidAlphaBrush}" FontSize="14" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Margin="0,452,0,0" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"/>
+        <Button x:Name="ResetConfigButton" Style="{DynamicResource ButtonStyle}" Content="重置设置" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,375,0,0" Width="284" Height="36" Click="ResetConfigButton_Click"/>
     </Grid>
 </Page>

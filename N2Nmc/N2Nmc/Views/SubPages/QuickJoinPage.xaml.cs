@@ -14,13 +14,18 @@ namespace N2Nmc.Views.SubPages
     /// </summary>
     public partial class QuickJoinPage : Page
     {
+        public readonly static string GrowlToken = "QuickJoinPageGrowl";
         public QuickJoinPage()
         {
             InitializeComponent();
+            Growl.Register(GrowlToken, PanelMsg);
+
+            CheckIsPasswdNeeded_Click(null,null);
         }
 
         ~QuickJoinPage()
         {
+            Growl.Unregister(GrowlToken, PanelMsg);
         }
 
         public static async void Join(bool needPassword, string roomCode, string roomPassword)
@@ -32,17 +37,17 @@ namespace N2Nmc.Views.SubPages
 
             if (string.IsNullOrEmpty(roomCode))
             {
-                Growl.ErrorGlobal("房间代码不能为空！");
+                Growl.Error("代码不能为空！", GrowlToken);
                 return;
             }
 
-            if (needPassword == true && string.IsNullOrEmpty(roomPassword))
+            if (needPassword == true && string.IsNullOrEmpty(roomPassword.Trim()))
             {
-                Growl.ErrorGlobal("密码不能为空！");
+                Growl.Error("密码不能为空！", GrowlToken);
                 return;
             }
 
-            Growl.InfoGlobal("正在进入房间,请稍后...");
+            Growl.Info("正在进入房间,请稍后...", GrowlToken);
 
             ExecLog execLog = new ExecLog();
 
@@ -66,6 +71,10 @@ namespace N2Nmc.Views.SubPages
             string cmd = edgePath + " -c " + roomCode + " -k " + (needPassword == true ? roomPassword : SharedData.DefaultRoomPasswd) + " -l " + SharedData.n2nServerIPP;
             EdgeConnectionInfo.CurrentRoomCode = roomCode;
 
+            //EdgeInvoker edgeInvoker = new EdgeInvoker();
+            //edgeInvoker.PushArgs(" -c " + roomCode + " -k " + (needPassword == true ? roomPassword : SharedData.DefaultRoomPasswd) + " -l " + SharedData.n2nServerIPP);
+            //edgeInvoker.Call();
+
             execLog.SetCommand(cmd);
             int r = await execLog.ExecuteAsync();
             if (r == -21)
@@ -81,5 +90,12 @@ namespace N2Nmc.Views.SubPages
             Join(CheckIsPasswdNeeded.IsChecked == true, RoomConnectText.Text, RoomPasswordText.Text);
         }
 
+        private void CheckIsPasswdNeeded_Click(object? sender, RoutedEventArgs? e)
+        {
+            if (CheckIsPasswdNeeded.IsChecked!=null)
+            {
+                GroupPasswordInput.IsEnabled = CheckIsPasswdNeeded.IsChecked.Value;
+            }
+        }
     }
 }

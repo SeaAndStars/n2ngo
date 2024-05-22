@@ -4,9 +4,11 @@ using static N2Nmc_Protocol.Protocol;
 using static N2Nmc_Protocol.Package;
 using N2Nmc_Protocol;
 using N2Nmc_Protocol.Objects;
+using System.Linq;
+using System.Drawing;
 
 namespace N2Nmc_Server.N2NmcServer.Base
-{
+{ 
     internal class N2NmcServer
     {
         public static readonly string MainName = "N2Nmc Server";
@@ -76,7 +78,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                 throw new NullReferenceException(nameof(tcpClients));
 
             lock (tcpClients)
-                for (int i = 0;i<tcpClients.Count;i++)
+                for (int i = 0; i < tcpClients.Count; i++)
                     if (!tcpClients[i].clientHandlerThread.IsAlive)
                         tcpClients.Remove(tcpClients[i]);
         }
@@ -129,6 +131,10 @@ namespace N2Nmc_Server.N2NmcServer.Base
                 return;
 
             NetworkStream stream = client.GetStream();
+
+            string userKey = Room.RandomKeyString();
+            Room? currentRoom = null;
+
             while (true)
             {
                 try
@@ -165,11 +171,53 @@ namespace N2Nmc_Server.N2NmcServer.Base
                                 stream.Flush();
                                 break;
                             }
-                        case BaseHeader._room_pull_rooms:
+                        case BaseHeader._user_key_get:
                             {
                                 IO_Tool iO_Tool = new IO_Tool();
 
-                                var rooms = Rooms.Where(_ => !_.IsRoomInvisible && _.RoomCode != null).ToList();   // Do not take invisible room
+                                if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_string_long, MsgExternalData.Encode.MsgStringLong(userKey))))
+                                    goto RemoveClient;
+
+                                break;
+                            }
+                        case BaseHeader._pull_online_total:
+                            {
+                                IO_Tool iO_Tool = new IO_Tool();
+
+                                var total = tcpClients != null? tcpClients.Count:0;
+
+                                if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, MsgExternalData.Encode.MsgString(total.ToString()))))
+                                    goto RemoveClient;
+
+                                break;
+                            }
+                        case BaseHeader._rooms_pull_rooms_pages:
+                            {
+                                IO_Tool iO_Tool = new IO_Tool();
+
+                                var total = Rooms.Where(_ => !_.IsRoomInvisible && _.RoomCode != null).ToList().Count;
+                                var pages = (total < _PullRoomsRoomsTake) ? 1 : ((total % _PullRoomsRoomsTake > 0) ? (total / _PullRoomsRoomsTake + 1) : (total / _PullRoomsRoomsTake));
+
+                                if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_ulong, MsgExternalData.Encode.MsgULong((UInt32)pages))))
+                                    goto RemoveClient;
+
+                                break;
+                            }
+                        case BaseHeader._rooms_pull_rooms:
+                            {
+                                IO_Tool iO_Tool = new IO_Tool();
+
+                                UInt32 page_index = 0;
+
+                                Package? pkg_app = iO_Tool.Receive(client);
+                                if (pkg_app != null)
+                                    if (pkg_app.Value.Header == (byte)BaseHeader.msg_ulong && pkg_app.Value.external_data != null)
+                                        page_index = Package.MsgExternalData.Decode.MsgULong(pkg_app.Value.external_data);
+                                    else goto RemoveClient;
+                                else goto RemoveClient;
+
+                                var _rooms = Rooms.Where(_ => !_.IsRoomInvisible && _.RoomCode != null).ToList();   // Do not take invisible room
+                                var rooms = _rooms.Skip((int)(_PullRoomsRoomsTake * page_index)).Take((int)_PullRoomsRoomsTake).ToList();
                                 int roomsCount = rooms.Count;
 
                                 goto SendRoomsCount;
@@ -202,18 +250,24 @@ namespace N2Nmc_Server.N2NmcServer.Base
                                             goto RemoveClient;
                                         if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_byte, MsgExternalData.Encode.MsgByte((byte)(PN ? 1 : 0)))))
                                             goto RemoveClient;
+                                        if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_ulong, MsgExternalData.Encode.MsgULong(Rooms[i].colorMain.data))))
+                                            goto RemoveClient;
+                                        if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_ulong, MsgExternalData.Encode.MsgULong(Rooms[i].colorMinor.data))))
+                                            goto RemoveClient;
                                     }
                                 }
 
                                 break;
                             }
-                        case BaseHeader._room_create:
+                        case BaseHeader._rooms_create:
                             {
                                 IO_Tool iO_Tool = new IO_Tool();
 
                                 string code, name;
                                 bool IRI, IRP;
                                 string passwd;
+                                UInt32 MainColor;
+                                UInt32 MinorColor;
 
                                 Package? pkg_app = iO_Tool.Receive(client);
                                 if (pkg_app != null)
@@ -248,33 +302,39 @@ namespace N2Nmc_Server.N2NmcServer.Base
                                     else goto RemoveClient;
                                 else goto RemoveClient;
 
-                                lock (Rooms)
-                                    Rooms.Add(new Room { RoomCode = code, RoomName = name, IsRoomInvisible=IRI, IsRoomPasswordNeeded=IRP,RoomPassword=passwd });
+                                pkg_app = iO_Tool.Receive(client);
+                                if (pkg_app != null)
+                                    if (pkg_app.Value.Header == (byte)BaseHeader.msg_ulong && pkg_app.Value.external_data != null)
+                                        MainColor = Package.MsgExternalData.Decode.MsgULong(pkg_app.Value.external_data);
+                                    else goto RemoveClient;
+                                else goto RemoveClient;
+                                pkg_app = iO_Tool.Receive(client);
+                                if (pkg_app != null)
+                                    if (pkg_app.Value.Header == (byte)BaseHeader.msg_ulong && pkg_app.Value.external_data != null)
+                                        MinorColor = Package.MsgExternalData.Decode.MsgULong(pkg_app.Value.external_data);
+                                    else goto RemoveClient;
+                                else goto RemoveClient;
 
+                                lock (Rooms)
+                                    for (int i = 0; i < Rooms.Count; i++)
+                                    {
+                                        if (Rooms[i].RoomCode == MsgExternalData.Decode.MsgString(pkg_app.Value.external_data))
+                                        {
+                                            iO_Tool.Send(client, MakePackage(BaseHeader.InvalidClient));
+                                            goto RemoveClient;
+                                        }
+                                    }
+
+                                var newRoom = new Room { RoomCode = code, RoomName = name, IsRoomInvisible = IRI, IsRoomPasswordNeeded = IRP, RoomPassword = passwd, colorMain = new RoomColor(MainColor), colorMinor = new RoomColor(MinorColor) };
+                                newRoom.CB.AdminKey = userKey;
+                                lock (Rooms)
+                                    Rooms.Add(newRoom);
+
+                                iO_Tool.Send(client, MakePackage(BaseHeader.msg_string_long, Package.MsgExternalData.Encode.MsgStringLong(newRoom.CB.AdminKey)));
+                                iO_Tool.Send(client, MakePackage(BaseHeader.msg_ok));
                                 break;
                             }
-                        case BaseHeader._room_close:
-                            {
-                                IO_Tool iO_Tool = new IO_Tool();
-                                Package? pkg_app = iO_Tool.Receive(client);
-                                if (pkg_app != null)
-                                    if (pkg_app.Value.Header == (byte)BaseHeader.msg_string && pkg_app.Value.external_data != null)
-                                    {
-                                        string code = Package.MsgExternalData.Decode.MsgString(pkg_app.Value.external_data);
-                                        lock (Rooms)
-                                            for (int i = 0; i < Rooms.Count; i++)
-                                            {
-                                                if (Rooms[i].RoomCode == code)
-                                                {
-                                                    Rooms.RemoveAt(i);
-                                                    break;
-                                                }
-                                            }
-                                        break;
-                                    }
-                                goto RemoveClient;
-                            }
-                        case BaseHeader._room_is_code_exists:
+                        case BaseHeader._rooms_is_code_exists:
                             {
                                 IO_Tool iO_Tool = new IO_Tool();
                                 Package? pkg_app = iO_Tool.Receive(client, (byte)BaseHeader.msg_string);
@@ -285,7 +345,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                                         lock (Rooms)
                                             for (int i = 0; i < Rooms.Count; i++)
                                             {
-                                                if (Rooms[i].RoomCode == MsgExternalData.Decode.MsgString(pkg_app.Value.external_data)) ex=true;
+                                                if (Rooms[i].RoomCode == MsgExternalData.Decode.MsgString(pkg_app.Value.external_data)) ex = true;
                                             }
                                         iO_Tool.Send(client, MakePackage(BaseHeader.msg_byte, MsgExternalData.Encode.MsgByte((byte)(ex ? 1 : 0))));
                                         break;
@@ -293,7 +353,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
 
                                 goto RemoveClient;
                             }
-                        case BaseHeader._room_get_name:
+                        case BaseHeader._rooms_get_name:
                             {
                                 IO_Tool iO_Tool = new IO_Tool();
                                 Package? pkg_app = iO_Tool.Receive(client);
@@ -309,10 +369,10 @@ namespace N2Nmc_Server.N2NmcServer.Base
                                                 {
                                                     var name = Rooms[i].RoomName;
                                                     if (name != null)
-                                                    if (iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, MsgExternalData.Encode.MsgString(name))))
-                                                        break;
-                                                    else
-                                                        goto RemoveClient;
+                                                        if (iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, MsgExternalData.Encode.MsgString(name))))
+                                                            break;
+                                                        else
+                                                            goto RemoveClient;
                                                 }
                                             }
 
@@ -320,6 +380,78 @@ namespace N2Nmc_Server.N2NmcServer.Base
                                     }
 
                                 goto RemoveClient;
+                            }
+
+                        case BaseHeader._room_client_join:
+                            {
+                                IO_Tool iO_Tool = new IO_Tool();
+
+                                if (currentRoom != null)
+                                {
+                                    iO_Tool.Send(client, MakePackage(BaseHeader._room_client_join_fail_0));
+                                    break;
+                                }
+
+                                string RoomCode, RoomPassword;
+                                string NickName;
+
+                                Package? pkg_app = iO_Tool.Receive(client);
+                                if (pkg_app != null)
+                                    if (pkg_app.Value.Header == (byte)BaseHeader.msg_string && pkg_app.Value.external_data != null)
+                                        RoomCode = Package.MsgExternalData.Decode.MsgString(pkg_app.Value.external_data);
+                                    else goto RemoveClient;
+                                else goto RemoveClient;
+                                pkg_app = iO_Tool.Receive(client);
+                                if (pkg_app != null)
+                                    if (pkg_app.Value.Header == (byte)BaseHeader.msg_string && pkg_app.Value.external_data != null)
+                                        RoomPassword = Package.MsgExternalData.Decode.MsgString(pkg_app.Value.external_data);
+                                    else goto RemoveClient;
+                                else goto RemoveClient;
+                                pkg_app = iO_Tool.Receive(client);
+                                if (pkg_app != null)
+                                    if (pkg_app.Value.Header == (byte)BaseHeader.msg_string && pkg_app.Value.external_data != null)
+                                        NickName = Package.MsgExternalData.Decode.MsgString(pkg_app.Value.external_data);
+                                    else goto RemoveClient;
+                                else goto RemoveClient;
+
+                                lock (Rooms)
+                                    for (int i = 0; i < Rooms.Count; i++)
+                                    {
+                                        var room = Rooms[i];
+                                        if (room.RoomCode == MsgExternalData.Decode.MsgString(pkg_app.Value.external_data))
+                                        {
+                                            if (room.IsRoomPasswordNeeded)
+                                            {
+                                                if (RoomPassword != room.RoomPassword)
+                                                {
+                                                    iO_Tool.Send(client, MakePackage(BaseHeader._room_client_join_fail_2));
+                                                    goto room_client_join_fail;
+                                                }
+                                            }
+
+                                            var rCreateMember = room.CreateMember(NickName, userKey, "Unknown");
+                                            var rJoin = room.MemberJoin(rCreateMember.Item1);
+                                            if (rJoin != 0)
+                                            {
+                                                iO_Tool.Send(client, MakePackage(BaseHeader._room_client_join_fail_00));
+                                                iO_Tool.Send(client, MakePackage(BaseHeader.msg_long, Package.MsgExternalData.Encode.MsgLong(rJoin)));
+                                                goto room_client_join_fail;
+                                            }
+
+                                            iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(userKey)));
+
+                                            goto room_client_join_ok;
+                                        }
+                                    }
+
+                                iO_Tool.Send(client, MakePackage(BaseHeader._room_client_join_fail_1));
+                                break;
+
+                            room_client_join_fail:
+                                break;
+
+                            room_client_join_ok:
+                                break;
                             }
 
                         case BaseHeader.extended_package:
@@ -341,13 +473,13 @@ namespace N2Nmc_Server.N2NmcServer.Base
                 }
                 catch (Exception ex)
                 {
-                    ConsoleBuffer.AppendFormatBuffer(MineMP.ConsoleBuffer.BufferContentType.Info, "Connection: {0}:{1} remove due to exception: {2}", iPEndPoint.Address.ToString(), iPEndPoint.Port.ToString(), ex.Message);
+                    ConsoleBuffer.AppendFormatBuffer(MineMP.ConsoleBuffer.BufferContentType.Info, "Connection: {0}:{1} remove due to exception: {2}" + Environment.NewLine, iPEndPoint.Address.ToString(), iPEndPoint.Port.ToString(), ex.Message);
                     goto RemoveClient;
                 }
                 continue;
 
             RemoveClient:
-                ConsoleBuffer.AppendFormatBuffer(MineMP.ConsoleBuffer.BufferContentType.Info, "Connection: {0}:{1} remove jmp", iPEndPoint.Address.ToString(), iPEndPoint.Port.ToString());
+                ConsoleBuffer.AppendFormatBuffer(MineMP.ConsoleBuffer.BufferContentType.Info, "Connection: {0}:{1} remove jmp" + Environment.NewLine, iPEndPoint.Address.ToString(), iPEndPoint.Port.ToString());
                 client.Close();
                 client.Dispose();
                 return;

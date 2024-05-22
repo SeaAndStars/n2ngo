@@ -8,79 +8,135 @@
         <ResourceDictionary>
             <system:Double x:Key="PageDesignHeight">530</system:Double>
             <system:Double x:Key="PageDesignWidth">865</system:Double>
-            
+            <CornerRadius x:Key="CornerRadiusCornerRadius">0</CornerRadius>
+
             <LinearGradientBrush x:Key="MainColorLightBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Offset="0.5" Color="#FF7D7D7D"/>
-                <GradientStop Color="#FF6D6D6D" Offset="1"/>
-                <GradientStop Offset="0" Color="#FF6D6D6D"/>
+                <GradientStop Color="#FFFFFBFC" Offset="0.5"/>
+                <GradientStop Color="#FFFFFDFB" Offset="1"/>
+                <GradientStop Color="#FFFFFDFB" Offset="0"/>
             </LinearGradientBrush>
             <LinearGradientBrush x:Key="MainColorLightAlphaBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Offset="0.5" Color="#9D9E9E9E"/>
-                <GradientStop Color="#9D6D6D6D" Offset="1"/>
-                <GradientStop Offset="0" Color="#9D6D6D6D"/>
+                <GradientStop Color="#FFFFFBFC" Offset="0.5"/>
+                <GradientStop Color="#FFFFFDFB" Offset="1"/>
+                <GradientStop Color="#FFFFFDFB" Offset="0"/>
             </LinearGradientBrush>
-            <SolidColorBrush x:Key="MainColorLightSolidBrush" Color="#f5f6f7"/>
-            <SolidColorBrush x:Key="MainColorLightSolidAlphaBrush" Color="#9D6D6D6D"/>
-            <SolidColorBrush x:Key="MainColorLightSolidFontBrush" Color="#FF202020"/>
-            <SolidColorBrush x:Key="MainColorLightHighLightSolidAlphaBrush" Color="#9d505050"/>
-            
+            <SolidColorBrush x:Key="MainColorLightSolidBrush" Color="#FFDEDBD9"/>
+            <SolidColorBrush x:Key="MainColorLightSolidAlphaBrush" Color="#9DCAC9C7"/>
+            <SolidColorBrush x:Key="MainColorLightSolidFontBrush" Color="#FF303844"/>
+            <SolidColorBrush x:Key="MainColorLightSolidForeBrush" Color="#FF0B1922"/>
+            <SolidColorBrush x:Key="MainColorLightHighLightSolidAlphaBrush" Color="#9dDDDDDD"/>
+            <Color x:Key="MainColorLightPrimaryColor" A="255" R="255" G="0" B="0"/>
+            <Color x:Key="MainColorLightSecondaryColor" A="255" R="244" G="244" B="244"/>
+
             <LinearGradientBrush x:Key="MainColorDarkBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Color="#505050" Offset="0.5"/>
-                <GradientStop Color="#3f3f3f" Offset="1"/>
-                <GradientStop Color="#3f3f3f" Offset="0"/>
+                <GradientStop Color="#FF424648" Offset="0.5"/>
+                <GradientStop Color="#FF2A2C30" Offset="1"/>
+                <GradientStop Color="#FF2A2C30" Offset="0"/>
             </LinearGradientBrush>
             <LinearGradientBrush x:Key="MainColorDarkAlphaBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Offset="0.5" Color="#FF505050"/>
-                <GradientStop Color="#cd3f3f3f" Offset="1"/>
-                <GradientStop Offset="0" Color="#cd3f3f3f"/>
+                <GradientStop Color="#FF424648" Offset="0.5"/>
+                <GradientStop Color="#FF2A2C30" Offset="1"/>
+                <GradientStop Color="#FF2A2C30" Offset="0"/>
             </LinearGradientBrush>
-            <SolidColorBrush x:Key="MainColorDarkSolidBrush" Color="#FF505050"/>
-            <SolidColorBrush x:Key="MainColorDarkSolidAlphaBrush" Color="#9d3f3f3f"/>
-            <SolidColorBrush x:Key="MainColorDarkSolidDarkAlphaBrush" Color="#cd3f3f3f"/>
-            <SolidColorBrush x:Key="MainColorDarkSolidFontBrush" Color="#AAf5f6f7"/>
+            <SolidColorBrush x:Key="MainColorDarkSolidBrush" Color="#FF1D1F1F"/>
+            <SolidColorBrush x:Key="MainColorDarkSolidAlphaBrush" Color="#9D272933"/>
+            <SolidColorBrush x:Key="MainColorDarkSolidFontBrush" Color="#AAD9E5F1"/>
+            <SolidColorBrush x:Key="MainColorDarkSolidForeBrush" Color="#FF9EA9ED"/>
             <SolidColorBrush x:Key="MainColorDarkHighLightSolidAlphaBrush" Color="#80808080"/>
+            <Color x:Key="MainColorDarkPrimaryColor" A="255" R="0" G="255" B="0"/>
+            <Color x:Key="MainColorDarkSecondaryColor" A="255" R="18" G="18" B="18"/>
+
+            <LinearGradientBrush x:Key="MainColorBrush" EndPoint="1,0" StartPoint="0,0">
+                <GradientStop Color="#FF424648" Offset="0.5"/>
+                <GradientStop Color="#FF2A2C30" Offset="1"/>
+                <GradientStop Color="#FF2A2C30" Offset="0"/>
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="MainColorAlphaBrush" EndPoint="1,0" StartPoint="0,0">
+                <GradientStop Color="#FF424648" Offset="0.5"/>
+                <GradientStop Color="#FF2A2C30" Offset="1"/>
+                <GradientStop Color="#FF2A2C30" Offset="0"/>
+            </LinearGradientBrush>
+            <SolidColorBrush x:Key="MainColorSolidBrush" Color="#FF1D1F1F"/>
+            <SolidColorBrush x:Key="MainColorSolidAlphaBrush" Color="#9D272933"/>
+            <SolidColorBrush x:Key="MainColorSolidFontBrush" Color="#AAD9E5F1"/>
+            <SolidColorBrush x:Key="MainColorSolidForeBrush" Color="#FF9EA9ED"/>
+            <SolidColorBrush x:Key="MainColorHighLightSolidAlphaBrush" Color="#80808080"/>
+            <Color x:Key="MainColorPrimaryColor" A="255" R="0" G="255" B="0"/>
+            <Color x:Key="MainColorSecondaryColor" A="255" R="18" G="18" B="18"/>
+
+
+            <FontFamily x:Key="MainFont">/Data/font/#微软雅黑</FontFamily>
+            <Style TargetType="{x:Type TextElement }">
+                <Setter Property="FontFamily" Value="{DynamicResource MainFont}"/>
+            </Style>
+            <Style x:Key="RunLink" TargetType="Run">
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="TextDecorations" Value="Underline"/>
+                <Setter Property="Foreground" Value="DeepSkyBlue"/>
+            </Style>
+
+            <!--<LinearGradientBrush x:Key="MainColorBrush"/>
+            <LinearGradientBrush x:Key="MainColorAlphaBrush"/>
+            <SolidColorBrush x:Key="MainColorSolidBrush" />
+            <SolidColorBrush x:Key="MainColorSolidAlphaBrush"/>
+            <SolidColorBrush x:Key="MainColorSolidFontBrush"/>
+            <SolidColorBrush x:Key="MainColorHighLightSolidAlphaBrush"/>-->
 
             <Style x:Key="TitleStyle" TargetType="Label">
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="#BFFFFFFF"/>
+                <Setter Property="Foreground" Value="{DynamicResource MainColorSolidForeBrush}"/>
                 <Setter Property="BorderBrush" Value="{x:Null}"/>
                 <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="FontFamily" Value="Arial"/>
-                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontWeight" Value="Bold"/>
                 <Setter Property="HorizontalAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
             <Style x:Key="ConnectedTitleStyle" BasedOn="{StaticResource TitleStyle}" TargetType="Label">
-                        <Setter Property="Background" Value="#80C0FFC0"/>
+                <Setter Property="Background" Value="#80C0FFC0"/>
             </Style>
-            
-            <Style x:Key="ImageRenderEdge" TargetType="Image">
-                <Setter Property="RenderOptions.EdgeMode" Value="Aliased" />
-            </Style>
-            
-            <Style x:Key="TitleButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="Transparent"/>
+
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{DynamicResource MainColorSolidAlphaBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource MainColorSolidFontBrush}"/>
                 <Setter Property="BorderBrush" Value="{x:Null}"/>
-                <Setter Property="Width" Value="55"/>
-                <Setter Property="HorizontalAlignment" Value="Right"/>
-                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                <Setter Property="FontSize" Value="15.6"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource MainColorDarkHighLightSolidAlphaBrush}"/>
-                    </Trigger>
-                </Style.Triggers>
             </Style>
 
+            <Style TargetType="hc:SimpleStackPanel">
+                <Setter Property="Grid.ColumnSpan" Value="100"/>
+                <Setter Property="Grid.RowSpan" Value="100"/>
+            </Style>
+
+            <Style TargetType="Frame">
+                <Setter Property="BorderThickness" Value="0"/>
+            </Style>
+
+            <Style TargetType="hc:ScrollViewer" BasedOn="{StaticResource ScrollViewerNativeBaseStyle}">
+                <Style.Resources>
+                    <SolidColorBrush x:Key="PrimaryTextBrush" Color="#FF6E69BD"/>
+                    <SolidColorBrush x:Key="SecondaryTextBrush" Color="#FF9EA9ED"/>
+                </Style.Resources>
+            </Style>
+
+            <Style x:Key="IndexPageBackgroundImage" TargetType="Image">
+                <Setter Property="Opacity" Value="0.45"/>
+                <Setter Property="Width" Value="333"/>
+                <Setter Property="Height" Value="333"/>
+                <Setter Property="Margin" Value="0,0,0,-25"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Bottom"/>
+            </Style>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>

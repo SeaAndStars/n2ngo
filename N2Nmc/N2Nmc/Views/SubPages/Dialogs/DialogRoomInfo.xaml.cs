@@ -1,4 +1,5 @@
-﻿using System;
+﻿using N2Nmc.UtilsClass;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -16,6 +17,9 @@ namespace N2Nmc.Views.SubPages.Dialogs
         public DialogRoomInfo(Card card, RoutedEventHandler funcClick, RoutedEventHandler cancelClick)
         {
             InitializeComponent();
+            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>(grid));
+            SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>(grid));
+            SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>(grid));
 
             this.card = card;
 

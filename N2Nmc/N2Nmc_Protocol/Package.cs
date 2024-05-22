@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace N2Nmc_Protocol
@@ -101,13 +102,22 @@ namespace N2Nmc_Protocol
         {
             public Exception? latestEx = null;
 
-            public bool Send(TcpClient Client, Package package)
+            public int ReadTimeOut = 15000, WriteTimeOut = 15000;
+            public IO_Tool()
+            {
+                
+            }
+
+            public bool Send(TcpClient Client, Package package, bool timeOut = false)
             {
                 latestEx = null;
+                if (timeOut)
+                    Client.SendTimeout = WriteTimeOut;
 
                 try
                 {
                     var stream = Client.GetStream();
+                    stream.Flush();
                     stream.Write(Package.BuildPackage(package));
                     stream.Flush();
                 }
@@ -120,15 +130,18 @@ namespace N2Nmc_Protocol
                 return true;
             }
 
-            public Package? Receive(TcpClient Client, byte? defH = null)
+            public Package? Receive(TcpClient Client, byte? defH = null, bool timeOut = false)
             {
                 latestEx = null;
+                if (timeOut)
+                    Client.ReceiveTimeout = ReadTimeOut;
 
                 Package? package = null;
 
                 try
                 {
                     var stream = Client.GetStream();
+                    stream.Flush();
 
                     if (!stream.CanRead||!Client.Connected)
                         return package;
@@ -196,7 +209,10 @@ namespace N2Nmc_Protocol
                 resolved:
                     {
                         byte[] bytes = new byte[data_size];
-                        stream.Read(bytes, 0, bytes.Length);
+                        if (data_size > 0)
+                        {
+                            stream.Read(bytes, 0, bytes.Length);
+                        }
 
                         package = Package.MakePackage(header, bytes);
                         return package;
@@ -205,6 +221,7 @@ namespace N2Nmc_Protocol
                     {
                         List<byte> externalBytes = new List<byte>();
                         byte[] bytes = new byte[data_size];
+
                         stream.Read(bytes, 0, bytes.Length);
                         externalBytes.AddRange(bytes);
 
@@ -213,21 +230,30 @@ namespace N2Nmc_Protocol
                             case 2:
                                 {
                                     bytes = new byte[Package.MsgExternalData.Decode.MsgUShort(bytes)];
-                                    stream.Read(bytes, 0, bytes.Length);
+                                    if (bytes.Length > 0)
+                                    {
+                                        stream.Read(bytes, 0, bytes.Length);
+                                    }
                                     externalBytes.AddRange(bytes);
                                     break;
                                 }
                             case 4:
                                 {
                                     bytes = new byte[Package.MsgExternalData.Decode.MsgULong(bytes)];
-                                    stream.Read(bytes, 0, bytes.Length);
+                                    if (bytes.Length > 0)
+                                    {
+                                        stream.Read(bytes, 0, bytes.Length);
+                                    }
                                     externalBytes.AddRange(bytes);
                                     break;
                                 }
                             case 8:
                                 {
                                     bytes = new byte[Package.MsgExternalData.Decode.MsgULongLong(bytes)];
-                                    stream.Read(bytes, 0, bytes.Length);
+                                    if (bytes.Length > 0)
+                                    {
+                                        stream.Read(bytes, 0, bytes.Length);
+                                    }
                                     externalBytes.AddRange(bytes);
                                     break;
                                 }

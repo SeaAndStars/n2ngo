@@ -6,11 +6,11 @@
       xmlns:local="clr-namespace:N2Nmc.Views.SubPages"
       xmlns:hc="https://handyorg.github.io/handycontrol" x:Class="N2Nmc.Views.SubPages.LogPage"
       mc:Ignorable="d" 
-      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}"
+      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
       Title="Page5">
 
     <Grid>
-        <TextBox x:Name="textlog" HorizontalAlignment="Center" VerticalAlignment="Center" Width="845" Height="510" TextWrapping="Wrap" VerticalContentAlignment="Top" IsReadOnly="True" Background="{DynamicResource MainColorDarkSolidAlphaBrush}" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"/>
+        <TextBox x:Name="textlog" TextWrapping="Wrap" VerticalContentAlignment="Top" IsReadOnly="True" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" Margin="10,10,10,10"/>
         <!--<hc:AxleCanvas/>-->
     </Grid>
 </Page>

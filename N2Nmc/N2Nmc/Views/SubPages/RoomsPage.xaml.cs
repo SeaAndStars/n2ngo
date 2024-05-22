@@ -1,12 +1,14 @@
 ﻿using HandyControl.Controls;
+using HandyControl.Tools.Extension;
+using Microsoft.Windows.Themes;
 using N2Nmc.UtilsClass;
 using N2Nmc.Views.SubPages.Dialogs;
 using N2Nmc_Protocol;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
-using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -79,8 +81,8 @@ namespace N2Nmc.Views.SubPages
         DoubleAnimation joinBtnLandVIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.20), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
         DoubleAnimation joinBtnLandOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.85), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
 
-        DoubleAnimation blurIn = new DoubleAnimation { To = 8, Duration = TimeSpan.FromSeconds(0.60), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
-        DoubleAnimation blurOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.70), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+        DoubleAnimation blurIn = new DoubleAnimation { To = 8, Duration = TimeSpan.FromSeconds(0.30), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+        DoubleAnimation blurOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.45), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
         DoubleAnimation fadeIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.20), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
         DoubleAnimation fadeOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.45), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
 
@@ -91,6 +93,10 @@ namespace N2Nmc.Views.SubPages
 
         public readonly static string GrowlToken = "RoomsPageGrowl";
 
+        DoubleAnimation ExpandGridFunc = new DoubleAnimation { Duration = TimeSpan.FromSeconds(0.2), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+        DoubleAnimation CollapseGridFunc = new DoubleAnimation { Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+        bool GridFuncLS;
+
         public RoomsPage()
         {
             InitializeComponent();
@@ -98,12 +104,16 @@ namespace N2Nmc.Views.SubPages
             Growl.Register(GrowlToken, PanelMsg);
 
             CardDialogBorder.Visibility = Visibility.Collapsed;
+            DialogLoadingRooms.Visibility = Visibility.Visible;
+
+            CollapseGridFunc.To = GridFunc.MinWidth;
+            ExpandGridFunc.To = GridFunc.MaxWidth;
+            GridColDef2.Width = new GridLength(GridFunc.MinWidth);
+            GridFuncLS = true;
+            SwitchGridFunc(false);
 
             Cards.Items.Clear();
-
             timer.Interval = TimeSpan.FromSeconds(1);
-
-            DialogLoadingRooms.Visibility = Visibility.Visible;
         }
 
         ~RoomsPage()
@@ -113,43 +123,17 @@ namespace N2Nmc.Views.SubPages
             Growl.Unregister(GrowlToken, PanelMsg);
         }
 
-
-        //private void Button_Click(object sender, RoutedEventArgs e)
-        //{
-        //    // 在这里添加按钮单击事件的处理逻辑
-
-        //    // 判断按钮的 Command 是否等于集合中的某个数据，并返回数据的位置信息
-        //    Button button = (Button)sender;
-        //    string Command1 = button.Command.ToString();
-        //    Console.WriteLine(Command1);
-        //    Console.WriteLine(cardsall);
-        //    //int index = cardsall.FindIndex(card => card == Command1);
-        //    int index = 0;
-
-        //    if (index != -1)
-        //    {
-        //        // 找到了匹配的数据
-        //        // index 是数据在集合中的位置信息
-        //        // 可以根据需要进行进一步处理
-        //        Console.WriteLine($"找到了 Command 为 {button.Command} 的对象，位置为 {index}。");
-        //    }
-        //    else
-        //    {
-        //        // 没有找到匹配的数据
-        //        Console.WriteLine($"未找到 Command 为 {button.Command} 的对象。");
-        //    }
-        //}
-
         Thread? refreshThread = null;
         private void InitCard(object card)
         {
             if (!((Card)(((Grid)card).DataContext)).TransformInited)
             {
-                ((Grid)card).RenderTransform = new TransformGroup { Children = new TransformCollection(new Transform[] { new ScaleTransform(1, 1, .5, .5), new SkewTransform(0, 0, 0, 0) }) };
+                ((Border)((Grid)card).Parent).RenderTransform = new TransformGroup { Children = new TransformCollection(new Transform[] { new ScaleTransform(1, 1, .5, .5), new SkewTransform(0, 0, 0, 0) }) };
                 ((Card)(((Grid)card).DataContext)).TransformInited = true;
 
-                Button btn = (Button)((Grid)card).Children[1];
+                Button btn = (Button)((Grid)card).Children[3];
                 btn.Opacity = 0;
+                SharedData.UIAnimation.InitButton(btn);
                 //Button btn1 = (Button)((Grid)card).Children[2];
                 //btn1.Opacity = 0;
                 //btn.RenderTransform = new ScaleTransform(0,1, .5, .5);
@@ -299,7 +283,7 @@ namespace N2Nmc.Views.SubPages
             });
         }
 
-        public async void Refresh()
+        public async void Refresh(ulong? page_index = null)
         {
             if (refreshThread != null && refreshThread.IsAlive)
                 return;
@@ -309,6 +293,8 @@ namespace N2Nmc.Views.SubPages
             dispatcher.Invoke(() => isRefreshing = IsRefreshing);
             if (isRefreshing == true)
                 return;
+
+            Stopwatch sw = Stopwatch.StartNew();
 
             cards.Clear();
 
@@ -320,7 +306,7 @@ namespace N2Nmc.Views.SubPages
             {
                 animationCompletedTask.SetResult(0);
             };
-            dispatcher.Invoke(() => DialogLoadingRooms.BeginAnimation(OpacityProperty, _loadingDialogFadeIn));
+            dispatcher.InvokeAsync(() => DialogLoadingRooms.BeginAnimation(OpacityProperty, _loadingDialogFadeIn));
 
             await Task.Run(() =>
             {
@@ -366,6 +352,7 @@ namespace N2Nmc.Views.SubPages
                         return;
                     }
 
+                    Random random = new Random(DateTime.Now.Millisecond);
                     refreshThread = new Thread(() =>
                     {
                         dispatcher.Invoke(() =>
@@ -397,7 +384,32 @@ namespace N2Nmc.Views.SubPages
                                     }
                                 }
 
-                                NM_Connection.Send(MakePackage(Protocol.BaseHeader._room_pull_rooms));
+                                if (page_index == null)
+                                {
+                                    NM_Connection.Send(MakePackage(Protocol.BaseHeader._rooms_pull_rooms_pages));
+                                    Package? rooms_pages_pkg_get = NM_Connection.Receive();
+                                    if (rooms_pages_pkg_get != null && (Protocol.BaseHeader)rooms_pages_pkg_get.Value.Header == Protocol.BaseHeader.msg_ulong && rooms_pages_pkg_get.Value.external_data != null)
+                                    {
+                                        ulong pages = MsgExternalData.Decode.MsgULong(rooms_pages_pkg_get.Value.external_data);
+
+                                        var l = new List<ulong>();
+
+                                        for (ulong i = 0; i < pages; i++)
+                                            l.Add(i);
+
+                                        Dispatcher.InvokeAsync(() =>
+                                        {
+                                            PageIndexSelectBoard.ItemsSource = l;
+                                        });
+                                    }
+                                    else
+                                        goto invalid;
+
+                                    page_index = 0;
+                                }
+
+                                NM_Connection.Send(MakePackage(Protocol.BaseHeader._rooms_pull_rooms));
+                                NM_Connection.Send(MakePackage(Protocol.BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong((UInt32)page_index)));
 
                                 // 开始查询
                                 Package? rooms_count_pkg_get = NM_Connection.Receive();
@@ -409,7 +421,7 @@ namespace N2Nmc.Views.SubPages
 
                                         while ((roomCount--) > 0)
                                         {
-                                            Package[] roomPackage = new Package[3];
+                                            Package[] roomPackage = new Package[5];
                                             for (int i = 0; i < roomPackage.Length; i++)
                                             {
                                                 var pkg_get = NM_Connection.Receive();
@@ -422,6 +434,8 @@ namespace N2Nmc.Views.SubPages
                                             string RoomCode;
                                             string RoomName;
                                             bool IsRoomPasswordNeeded;
+                                            N2Nmc_Protocol.Objects.RoomColor ColorMajor;
+                                            N2Nmc_Protocol.Objects.RoomColor ColorMinor;
                                             {
                                                 byte[]? edata = roomPackage[0].external_data;
                                                 if ((Protocol.BaseHeader)roomPackage[0].Header != Protocol.BaseHeader.msg_string || edata == null)
@@ -440,8 +454,27 @@ namespace N2Nmc.Views.SubPages
                                                     goto invalid;
                                                 IsRoomPasswordNeeded = MsgExternalData.Decode.MsgByte(edata) == 1 ? true : false;
                                             }
+                                            {
+                                                byte[]? edata = roomPackage[3].external_data;
+                                                if ((Protocol.BaseHeader)roomPackage[3].Header != Protocol.BaseHeader.msg_ulong || edata == null)
+                                                    goto invalid;
+                                                ColorMajor = new N2Nmc_Protocol.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
+                                            }
+                                            {
+                                                byte[]? edata = roomPackage[4].external_data;
+                                                if ((Protocol.BaseHeader)roomPackage[4].Header != Protocol.BaseHeader.msg_ulong || edata == null)
+                                                    goto invalid;
+                                                ColorMinor = new N2Nmc_Protocol.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
+                                            }
 
-                                            cards.Add(new Card { RoomName = RoomName, RoomCode = RoomCode, IsRoomPasswordNeeded = IsRoomPasswordNeeded });
+                                            // Random Color
+                                            //byte[] rgb = new byte[3];
+                                            //random.NextBytes(rgb);
+                                            //Dispatcher.InvokeAsync(() => cards.Add(new Card { RoomName = RoomName, RoomCode = RoomCode, IsRoomPasswordNeeded = IsRoomPasswordNeeded, ThemeBrushMinor = new SolidColorBrush(Color.FromArgb(0xFF, rgb[0], rgb[1], rgb[2])) }));
+
+                                            Dispatcher.InvokeAsync(() => cards.Add(new Card { RoomName = RoomName, RoomCode = RoomCode, IsRoomPasswordNeeded = IsRoomPasswordNeeded,
+                                                ThemeBrushMajor = new SolidColorBrush(Color.FromArgb(0xFF, ColorMajor.R, ColorMajor.G, ColorMajor.B)),
+                                                ThemeBrushMinor = new SolidColorBrush(Color.FromArgb(0xFF, ColorMinor.R, ColorMinor.G, ColorMinor.B)) }));
                                         }
                                         ;
 
@@ -460,78 +493,95 @@ namespace N2Nmc.Views.SubPages
                                 return;
                             }
                         done:
-                        dispatcher.Invoke(() =>
+                        dispatcher.InvokeAsync(() =>
                         {
-                            if (!string.IsNullOrEmpty(RoomsSearching.Text))
-                                Filter_Sort(RoomsSearching.Text);
+                            if (!string.IsNullOrEmpty(RoomsFiltering.Text))
+                                Filter_Sort(RoomsFiltering.Text);
                             else
                                 Filter_Sort(default);
 
                             LoadingDialogOut(dispatcher);
                         });
-
-                        Growl.Success("服务器列表获取成功", GrowlToken);
                     });
 
                     refreshThread.Start();
                 });
             });
+
+            sw.Stop();
+            Console.WriteLine("[Rooms Refresh] Total Time: {0}ms", sw.ElapsedMilliseconds);
         }
 
         private void TempGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            ((Grid)sender).Background = new SolidColorBrush(Color.FromArgb(0x9F, 255, 255, 255));
+            var grid = ((Grid)sender);
+            var gridp = grid.Parent as Border;
+            if (gridp == null)
+                throw new NullReferenceException(nameof(gridp));
 
-            TransformGroup TG = (TransformGroup)((Grid)sender).RenderTransform;
+            gridp.Background = new SolidColorBrush(Color.FromArgb(0x9F, 0xB3, 0xB3, 0xB3));
+
+            TransformGroup TG = (TransformGroup)gridp.RenderTransform;
             ScaleTransform st = (ScaleTransform)TG.Children[0];
 
             st.BeginAnimation(ScaleTransform.ScaleXProperty, smallerAnimation);
             st.BeginAnimation(ScaleTransform.ScaleYProperty, smallerAnimation);
 
-            Button btn = (Button)((Grid)sender).Children[1];
+            Button btn = (Button)grid.Children[3];
             btn.BeginAnimation(OpacityProperty, joinBtnFadeIn);
             //Button btn1 = (Button)((Grid)sender).Children[2];
             //btn1.BeginAnimation(OpacityProperty, joinBtnFadeIn);
             //btn.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, joinBtnLandIn);
             // btn.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, joinBtnLandVIn);
         }
-
         private void TempGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            ((Grid)sender).Background = new SolidColorBrush(Color.FromArgb(0x5F, 255, 255, 255));
+            var grid = ((Grid)sender);
+            var gridp = grid.Parent as Border;
+            if (gridp == null)
+                throw new NullReferenceException(nameof(gridp));
 
-            TransformGroup TG = (TransformGroup)((Grid)sender).RenderTransform;
+            gridp.Background = new SolidColorBrush(Color.FromArgb(0x5F, 0xB3, 0xB3, 0xB3));
+
+            TransformGroup TG = (TransformGroup)gridp.RenderTransform;
             ScaleTransform st = (ScaleTransform)TG.Children[0];
 
             st.BeginAnimation(ScaleTransform.ScaleXProperty, biggerAnimation);
             st.BeginAnimation(ScaleTransform.ScaleYProperty, biggerAnimation);
 
-            Button btn = (Button)((Grid)sender).Children[1];
+            Button btn = (Button)grid.Children[3];
             btn.BeginAnimation(OpacityProperty, joinBtnFadeOut);
             //Button btn1 = (Button)((Grid)sender).Children[2];
             //btn1.BeginAnimation(OpacityProperty, joinBtnFadeOut);
             //btn.RenderTransform.BeginAnimation(ScaleTransform.ScaleXProperty, joinBtnLandOut);
             // btn.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, joinBtnLandOut);
         }
-
         private void TempGrid_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            TransformGroup TG = (TransformGroup)((Grid)sender).RenderTransform;
+            var grid = ((Grid)sender);
+            var gridp = grid.Parent as Border;
+            if (gridp == null)
+                throw new NullReferenceException(nameof(gridp));
+
+            TransformGroup TG = (TransformGroup)gridp.RenderTransform;
             ScaleTransform st = (ScaleTransform)TG.Children[0];
 
             st.BeginAnimation(ScaleTransform.ScaleXProperty, smallsmallerAnimation);
             st.BeginAnimation(ScaleTransform.ScaleYProperty, smallsmallerAnimation);
         }
-
         private void TempGrid_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            TransformGroup TG = (TransformGroup)((Grid)sender).RenderTransform;
+            var grid = ((Grid)sender);
+            var gridp = grid.Parent as Border;
+            if (gridp == null)
+                throw new NullReferenceException(nameof(gridp));
+
+            TransformGroup TG = (TransformGroup)gridp.RenderTransform;
             ScaleTransform st = (ScaleTransform)TG.Children[0];
 
             st.BeginAnimation(ScaleTransform.ScaleXProperty, biggerAnimation);
             st.BeginAnimation(ScaleTransform.ScaleYProperty, biggerAnimation);
         }
-
         private void TempGrid_Initialized(object sender, EventArgs e)
         {
             InitCard(sender);
@@ -592,7 +642,7 @@ namespace N2Nmc.Views.SubPages
 
                     timer.Start();
 
-                    string cmd = edgePath+" -c " + card.RoomCode + " -k " + password + " -l " + SharedData.n2nServerIPP;
+                    string cmd = edgePath + " -c " + card.RoomCode + " -k " + password + " -l " + SharedData.n2nServerIPP;
                     EdgeConnectionInfo.CurrentRoomCode = card.RoomCode;
 
                     execLog.SetCommand(cmd);
@@ -641,7 +691,7 @@ namespace N2Nmc.Views.SubPages
 
                     timer.Start();
 
-                    string cmd = edgePath+" -c " + card.RoomCode + " -k " + SharedData.DefaultRoomPasswd + " -l " + SharedData.n2nServerIPP;
+                    string cmd = edgePath + " -c " + card.RoomCode + " -k " + SharedData.DefaultRoomPasswd + " -l " + SharedData.n2nServerIPP;
                     EdgeConnectionInfo.CurrentRoomCode = card.RoomCode;
 
                     execLog.SetCommand(cmd);
@@ -674,15 +724,15 @@ namespace N2Nmc.Views.SubPages
             ((ToggleButton)sender).Content = SwitchFakeServerContenter;
         }
 
-        private void RoomsSearching_SearchStarted(object sender, HandyControl.Data.FunctionEventArgs<string> e)
+        private void RoomsFiltering_SearchStarted(object sender, HandyControl.Data.FunctionEventArgs<string> e)
         {
-            Filter_Sort(RoomsSearching.Text);
+            Filter_Sort(RoomsFiltering.Text);
         }
 
-        private void RoomsSearching_TextChanged(object sender, TextChangedEventArgs e)
+        private void RoomsFiltering_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(RoomsSearching.Text.Trim()))
-                Filter_Sort(RoomsSearching.Text);
+            if (string.IsNullOrWhiteSpace(RoomsFiltering.Text.Trim()))
+                Filter_Sort(RoomsFiltering.Text);
         }
 
         private async void ButtonJoin_Click(object sender, RoutedEventArgs e)
@@ -737,7 +787,7 @@ namespace N2Nmc.Views.SubPages
 
                     timer.Start();
 
-                    string cmd = edgePath+" -c " + card.RoomCode + " -k " + password + " -l " + SharedData.n2nServerIPP;
+                    string cmd = edgePath + " -c " + card.RoomCode + " -k " + password + " -l " + SharedData.n2nServerIPP;
                     EdgeConnectionInfo.CurrentRoomCode = card.RoomCode;
 
                     execLog.SetCommand(cmd);
@@ -790,7 +840,7 @@ namespace N2Nmc.Views.SubPages
 
                 timer.Start();
 
-                string cmd = edgePath+" -c " + card.RoomCode + " -k " + SharedData.DefaultRoomPasswd + " -l " + SharedData.n2nServerIPP;
+                string cmd = edgePath + " -c " + card.RoomCode + " -k " + SharedData.DefaultRoomPasswd + " -l " + SharedData.n2nServerIPP;
                 EdgeConnectionInfo.CurrentRoomCode = card.RoomCode;
 
                 execLog.SetCommand(cmd);
@@ -810,15 +860,42 @@ namespace N2Nmc.Views.SubPages
             Refresh();
         }
 
-        private void ButtonDel_Click(object sender, RoutedEventArgs e)
-        {
-            CloseRoom(((Card)((Button)sender).DataContext).RoomCode);
-            Refresh();
-        }
-
         private void ButtonCancelLoadingRooms_Click(object sender, RoutedEventArgs e)
         {
             LoadingDialogOut(((MainView)App.Current.MainWindow).Dispatcher);
+        }
+
+        private void PageIndexButton_Click(object sender, RoutedEventArgs e)
+        {
+            ulong a = (ulong)((Button)sender).DataContext;
+            Refresh(a);
+        }
+
+        private void Button_Initialized(object sender, EventArgs e)
+        {
+            SharedData.UIAnimation.InitButton((Button)sender);
+        }
+
+        public void SwitchGridFunc(bool? set = null)
+        {
+            if (set != null)
+                GridFuncLS = set.Value;
+
+            GridFunc.BeginAnimation(WidthProperty, (GridFuncLS ? ExpandGridFunc : CollapseGridFunc));
+            MainBlur.BeginAnimation(BlurEffect.RadiusProperty, GridFuncLS ? blurIn : blurOut);
+
+            if (set == null)
+                GridFuncLS = !GridFuncLS;
+        }
+
+        private void GridFunc_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            SwitchGridFunc(true);
+        }
+
+        private void GridFunc_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            SwitchGridFunc(false);
         }
     }
 
@@ -830,11 +907,22 @@ namespace N2Nmc.Views.SubPages
 
         public string BtnText { get; set; } = "加入";
 
+        public Brush ThemeBrushMajor { get; set; } = new SolidColorBrush(Color.FromRgb(0xB3, 0xB3, 0xB3));
+        public Brush ThemeBrushMinor { get; set; } = new SolidColorBrush(Colors.Red);
+
         public string RoomName { get; set; } = string.Empty;
         public string RoomCode { get; set; } = string.Empty;
         public bool IsRoomVisible { get; set; } = true;
         public bool IsRoomPasswordNeeded { get; set; } = false;
         public string IsRoomPasswordNeededText { get => IsRoomPasswordNeeded ? "有密码" : "公开"; }
+        public int MembersCount { get; set; } = 0;
+        public string MembersCountString
+        {
+            get
+            {
+                return MembersCount.ToString()+"人";
+            }
+        }
     }
 }
 

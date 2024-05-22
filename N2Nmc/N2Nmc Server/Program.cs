@@ -28,7 +28,8 @@ namespace N2Nmc_Server
 
         private static void ConsoleBuffer_ReadingInputLine(object sender)
         {
-            ((ConsoleBuffer)sender).MakeInputLine(Console.ReadLine());
+            var input = Console.ReadLine();
+            ((ConsoleBuffer)sender).MakeInputLine(input == null ? "" : input);
         }
 
         private static void ConsoleBuffer_ControlSymbolBufferPushed(object sender, ConsoleControlSymbolBufferPushedEventArgs e)

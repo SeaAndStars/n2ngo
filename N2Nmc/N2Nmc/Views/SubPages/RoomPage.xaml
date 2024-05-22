@@ -7,24 +7,41 @@
         xmlns:local="clr-namespace:N2Nmc.Views"
         mc:Ignorable="d"
         d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}"
-        Background="{DynamicResource MainColorDarkSolidAlphaBrush}">
+        Background="{DynamicResource MainColorSolidAlphaBrush}">
     <Grid>
-        <Label Height="40" VerticalAlignment="Top" Content="房间列表" HorizontalAlignment="Center" Style="{StaticResource TitleStyle}" VerticalContentAlignment="Center"/>
-        <Button x:Name="ButtonExitRoom" Background="{DynamicResource MainColorDarkHighLightSolidAlphaBrush}" Content="退出房间" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="{DynamicResource MainColorDarkSolidFontBrush}" Click="ButtonExitRoom_Click"/>
+        <Label Height="40" VerticalAlignment="Top" Content="当前房间" HorizontalAlignment="Center" Style="{DynamicResource TitleStyle}" VerticalContentAlignment="Center" FontSize="24"/>
+        <Button x:Name="ButtonExitRoom" Style="{DynamicResource ButtonStyle}" Content="退出房间" VerticalAlignment="Top" Click="ButtonExitRoom_Click" Height="40" Width="120" FontSize="20" HorizontalAlignment="Right"/>
+        <!--<Button x:Name="ButtonRoomRefresh" Style="{DynamicResource ButtonStyle}" Content="刷新" VerticalAlignment="Top" Height="40" Width="60" FontSize="20" HorizontalAlignment="Right" Margin="0,0,130,0" Click="ButtonExitRoomRefresh_Click"/>-->
 
-        <Grid Background="{DynamicResource MainColorDarkSolidAlphaBrush}" Margin="0,40,0,0">
-            <DataGrid x:Name="DataGridroom" Style="{StaticResource DataGrid.Small}"  IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0" AllowDrop="True" Background="{DynamicResource MainColorDarkSolidDarkAlphaBrush}" Margin="10,10,10,10" Foreground="{DynamicResource MainColorDarkSolidFontBrush}" >
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="编号" Binding="{Binding StuIda}" Width="50"/>
-                    <DataGridTextColumn Header="名称" Binding="{Binding Community}"/>
-                    <DataGridTextColumn Header="IP"  Binding="{Binding Ip4Address}"/>
-                </DataGrid.Columns>
-            </DataGrid>
+        <Grid Background="{DynamicResource MainColorSolidAlphaBrush}" Margin="0,40,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.5*"/>
+            </Grid.ColumnDefinitions>
 
-            <Border x:Name="tip" VerticalAlignment="Bottom" Height="52" CornerRadius="4" Background="{DynamicResource MainColorDarkHighLightSolidAlphaBrush}" Margin="12,0,12,10" Grid.Row="0">
+            <Grid Background="{DynamicResource MainColorSolidAlphaBrush}" Margin="10,10,10,10" Grid.Column="0">
+            </Grid>
+
+            <Grid Background="{DynamicResource MainColorSolidAlphaBrush}" Margin="10,10,10,10" Grid.Column="1">
+                <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Vertical" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsInertiaEnabled="True">
+                    <ItemsControl Background="{DynamicResource MainColorSolidAlphaBrush}" MinWidth="100" MinHeight="100">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </hc:ScrollViewer>
+            </Grid>
+
+            <Border x:Name="tip" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Height="60" CornerRadius="4" Background="{DynamicResource MainColorHighLightSolidAlphaBrush}" Margin="12,0,12,10" Grid.Row="0">
                 <Grid>
-                    <TextBlock TextWrapping="Wrap" Text="请直接使用 直接连接 加入游戏。" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"/>
-                    <Button x:Name="ButtonKnown" Background="{StaticResource MainColorDarkSolidBrush}" Content="我已了解" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="25" Width="64" Padding="0,0,0,0" Click="ButtonKnown_Click" Foreground="{DynamicResource MainColorDarkSolidFontBrush}"/>
+                    <TextBlock TextWrapping="Wrap" Padding="3" Text="请以您所在的国家为准，禁止发布及传播违反法律的内容" Foreground="{DynamicResource MainColorSolidFontBrush}" FontSize="17"/>
+                    <Button x:Name="ButtonKnown" Style="{DynamicResource ButtonStyle}" Content="我已了解" VerticalAlignment="Bottom" Height="31" Width="89" Padding="0,0,0,0" Click="ButtonKnown_Click" HorizontalAlignment="Right"/>
                 </Grid>
             </Border>
         </Grid>

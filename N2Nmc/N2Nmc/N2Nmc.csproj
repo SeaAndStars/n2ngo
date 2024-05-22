@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup Label="Globals">
+    <WebView2LoaderPreference>Dynamic</WebView2LoaderPreference>
+  </PropertyGroup>
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
@@ -10,12 +14,37 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <SignAssembly>False</SignAssembly>
+    <PackAsTool>False</PackAsTool>
+    <IncludeSymbols>False</IncludeSymbols>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <Copyright></Copyright>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Data\image\ai.jpg" />
-    <None Remove="Data\image\ai.png" />
+    <Compile Remove="Views\Debug\**" />
+    <EmbeddedResource Remove="Views\Debug\**" />
+    <None Remove="Views\Debug\**" />
+    <Page Remove="Views\Debug\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Data\font\2.ttc" />
+    <None Remove="Data\font\f1.ttc" />
+    <None Remove="Data\font\G_R1.ttf" />
+    <None Remove="Data\font\simsun.ttc" />
+    <None Remove="Data\image\About.png" />
+    <None Remove="Data\image\Advanced.png" />
+    <None Remove="Data\image\CheckUpdate.png" />
     <None Remove="Data\image\cjf.png" />
+    <None Remove="Data\image\Clienting.png" />
+    <None Remove="Data\image\Community.png" />
+    <None Remove="Data\image\Develop.jpg" />
+    <None Remove="Data\image\Hosting.png" />
+    <None Remove="Data\image\icon\daynight.png" />
+    <None Remove="Data\image\icon\icon.zip" />
+    <None Remove="Data\image\icon\info.png" />
     <None Remove="Data\image\icon\join.png" />
     <None Remove="Data\image\icon\log.png" />
     <None Remove="Data\image\icon\room.png" />
@@ -23,10 +52,21 @@
     <None Remove="Data\image\icon\rooms.png" />
     <None Remove="Data\image\icon\root.png" />
     <None Remove="Data\image\icon\settings.png" />
+    <None Remove="Data\image\icon\wnd_btn_back.png" />
+    <None Remove="Data\image\icon\wnd_btn_close.png" />
+    <None Remove="Data\image\icon\wnd_btn_max.png" />
+    <None Remove="Data\image\icon\wnd_btn_min.png" />
+    <None Remove="Data\image\icon\wnd_btn_normal.png" />
     <None Remove="Data\image\ind.png" />
     <None Remove="Data\image\kslj.png" />
     <None Remove="Data\image\lj.png" />
     <None Remove="Data\image\logo13.ico" />
+    <None Remove="Data\image\N2NGO_Logo_GO.png" />
+    <None Remove="Data\image\N2NGO_Logo_N2N.png" />
+    <None Remove="Data\image\N2NGO_Logo_N2N_Border.png" />
+    <None Remove="Data\image\N2NGO_Logo_Warpper.png" />
+    <None Remove="Data\image\Preview.jpg" />
+    <None Remove="Data\image\Release.jpg" />
     <None Remove="Data\image\rzfw.png" />
     <None Remove="Data\image\sz.png" />
     <None Remove="Views\SubPages\Page3.xaml.cs.removed" />
@@ -46,23 +86,54 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Data\image\ai.jpg" />
-    <Resource Include="Data\image\ai.png" />
-    <Resource Include="Data\image\icon\join.png" />
-    <Resource Include="Data\image\icon\log.png" />
-    <Resource Include="Data\image\icon\room.png" />
-    <Resource Include="Data\image\icon\rooming.png" />
-    <Resource Include="Data\image\icon\rooms.png" />
-    <Resource Include="Data\image\icon\root.png" />
-    <Resource Include="Data\image\icon\settings.png" />
+    <Resource Include="Data\font\f1.ttc" />
+    <Resource Include="Data\image\About.png" />
+    <Resource Include="Data\image\Advanced.png" />
+    <Resource Include="Data\image\CheckUpdate.png" />
+    <Resource Include="Data\image\Clienting.png" />
+    <Resource Include="Data\image\Community.png" />
+    <Resource Include="Data\image\Develop.jpg" />
+    <Resource Include="Data\image\Hosting.png" />
+    <Resource Include="Data\image\icon\daynight.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\image\icon\info.png" />
+    <Resource Include="Data\image\icon\join.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\image\icon\log.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\image\icon\room.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\image\icon\rooming.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\image\icon\rooms.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\image\icon\root.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\image\icon\settings.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\image\icon\wnd_btn_back.png" />
+    <Resource Include="Data\image\icon\wnd_btn_close.png" />
+    <Resource Include="Data\image\icon\wnd_btn_max.png" />
+    <Resource Include="Data\image\icon\wnd_btn_min.png" />
+    <Resource Include="Data\image\icon\wnd_btn_normal.png" />
     <Resource Include="Data\image\ind.png" />
     <Resource Include="Data\image\logo13.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="HandyControl" Version="3.4.0" />
+    <Resource Include="Data\image\N2NGO_Logo_GO.png" />
+    <Resource Include="Data\image\N2NGO_Logo_N2N.png" />
+    <Resource Include="Data\image\N2NGO_Logo_N2N_Border.png" />
+    <Resource Include="Data\image\N2NGO_Logo_Warpper.png" />
+    <Resource Include="Data\image\Preview.jpg" />
+    <Resource Include="Data\image\Release.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,6 +145,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Data\BinRef\Windows\n2n\edge.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\BinRef\Windows\n2n\edge.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Data\NewsOffline.txt">
@@ -166,6 +240,16 @@
     <Folder Include="Data\BinRef\Linux\" />
     <Folder Include="Data\BinRef\Windows\n2n\" />
     <Folder Include="Resources\MainResc\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HandyControl" Version="3.4.0" />
+    <PackageReference Include="ImageProcessor" Version="2.9.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
   </ItemGroup>
 
 </Project>

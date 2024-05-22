@@ -1,0 +1,157 @@
+﻿using N2Nmc.UtilsClass;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+
+namespace N2Nmc.Views.SubPages.Dialogs
+{
+    public partial class DialogMessage : Page
+    {
+        List<Action<object>>? actsRet;
+        DoubleAnimation animOpIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.5), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        DoubleAnimation animOpInDe = new DoubleAnimation { To = 1, BeginTime = TimeSpan.FromSeconds(0.2), Duration = TimeSpan.FromSeconds(0.4), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        DoubleAnimation animOpOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+
+        DoubleAnimation animScIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.43), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };   // 1    0.3
+        DoubleAnimation animScOut = new DoubleAnimation { To = 1.6, Duration = TimeSpan.FromSeconds(0.75), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn } }; // 1.4  0.75
+
+        Page? messageContent = null;
+        public Page? MessageContent
+        {
+            get => messageContent;
+
+            set
+            {
+                if (value != null)
+                {
+                    ContentPresenter.Navigate(value);
+                }
+
+                messageContent = value;
+            }
+        }
+
+        public enum DialogType
+        {
+            OK,
+            YesNo,
+            InputOK
+        }
+
+        void ButtonClicked()
+        {
+            IsEnabled = false;
+            ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, animScOut);
+            ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, animScOut);
+
+            TaskCompletionSource<object> animationCompletedTask = new TaskCompletionSource<object>();
+            animOpOut.Completed += (s, _) =>
+            {
+                animationCompletedTask.SetResult(0);
+            };
+
+            BeginAnimation(OpacityProperty, animOpOut);
+            Task.Run(() =>
+            {
+                animationCompletedTask.Task.Wait();
+
+                Dispatcher.Invoke(() =>
+                {
+                    if (actsRet != null)
+                        foreach (var act in actsRet)
+                            act(this);
+                });
+            });
+        }
+
+        public DialogMessage(List<Action<object>>? ActsRet = null)
+        {
+            InitializeComponent();
+            BackgroundCanvas.Opacity = 0;
+            ContentGrid.Opacity = 0;
+
+            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)Content));
+            SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)Content));
+
+            actsRet = ActsRet;
+        }
+        public DialogMessage(string MessageText, string? MessageTitle = null, DialogType type = DialogType.OK, List<Action<object>>? ActsRet = null) : this(ActsRet)
+        {
+            if (MessageTitle != null)
+                this.MessageTitle.Content = MessageTitle;
+
+            Page? c = null;
+
+            switch (type)
+            {
+                default:
+                    break;
+
+                case DialogType.OK:
+                    {
+                        var _c = new MessageDialogs.DialogOK();
+                        _c.MessageContentRunner.Text = MessageText;
+
+                        SharedData.UIAnimation.InitButton(_c.ButtonOK);
+                        _c.ButtonOK.Click += (_, __) =>
+                        {
+                            ButtonClicked();
+                        };
+                        c = _c;
+
+                        break;
+                    }
+
+                case DialogType.YesNo:
+                    {
+                        var _c = new MessageDialogs.DialogYesNo();
+                        _c.MessageContentRunner.Text = MessageText;
+
+                        SharedData.UIAnimation.InitButtons(new Button[] { _c.ButtonYes, _c.ButtonNo });
+                        _c.ButtonYes.Click += (_, __) =>
+                        {
+                            _c.YesNo = MessageDialogs.DialogYesNo.YesNoE.Yes;
+                            ButtonClicked();
+                        };
+                        _c.ButtonNo.Click += (_, __) =>
+                        {
+                            _c.YesNo = MessageDialogs.DialogYesNo.YesNoE.No;
+                            ButtonClicked();
+                        };
+                        c = _c;
+
+                        break;
+                    }
+
+                case DialogType.InputOK:
+                    {
+                        var _c = new MessageDialogs.DialogInput();
+                        _c.MessageContentRunner.Text = MessageText;
+
+                        SharedData.UIAnimation.InitButtons(new Button[] { _c.ButtonOK });
+                        _c.ButtonOK.Click += (_, __) =>
+                        {
+                            ButtonClicked();
+                        };
+                        c = _c;
+
+                        break;
+                    }
+            }
+
+            MessageContent = c;
+        }
+
+        private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            BackgroundCanvas.BeginAnimation(Canvas.OpacityProperty, animOpIn);
+            ContentGrid.BeginAnimation(Grid.OpacityProperty, animOpInDe);
+            ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, animScIn);
+            ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, animScIn);
+        }
+    }
+}

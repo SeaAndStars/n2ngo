@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N2Nmc Server", "N2Nmc Serve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N2Nmc_Protocol", "N2Nmc_Protocol\N2Nmc_Protocol.csproj", "{63793E36-DF63-47B2-997C-5AD0969FC05A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N2NmcClientUpdate", "N2NmcClientUpdate\N2NmcClientUpdate.csproj", "{4EAE46D3-07A0-4718-A0CC-98B67B3711B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N2NmcClientUpdate", "N2NmcClientUpdate\N2NmcClientUpdate.csproj", "{4EAE46D3-07A0-4718-A0CC-98B67B3711B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B221FB6A-71EA-4AF9-87D8-5CFB7451348C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

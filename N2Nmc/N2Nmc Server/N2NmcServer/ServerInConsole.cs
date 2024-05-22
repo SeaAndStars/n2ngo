@@ -1,5 +1,6 @@
 ﻿using MineMP;
 using N2Nmc_Protocol.Objects;
+using System.Diagnostics;
 using System.Net;
 using System.Text;
 
@@ -37,17 +38,23 @@ namespace N2Nmc_Server.N2NmcServer
 
             Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "Server Listening on port: {0}\n", Server.port);
 
+
             while (true)
             {
+                Stopwatch stopwatch = Stopwatch.StartNew();
+
             loop:
                 if (!IsRunning)
                     break;
 
-                Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Info, "\n>");
+                stopwatch.Stop();
+
+                Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n({1}) [{0}]>", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), stopwatch.Elapsed.ToString());
 
                 string userInputLine = string.Empty;
                 userInputLine = Server.ConsoleBuffer.ReadLine();
 
+                stopwatch = Stopwatch.StartNew();
                 string userInputLineFormatted = userInputLine.Trim();
                 string[] cmd_Args = userInputLine.Split(' ');
                 string cmd = cmd_Args[0];
@@ -78,12 +85,13 @@ namespace N2Nmc_Server.N2NmcServer
                     {
                         for (int j = 0; j < Server.Rooms.Count; j++)
                         {
-                            string? c= Server.Rooms[j].RoomCode;
-                            if (c==null)
+                            var room = Server.Rooms[j];
+                            string? c = room.RoomCode, n = room.RoomName;
+                            if (c == null || n == null)
                                 throw new NullReferenceException();
 
-                            Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n[{0}] ToLastAccess: {1}\n",
-                                c, now - Server.Rooms[j].CB.lastReqTime);
+                            Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n{0}[{1}] ToLastAccess: {2}\n",
+                                n, c, now - room.CB.lastReqTime);
                         }
 
                         goto loop;
@@ -91,14 +99,35 @@ namespace N2Nmc_Server.N2NmcServer
                     for (int i = 1; i < cmd_Args.Length; i++)
                         for (int j = 0; j < Server.Rooms.Count; j++)
                         {
-                            if (Server.Rooms[j].RoomCode == cmd_Args[i])
+                            var room = Server.Rooms[j];
+                            if (room.RoomCode == cmd_Args[i])
                             {
-                                string? c = Server.Rooms[j].RoomCode, n = Server.Rooms[j].RoomName;
+                                string? c = room.RoomCode, n = room.RoomName;
                                 if (c == null || n == null)
                                     throw new NullReferenceException();
 
-                                Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n[{0}] Name: {1}\nIRI: {2}\nIRP: {3}\nPassword: {4}\n ToLastAccess: {5}\n",
-                                    c, n, Server.Rooms[j].IsRoomInvisible.ToString(), Server.Rooms[j].IsRoomPasswordNeeded.ToString(), Server.Rooms[j].RoomPassword, now - Server.Rooms[j].CB.lastReqTime);
+                                StringBuilder stringBuilder = new StringBuilder();
+                                stringBuilder.AppendFormat(
+                                    "\n" +
+                                    "[{0}] Name: {1}\n" +
+                                    "Invisible: {2}\n" +
+                                    "NeedPassword: {3}\n" +
+                                    "Password: {4}\n" +
+                                    "MajorColor: {7} MinorColor: {8}\n" +
+                                    "ToLastAccess: {5}\n" +
+                                    "AdminKey: {6}\n",
+
+                                    c,
+                                    n,
+                                    room.IsRoomInvisible.ToString(),
+                                    room.IsRoomPasswordNeeded.ToString(),
+                                    room.RoomPassword, now - room.CB.lastReqTime,
+                                    room.CB.AdminKey,
+                                    room.colorMain.data.ToString("x"), room.colorMinor.data.ToString("x")
+                                    );
+
+                                Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, stringBuilder.ToString());
+
                                 break;
                             }
                         }
@@ -113,37 +142,22 @@ namespace N2Nmc_Server.N2NmcServer
 
                     try
                     {
-                        if (cmd_Args.Length < 2)
+                        foreach (var client in Server.tcpClients)
                         {
-                            for (int j = 0; j < Server.tcpClients.Count; j++)
-                            {
-                                var c = Server.tcpClients[j].client.Client;
-                                if (c == null)
-                                    throw new NullReferenceException(nameof(c));
-                                var ce = c.RemoteEndPoint;
-                                if (ce == null)
-                                    throw new NullReferenceException(nameof(ce));
-
-                                Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n[{0}] {1}:{2}", ((IPEndPoint)ce).Address, ((IPEndPoint)ce).Port);
-                            }
-
-                            goto loop;
-                        }
-                        for (int i = 1; i < cmd_Args.Length; i++)
-                        {
-                            var c = Server.tcpClients[int.Parse(cmd_Args[i])].client.Client;
+                            var c = client.client.Client;
                             if (c == null)
                                 throw new NullReferenceException(nameof(c));
                             var ce = c.RemoteEndPoint;
                             if (ce == null)
                                 throw new NullReferenceException(nameof(ce));
 
-                            Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n[{0}] {1}:{2}", ((IPEndPoint)ce).Address, ((IPEndPoint)ce).Port);
+                            Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n{0}:{1} ({2}h)", ((IPEndPoint)ce).Address, ((IPEndPoint)ce).Port, (DateTime.Now - client.objTime).Hours);
                         }
-                    }
-                    catch (Exception ex) { Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Error, "Exception while listing tcp connections: {0}", ex.Message);goto loop; }
 
-                    goto loop;
+                        goto loop;
+                    }
+                    catch (Exception ex) { Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Error, "Exception while listing tcp connections: {0}", ex.Message); goto loop; }
+
                 }
 
                 if (cmdLower == "close")
@@ -184,11 +198,23 @@ namespace N2Nmc_Server.N2NmcServer
                             r.IsRoomPasswordNeeded = cmd_Args[4] == "0" ? false : true;
                         if (cmd_Args.Length >= 6)
                             r.RoomPassword = cmd_Args[5];
+                        if (cmd_Args.Length >= 7)
+                        {
+                            UInt32 color = 0;
+                            if (UInt32.TryParse(cmd_Args[6], System.Globalization.NumberStyles.HexNumber, null, out color))
+                                r.colorMain = new RoomColor(color);
+                        }
+                        if (cmd_Args.Length >= 8)
+                        {
+                            UInt32 color = 0;
+                            if (UInt32.TryParse(cmd_Args[7], System.Globalization.NumberStyles.HexNumber, null, out color))
+                                r.colorMinor = new RoomColor(color);
+                        }
 
                         Server.Rooms.Add(r);
                     }
                     else
-                        Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, "Need room code && room name at least!\n format: create [code] [name] [IRI] [IRP] [PWD] \n example: Create 10cfd RoomABC 0 0 null");
+                        Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, "Need room code && room name at least!\n format: create [code] [name] [IRI] [IRP] [PWD] [MajorColor] [MinorColor] \n example: Create 10cfd RoomABC 0 0 null ffffff a0efc0");
 
                     goto loop;
                 }
@@ -198,7 +224,7 @@ namespace N2Nmc_Server.N2NmcServer
                     StringBuilder sb = new StringBuilder();
                     for (int i =0;i<Server.Rooms.Count;i++)
                     {
-                        sb.AppendFormat("{0}|{1}|{2}|{3}|{4}", Server.Rooms[i].RoomCode, Server.Rooms[i].RoomName, Server.Rooms[i].IsRoomInvisible?'1':'0', Server.Rooms[i].IsRoomPasswordNeeded?'1':'0', Server.Rooms[i].RoomPassword);
+                        sb.AppendFormat("{0}|{1}|{2}|{3}|{4}|{5}|{6}", Server.Rooms[i].RoomCode, Server.Rooms[i].RoomName, Server.Rooms[i].IsRoomInvisible?'1':'0', Server.Rooms[i].IsRoomPasswordNeeded?'1':'0', Server.Rooms[i].RoomPassword, Server.Rooms[i].colorMain.data, Server.Rooms[i].colorMinor.data);
                         sb.AppendLine();
                     }
                     File.WriteAllText("Rooms", sb.ToString());
@@ -212,8 +238,8 @@ namespace N2Nmc_Server.N2NmcServer
                     foreach (string s in lines)
                     {
                         string[] infos = s.Split('|');
-                        if (infos.Length ==5)
-                            Server.Rooms.Add(new Room { RoomCode = infos[0], RoomName = infos[1],IsRoomInvisible= infos[2]=="0"?false:true, IsRoomPasswordNeeded = infos[3] == "0" ? false : true, RoomPassword = infos[4] });
+                        if (infos.Length ==7)
+                            Server.Rooms.Add(new Room { RoomCode = infos[0], RoomName = infos[1],IsRoomInvisible= infos[2]=="0"?false:true, IsRoomPasswordNeeded = infos[3] == "0" ? false : true, RoomPassword = infos[4], colorMain = new RoomColor(UInt32.Parse(infos[5])), colorMinor = new RoomColor(UInt32.Parse(infos[6])) });
                     }
 
                     goto loop;

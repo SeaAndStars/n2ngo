@@ -8,7 +8,8 @@ namespace N2Nmc_Protocol
 {
     public static class UserDef
     {
-        public readonly static string GlobalServer_Ip = "111.180.189.214";
+        public readonly static string GlobalServer_Ip = "127.0.0.1";
+        //public readonly static string GlobalServer_Ip = "43.143.37.61";
 
         public static class ExternServerOptions
         {
