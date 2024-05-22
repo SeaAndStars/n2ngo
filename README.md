@@ -1,4 +1,4 @@
-# N2Nmc ![Version](https://img.shields.io/badge/Version-3.8.4.4-lightblue) [![star](https://gitee.com/xue-jiangbin/n2nmc/badge/star.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/stargazers) [![fork](https://gitee.com/xue-jiangbin/n2nmc/badge/fork.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/members) [![License](https://img.shields.io/badge/license-GPL3.0-blue)](LICENSE) ![Language](https://img.shields.io/badge/language-csharp-brightgreen)![Version](https://img.shields.io/badge/language-csharp-brightgreen)
+# N2Nmc [![License](https://img.shields.io/badge/license-GPL3.0-blue)](LICENSE) ![Language](https://img.shields.io/badge/language-csharp-brightgreen) ![Version](https://img.shields.io/badge/Version-3.8.4.4-lightblue) [![star](https://gitee.com/xue-jiangbin/n2nmc/badge/star.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/stargazers) [![fork](https://gitee.com/xue-jiangbin/n2nmc/badge/fork.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/members)
 
 ### 简介
 N2Nmc是N2N的一个图形化界面，可以用于各种局域网联机游戏
@@ -7,7 +7,13 @@ N2Nmc是N2N的一个图形化界面，可以用于各种局域网联机游戏
 本项目/仓库遵循 [GPL3.0](LICENSE) 协议
 
 ### 构建教程
-暂无
+0. 安装  **.NET 6 SDK** ([https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0](https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0))
+1. 将仓库克隆至本地
+2. 构建解决方案:
+ 
+ **Windows**: 使用  **Visual Studio 2022**  打开  **N2Nmc/N2Nmc.sln** ，使用菜单的  **生成 -> 生成解决方案** 
+
+ **Linux**: 使用 `cd N2Nmc` 进入N2Nmc解决方案文件夹，使用 `dotnet build` 命令构建解决方案
 
 ### 项目引用 & 参与贡献
 #### 开源项目
