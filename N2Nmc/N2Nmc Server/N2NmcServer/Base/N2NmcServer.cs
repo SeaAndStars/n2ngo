@@ -6,13 +6,14 @@ using N2Nmc_Protocol;
 using N2Nmc_Protocol.Objects;
 using System.Linq;
 using System.Drawing;
+using MineMP;
 
 namespace N2Nmc_Server.N2NmcServer.Base
 {
     internal class N2NmcServer
     {
-        public static readonly string MainName = "N2Nmc Server";
-        public int port = N2Nmc_Protocol.UserDef.ExternServerOptions.N2Nmc_Server_Port;
+        public static readonly string MainName = "N2N GO Server";
+        public int port = N2Nmc_Protocol.UserDef.ExternServerOptions.N2Nmc_Server_Port; // TODO: port
 
         public List<Room> Rooms = new List<Room>();
 
@@ -56,19 +57,40 @@ namespace N2Nmc_Server.N2NmcServer.Base
             }
         }
 
-        public TcpListener? server { get; private set; }
+        public TcpListener? serverv4 { get; private set; }
+        public TcpListener? serverv6 { get; private set; }
         public List<ClientControlBlock>? tcpClients { get; private set; }
+        public List<Task> listenerTasks { get; private set; } = new List<Task> ();
 
 
-        public N2NmcServer(MineMP.ConsoleBuffer consoleBuffer)
+        public N2NmcServer(MineMP.ConsoleBuffer consoleBuffer, IPAddress ip, int port)
         {
             ConsoleBuffer = consoleBuffer;
 
-            server = new TcpListener(IPAddress.Any, port);
+            serverv4 = new TcpListener(ip, port);
             tcpClients = new List<ClientControlBlock>();
 
             CCB_GC.Elapsed += CCB_GC_Elapsed;
             CCB_GC.Enabled = true;
+        }
+        public N2NmcServer(MineMP.ConsoleBuffer consoleBuffer, IPAddress ip, int port, IPAddress ipv6, int portv6) : this(consoleBuffer, ip, port)
+        {
+            serverv6 = new TcpListener(ipv6, portv6);
+        }
+
+        public N2NmcServer(MineMP.ConsoleBuffer consoleBuffer, TcpListener tcpListener)
+        {
+            ConsoleBuffer = consoleBuffer;
+
+            serverv4 = tcpListener;
+            tcpClients = new List<ClientControlBlock>();
+
+            CCB_GC.Elapsed += CCB_GC_Elapsed;
+            CCB_GC.Enabled = true;
+        }
+        public N2NmcServer(MineMP.ConsoleBuffer consoleBuffer, TcpListener tcpListener, TcpListener tcpListenerv6):this(consoleBuffer, tcpListener)
+        {
+            serverv6 = tcpListenerv6;
         }
 
         private void CCB_GC_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
@@ -86,13 +108,14 @@ namespace N2Nmc_Server.N2NmcServer.Base
         {
             if (status != Status.Stopped)
             {
-                ConsoleBuffer.AppendBuffer(MineMP.ConsoleBuffer.BufferContentType.Warn, "Init server cancelled due to status.");
+                ConsoleBuffer.AppendBuffer(MineMP.ConsoleBuffer.BufferContentType.Warn, "Init server cancelled due to status.\n");
                 return false;
             }
 
             status = Status.Initialization;
 
-            server?.Stop();
+            serverv4?.Stop();
+            serverv6?.Stop();
 
             status = Status.Initialized;
 
@@ -103,13 +126,15 @@ namespace N2Nmc_Server.N2NmcServer.Base
         {
             if (status != Status.Initialized)
             {
-                ConsoleBuffer.AppendBuffer(MineMP.ConsoleBuffer.BufferContentType.Warn, "Start server cancelled due to status.");
+                ConsoleBuffer.AppendBuffer(MineMP.ConsoleBuffer.BufferContentType.Warn, "Start server cancelled due to status.\n");
                 return;
             }
 
             status = Status.Starting;
 
-            server?.Start();
+            serverv4?.Start();
+            serverv6?.Start();
+
             CCB_GC.Start();
 
             status = Status.Running;
@@ -498,40 +523,72 @@ namespace N2Nmc_Server.N2NmcServer.Base
             }
         }
 
-        public void Process()
+        public void ProcessV4()
         {
             if (tcpClients == null)
                 throw new ArgumentNullException(nameof(tcpClients));
 
-            if (server == null)
-                throw new ArgumentNullException(nameof(server));
+            if (serverv4 == null)
+                throw new ArgumentNullException(nameof(serverv4));
+
+            ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Info, "Start Listening via IPv4\n");
 
             while (status == Status.Running)
             {
-                TcpClient tcpClient = server.AcceptTcpClient();
+                TcpClient tcpClient = serverv4.AcceptTcpClient();
+
+                lock (tcpClients)
+                    tcpClients.Add(new ClientControlBlock(tcpClient, TcpClientHandler));
+            }
+        }
+        public void ProcessV6()
+        {
+            if (tcpClients == null)
+                throw new ArgumentNullException(nameof(tcpClients));
+
+            if (serverv6 == null)
+                throw new ArgumentNullException(nameof(serverv6));
+
+            ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Info, "Start Listening via IPv6\n");
+
+            while (status == Status.Running)
+            {
+                TcpClient tcpClient = serverv6.AcceptTcpClient();
 
                 lock (tcpClients)
                     tcpClients.Add(new ClientControlBlock(tcpClient, TcpClientHandler));
             }
         }
 
-        public async void ProcessAsync()
+        public async void ProcessV4TaskAsync()
         {
-            await Task.Run(() => Process());
+            var t = Task.Run(() => ProcessV4());
+            listenerTasks.Add(t);
+            await t;
+        }
+
+        public async void ProcessV6TaskAsync()
+        {
+            var t = Task.Run(() => ProcessV6());
+            listenerTasks.Add(t);
+            await t;
         }
 
         public void Stop()
         {
             if (status != Status.Running)
             {
-                ConsoleBuffer.AppendBuffer(MineMP.ConsoleBuffer.BufferContentType.Warn, "Stop server cancelled due to status.");
+                ConsoleBuffer.AppendBuffer(MineMP.ConsoleBuffer.BufferContentType.Warn, "Stop server cancelled due to status.\n");
                 return;
             }
 
             status = Status.Stopping;
 
-            server?.Stop();
+            // Stop Listeners
+            serverv4?.Stop();
+            serverv6?.Stop();
 
+            // Stop GC
             CCB_GC.Enabled = false;
             CCB_GC.Stop();
 

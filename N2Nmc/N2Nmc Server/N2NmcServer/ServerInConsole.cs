@@ -1,4 +1,5 @@
 ﻿using MineMP;
+using N2Nmc.UtilsClass;
 using N2Nmc_Protocol.Objects;
 using System.Diagnostics;
 using System.Net;
@@ -12,6 +13,7 @@ namespace N2Nmc_Server.N2NmcServer
 
         private bool IsRunning = false;
 
+        public EasyConfig ServerConfig { get; private set; }
         public Base.N2NmcServer Server { get; private set; }
 
 
@@ -34,10 +36,9 @@ namespace N2Nmc_Server.N2NmcServer
 
             IsRunning = true;
 
-            Server.ProcessAsync();
-
-            Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "Server Listening on port: {0}\n", Server.port);
-
+            Server.ProcessV4TaskAsync();
+            if (ServerConfig.Get("EnableIPv6", "1") == "1")
+                Server.ProcessV6TaskAsync();
 
             while (true)
             {
@@ -249,16 +250,38 @@ namespace N2Nmc_Server.N2NmcServer
                 goto loop;
             }
 
+            ServerConfig.SaveConfigDataToFile();
+            Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Info, "Config Saved.");
             Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Info, "ServerStopped.");
         }
 
 
-        public ServerInConsole(MineMP.ConsoleBuffer consoleBuffer)
+        public ServerInConsole(MineMP.ConsoleBuffer consoleBuffer, string configFilePath = "config.")
         {
             if (consoleBuffer == null)
                 throw new ArgumentNullException(nameof(consoleBuffer));
 
-            Server = new Base.N2NmcServer(consoleBuffer);
+            ServerConfig = new EasyConfig();
+            IPAddress ipAddrV4 = IPAddress.Parse(ServerConfig.Get("IPv4", "0.0.0.0"));
+            int portV4 = int.Parse(ServerConfig.Get("PortV4", "7476"));
+
+            if (ServerConfig.Get("EnableIPv6", "1") == "1")
+            {
+                IPAddress ipAddrV6 = IPAddress.Parse(ServerConfig.Get("IPv6", "::"));
+                int portV6 = int.Parse(ServerConfig.Get("PortV6", "7476"));
+
+                Server = new Base.N2NmcServer(consoleBuffer, ipAddrV4, portV4, ipAddrV6, portV6);
+
+                Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "Server Config Loaded: Listen {0}:{1}\n", ipAddrV4.ToString(), portV4);
+                Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "Server Config Loaded: Listen [{0}]:{1}\n", ipAddrV6.ToString(), portV6);
+            }
+            else
+            {
+                Server = new Base.N2NmcServer(consoleBuffer, ipAddrV4, portV4);
+
+                Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "Server Config Loaded: Listen {0}:{1}\n", ipAddrV4.ToString(), portV4);
+            }
+            
         }
 
         public bool Init()
