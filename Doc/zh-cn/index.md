@@ -1,0 +1,5 @@
+# N2N GO ÎÄµµ 
+
+## Ë÷Òý
+
+[N2N GO](N2Nmc/index.md)
