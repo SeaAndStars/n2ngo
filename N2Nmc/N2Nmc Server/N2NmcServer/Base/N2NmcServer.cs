@@ -530,6 +530,8 @@ namespace N2Nmc_Server.N2NmcServer.Base
 
             status = Status.Stopping;
 
+            server?.Stop();
+
             CCB_GC.Enabled = false;
             CCB_GC.Stop();
 
