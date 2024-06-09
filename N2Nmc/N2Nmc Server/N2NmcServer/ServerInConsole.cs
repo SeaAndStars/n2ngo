@@ -256,12 +256,12 @@ namespace N2Nmc_Server.N2NmcServer
         }
 
 
-        public ServerInConsole(MineMP.ConsoleBuffer consoleBuffer, string configFilePath = "config.")
+        public ServerInConsole(MineMP.ConsoleBuffer consoleBuffer, string configFilePath)
         {
             if (consoleBuffer == null)
                 throw new ArgumentNullException(nameof(consoleBuffer));
 
-            ServerConfig = new EasyConfig();
+            ServerConfig = new EasyConfig(configFilePath);
             IPAddress ipAddrV4 = IPAddress.Parse(ServerConfig.Get("IPv4", "0.0.0.0"));
             int portV4 = int.Parse(ServerConfig.Get("PortV4", "7476"));
 

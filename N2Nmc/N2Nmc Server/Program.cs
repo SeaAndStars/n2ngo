@@ -16,7 +16,10 @@ namespace N2Nmc_Server
             consoleBuffer.InfoBufferAppended += ConsoleBuffer_InfoBufferAppended;
             consoleBuffer.WarnBufferAppended += ConsoleBuffer_WarnBufferAppended;
 
-            N2NmcServer.ServerInConsole server = new N2NmcServer.ServerInConsole(consoleBuffer);
+            string configPath = args.Length > 0 ? args[0] : "config.ini";
+            consoleBuffer.AppendFormatBuffer(BufferContentType.Info, "Using Config: {0}", configPath);
+
+            N2NmcServer.ServerInConsole server = new N2NmcServer.ServerInConsole(consoleBuffer, configPath);
             server.Init();
             server.RunSync();
         }

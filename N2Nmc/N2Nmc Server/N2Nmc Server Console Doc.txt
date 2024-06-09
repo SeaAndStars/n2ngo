@@ -7,6 +7,11 @@ By LGF
   N2Nmc服务器是N2Nmc软件的主服务器，N2N服务器是组建连接节点的服务器，N2N API是提供访问N2N服务器节点的房间用户列表的API服务器。
   这三个服务器以这样的依赖存在着：(N2N API(N2Nmc, N2N))
 
+N2Nmc服务器启动参数
+    [config-file = "config.ini"]
+        N2Nmc服务器将会加载参数指定路径的配置文件
+        示例：./N2Nmc\ Server MyConfig.ini
+
 N2Nmc服务器命令：
     clrscr (void)
       清空控制台输出
