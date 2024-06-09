@@ -6,85 +6,31 @@
              StartupUri="Views/MainView.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+                <ResourceDictionary Source="ColorPalettes.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
             <system:Double x:Key="PageDesignHeight">530</system:Double>
             <system:Double x:Key="PageDesignWidth">865</system:Double>
             <CornerRadius x:Key="CornerRadiusCornerRadius">0</CornerRadius>
+            
+            <FontFamily x:Key="MainFont">/Data/font/#Roboto</FontFamily>
 
-            <LinearGradientBrush x:Key="MainColorLightBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Color="#FFFFFBFC" Offset="0.5"/>
-                <GradientStop Color="#FFFFFDFB" Offset="1"/>
-                <GradientStop Color="#FFFFFDFB" Offset="0"/>
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="MainColorLightAlphaBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Color="#FFFFFBFC" Offset="0.5"/>
-                <GradientStop Color="#FFFFFDFB" Offset="1"/>
-                <GradientStop Color="#FFFFFDFB" Offset="0"/>
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="MainColorLightSolidBrush" Color="#FFDEDBD9"/>
-            <SolidColorBrush x:Key="MainColorLightSolidAlphaBrush" Color="#9DCAC9C7"/>
-            <SolidColorBrush x:Key="MainColorLightSolidFontBrush" Color="#FF303844"/>
-            <SolidColorBrush x:Key="MainColorLightSolidForeBrush" Color="#FF0B1922"/>
-            <SolidColorBrush x:Key="MainColorLightHighLightSolidAlphaBrush" Color="#9dDDDDDD"/>
-            <Color x:Key="MainColorLightPrimaryColor" A="255" R="255" G="0" B="0"/>
-            <Color x:Key="MainColorLightSecondaryColor" A="255" R="244" G="244" B="244"/>
-
-            <LinearGradientBrush x:Key="MainColorDarkBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Color="#FF424648" Offset="0.5"/>
-                <GradientStop Color="#FF2A2C30" Offset="1"/>
-                <GradientStop Color="#FF2A2C30" Offset="0"/>
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="MainColorDarkAlphaBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Color="#FF424648" Offset="0.5"/>
-                <GradientStop Color="#FF2A2C30" Offset="1"/>
-                <GradientStop Color="#FF2A2C30" Offset="0"/>
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="MainColorDarkSolidBrush" Color="#FF1D1F1F"/>
-            <SolidColorBrush x:Key="MainColorDarkSolidAlphaBrush" Color="#9D272933"/>
-            <SolidColorBrush x:Key="MainColorDarkSolidFontBrush" Color="#AAD9E5F1"/>
-            <SolidColorBrush x:Key="MainColorDarkSolidForeBrush" Color="#FF9EA9ED"/>
-            <SolidColorBrush x:Key="MainColorDarkHighLightSolidAlphaBrush" Color="#80808080"/>
-            <Color x:Key="MainColorDarkPrimaryColor" A="255" R="0" G="255" B="0"/>
-            <Color x:Key="MainColorDarkSecondaryColor" A="255" R="18" G="18" B="18"/>
-
-            <LinearGradientBrush x:Key="MainColorBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Color="#FF424648" Offset="0.5"/>
-                <GradientStop Color="#FF2A2C30" Offset="1"/>
-                <GradientStop Color="#FF2A2C30" Offset="0"/>
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="MainColorAlphaBrush" EndPoint="1,0" StartPoint="0,0">
-                <GradientStop Color="#FF424648" Offset="0.5"/>
-                <GradientStop Color="#FF2A2C30" Offset="1"/>
-                <GradientStop Color="#FF2A2C30" Offset="0"/>
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="MainColorSolidBrush" Color="#FF1D1F1F"/>
-            <SolidColorBrush x:Key="MainColorSolidAlphaBrush" Color="#9D272933"/>
-            <SolidColorBrush x:Key="MainColorSolidFontBrush" Color="#AAD9E5F1"/>
-            <SolidColorBrush x:Key="MainColorSolidForeBrush" Color="#FF9EA9ED"/>
-            <SolidColorBrush x:Key="MainColorHighLightSolidAlphaBrush" Color="#80808080"/>
-            <Color x:Key="MainColorPrimaryColor" A="255" R="0" G="255" B="0"/>
-            <Color x:Key="MainColorSecondaryColor" A="255" R="18" G="18" B="18"/>
-
-
-            <FontFamily x:Key="MainFont">/Data/font/#微软雅黑</FontFamily>
             <Style TargetType="{x:Type TextElement }">
                 <Setter Property="FontFamily" Value="{DynamicResource MainFont}"/>
             </Style>
+            
             <Style x:Key="RunLink" TargetType="Run">
                 <Setter Property="Cursor" Value="Hand"/>
                 <Setter Property="TextDecorations" Value="Underline"/>
                 <Setter Property="Foreground" Value="DeepSkyBlue"/>
             </Style>
-
-            <!--<LinearGradientBrush x:Key="MainColorBrush"/>
-            <LinearGradientBrush x:Key="MainColorAlphaBrush"/>
-            <SolidColorBrush x:Key="MainColorSolidBrush" />
-            <SolidColorBrush x:Key="MainColorSolidAlphaBrush"/>
-            <SolidColorBrush x:Key="MainColorSolidFontBrush"/>
-            <SolidColorBrush x:Key="MainColorHighLightSolidAlphaBrush"/>-->
-
+            
             <Style x:Key="TitleStyle" TargetType="Label">
                 <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="{DynamicResource MainColorSolidForeBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
                 <Setter Property="BorderBrush" Value="{x:Null}"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontSize" Value="20"/>
@@ -96,17 +42,193 @@
                 <Setter Property="Background" Value="#80C0FFC0"/>
             </Style>
 
-            <Style x:Key="ButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="{DynamicResource MainColorSolidAlphaBrush}"/>
-                <Setter Property="Foreground" Value="{DynamicResource MainColorSolidFontBrush}"/>
+
+            <Style TargetType="hc:ScrollViewer" BasedOn="{StaticResource ScrollViewerNativeBaseStyle}">
+                <Style.Resources>
+                    <SolidColorBrush x:Key="PrimaryTextBrush" Color="#FF6E69BD"/>
+                    <SolidColorBrush x:Key="SecondaryTextBrush" Color="#FF9EA9ED"/>
+                </Style.Resources>
+                <Setter Property="IsInertiaEnabled" Value="True"/>
+            </Style>
+
+            <Style TargetType="Label" BasedOn="{StaticResource LabelBaseStyle}">
+                <Setter Property="Background" Value="{DynamicResource Palette_400}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
                 <Setter Property="BorderBrush" Value="{x:Null}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Label">
+                            <Border Padding="{TemplateBinding Padding}" Effect="{StaticResource EffectShadow3}" CacheMode="BitmapCache" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="{DynamicResource Palette_500}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
+                <Setter Property="BorderBrush" Value="{x:Null}"/>
+                <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="FontSize" Value="15.6"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Background="{TemplateBinding Background}" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Border Effect="{StaticResource EffectShadow3}" CacheMode="BitmapCache" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}" CacheMode="BitmapCache" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="CylindricalButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Effect="{StaticResource EffectShadow2}" CacheMode="BitmapCache" Background="{TemplateBinding Background}" CornerRadius="50" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                <Setter Property="Template">
+                <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Effect="{StaticResource EffectShadow3}" CacheMode="BitmapCache" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="hc:ComboBox" BasedOn="{StaticResource ComboBoxBaseStyle}">
+                <Setter Property="Background" Value="{DynamicResource Palette_400}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Palette_100}"/>
+                <Setter Property="BorderBrush" Value="{x:Null}"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="MaxDropDownHeight" Value="220"/>
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItemBaseStyle}">
+                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                            <Setter Property="Padding" Value="{StaticResource DefaultControlPadding}" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="MinHeight" Value="{StaticResource DefaultControlHeight}" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ComboBoxItem">
+                                        <Border x:Name="Bd" CornerRadius="{Binding Path=(hc:BorderElement.CornerRadius),RelativeSource={RelativeSource TemplatedParent}}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="False" />
+                                                    <Condition Property="IsMouseOver" Value="True" />
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource Palette_400}" />
+                                            </MultiTrigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="True" />
+                                                </MultiTrigger.Conditions>
+                                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource Palette_400}" />
+                                                <Setter Property="Foreground" Value="{DynamicResource Palette_50}" />
+                                            </MultiTrigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBox">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border x:Name="border" Grid.ColumnSpan="2" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" />
+                                <hc:ToggleBlock Grid.Column="1" Padding="1,0" Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <hc:ToggleBlock.UnCheckedContent>
+                                        <Path Data="{StaticResource DownGeometry}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="14" Stretch="Uniform" Fill="{TemplateBinding BorderBrush}" Margin="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessSplitConverter}, ConverterParameter='0,0,1,0'}" />
+                                    </hc:ToggleBlock.UnCheckedContent>
+                                    <hc:ToggleBlock.CheckedContent>
+                                        <Path Data="{StaticResource UpGeometry}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="14" Stretch="Uniform" Fill="{TemplateBinding BorderBrush}" Margin="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessSplitConverter}, ConverterParameter='0,0,1,0'}" />
+                                    </hc:ToggleBlock.CheckedContent>
+                                </hc:ToggleBlock>
+                                <hc:ToggleBlock Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" ToggleGesture="LeftClick" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <ContentPresenter Grid.Column="0" Margin="{TemplateBinding Padding}" x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                <Popup x:Name="PART_Popup" PlacementTarget="{Binding ElementName=border}" AllowsTransparency="true" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" PopupAnimation="{StaticResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
+                                    <Decorator Margin="8 0">
+                                        <Border BorderThickness="0,1,0,0" Effect="{StaticResource EffectShadow2}" Margin="0,0,0,8" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" x:Name="dropDownBorder" MinWidth="{Binding ActualWidth, ElementName=border}" MaxHeight="{TemplateBinding MaxDropDownHeight}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}">
+                                            <hc:ToggleBlock IsChecked="{Binding HasItems,RelativeSource={RelativeSource TemplatedParent},Mode=OneWay}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                                <hc:ToggleBlock.CheckedContent>
+                                                    <hc:ScrollViewer Margin="2" CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.CacheLengthUnit="Pixel">
+                                                        <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                    </hc:ScrollViewer>
+                                                </hc:ToggleBlock.CheckedContent>
+                                                <hc:ToggleBlock.UnCheckedContent>
+                                                    <hc:Empty />
+                                                </hc:ToggleBlock.UnCheckedContent>
+                                            </hc:ToggleBlock>
+                                        </Border>
+                                    </Decorator>
+                                </Popup>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasItems" Value="false">
+                                    <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+                                </Trigger>
+                                <Trigger Property="hc:DropDownElement.ConsistentWidth" Value="True">
+                                    <Setter Property="MaxWidth" TargetName="dropDownBorder" Value="{Binding ActualWidth, ElementName=border}"/>
+                                    <Setter Property="MinWidth" TargetName="dropDownBorder" Value="{Binding ActualWidth, ElementName=border}"/>
+                                </Trigger>
+                                <Trigger Property="hc:DropDownElement.AutoWidth" Value="True">
+                                    <Setter Property="MaxWidth" TargetName="dropDownBorder" Value="{x:Static system:Double.MaxValue}" />
+                                    <Setter Property="MinWidth" TargetName="dropDownBorder" Value="{Binding ActualHeight, ElementName=border}" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="true"/>
+                                        <Condition Property="IsOpen" Value="false" SourceName="PART_Popup"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderBrush}"/>
+                                </MultiTrigger>
+                                <Trigger Property="IsOpen" Value="True" SourceName="PART_Popup">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsFocused" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Opacity" Value="0.4"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
@@ -121,13 +243,6 @@
                 <Setter Property="BorderThickness" Value="0"/>
             </Style>
 
-            <Style TargetType="hc:ScrollViewer" BasedOn="{StaticResource ScrollViewerNativeBaseStyle}">
-                <Style.Resources>
-                    <SolidColorBrush x:Key="PrimaryTextBrush" Color="#FF6E69BD"/>
-                    <SolidColorBrush x:Key="SecondaryTextBrush" Color="#FF9EA9ED"/>
-                </Style.Resources>
-            </Style>
-
             <Style x:Key="IndexPageBackgroundImage" TargetType="Image">
                 <Setter Property="Opacity" Value="0.45"/>
                 <Setter Property="Width" Value="333"/>
@@ -136,11 +251,6 @@
                 <Setter Property="HorizontalAlignment" Value="Right"/>
                 <Setter Property="VerticalAlignment" Value="Bottom"/>
             </Style>
-            
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

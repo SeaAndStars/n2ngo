@@ -11,6 +11,6 @@
     <Grid>
         <TextBlock x:Name="MessageContentRunner" TextWrapping="Wrap" Margin="0,0,0,65" FontSize="17.5" Padding="5,2,5,0" Background="{DynamicResource MainColorSolidAlphaBrush}">
         </TextBlock>
-        <Button x:Name="ButtonDone" Style="{DynamicResource ButtonStyle}" Width="90" VerticalAlignment="Bottom" Content="Done" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="0,0,0,20"/>
+        <Button x:Name="ButtonDone" Width="90" VerticalAlignment="Bottom" Content="Done" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="0,0,0,20"/>
     </Grid>
 </Page>

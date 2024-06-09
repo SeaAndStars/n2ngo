@@ -1,5 +1,4 @@
-﻿using ImageProcessor.Processors;
-using N2Nmc.UtilsClass;
+﻿using N2Nmc.UtilsClass;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -23,7 +22,6 @@ namespace N2Nmc
             this.DispatcherUnhandledException += new System.Windows.Threading.DispatcherUnhandledExceptionEventHandler(Application_DispatcherUnhandledException);
 
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
-
 #if DEBUG
             [DllImport("kernel32.dll")]
             static extern bool AllocConsole();

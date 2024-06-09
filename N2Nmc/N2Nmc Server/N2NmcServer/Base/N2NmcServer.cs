@@ -8,7 +8,7 @@ using System.Linq;
 using System.Drawing;
 
 namespace N2Nmc_Server.N2NmcServer.Base
-{ 
+{
     internal class N2NmcServer
     {
         public static readonly string MainName = "N2Nmc Server";
@@ -60,12 +60,11 @@ namespace N2Nmc_Server.N2NmcServer.Base
         public List<ClientControlBlock>? tcpClients { get; private set; }
 
 
-        [Obsolete]  // Obsolete due to using TcpListener(int)
         public N2NmcServer(MineMP.ConsoleBuffer consoleBuffer)
         {
             ConsoleBuffer = consoleBuffer;
 
-            server = new TcpListener(port);
+            server = new TcpListener(IPAddress.Any, port);
             tcpClients = new List<ClientControlBlock>();
 
             CCB_GC.Elapsed += CCB_GC_Elapsed;
@@ -184,7 +183,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             {
                                 IO_Tool iO_Tool = new IO_Tool();
 
-                                var total = tcpClients != null? tcpClients.Count:0;
+                                var total = tcpClients != null ? tcpClients.Count : 0;
 
                                 if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, MsgExternalData.Encode.MsgString(total.ToString()))))
                                     goto RemoveClient;
@@ -471,6 +470,18 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             }
                     }
                 }
+                catch (IOException ex)
+                {
+                    if (ex.InnerException != null)
+                    {
+                        var socketException = ex.InnerException as SocketException;
+                        if (socketException != null)
+                        {
+                            if (socketException.SocketErrorCode == SocketError.ConnectionReset)
+                                goto RemoveClientNoEcho;
+                        }
+                    }
+                }
                 catch (Exception ex)
                 {
                     ConsoleBuffer.AppendFormatBuffer(MineMP.ConsoleBuffer.BufferContentType.Info, "Connection: {0}:{1} remove due to exception: {2}" + Environment.NewLine, iPEndPoint.Address.ToString(), iPEndPoint.Port.ToString(), ex.Message);
@@ -480,6 +491,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
 
             RemoveClient:
                 ConsoleBuffer.AppendFormatBuffer(MineMP.ConsoleBuffer.BufferContentType.Info, "Connection: {0}:{1} remove jmp" + Environment.NewLine, iPEndPoint.Address.ToString(), iPEndPoint.Port.ToString());
+            RemoveClientNoEcho:
                 client.Close();
                 client.Dispose();
                 return;

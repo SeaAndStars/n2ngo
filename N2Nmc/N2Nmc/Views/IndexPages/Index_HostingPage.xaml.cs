@@ -40,6 +40,12 @@ namespace N2Nmc.Views.SubPages
                         NavigateIndexPage(null);
                         break;
                     }
+
+                case "Rooming":
+                    {
+                        NavigatePage(SharedData.GetMainView.pageRooming);
+                        break;
+                    }
             }
         }
     }

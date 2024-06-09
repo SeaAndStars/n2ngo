@@ -18,7 +18,7 @@
         </Canvas>
         <CheckBox x:Name="CheckIsPasswdNeeded" Content="需要密码" TextBlock.FontSize="14" Foreground="{DynamicResource MainColorSolidFontBrush}" Background="{DynamicResource MainColorSolidAlphaBrush}" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,11,66" Click="CheckIsPasswdNeeded_Click"/>
 
-        <Button Content="快速进入" Style="{StaticResource ButtonStyle}" Height="61" Width="195" Click="Button_Click" TextBlock.FontSize="14" FontSize="24" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+        <Button Content="快速进入" Height="61" Width="195" Click="Button_Click" TextBlock.FontSize="14" FontSize="24" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
         
         <hc:SimpleStackPanel x:Name="PanelMsg" Margin="0,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
     </Grid>

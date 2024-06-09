@@ -10,7 +10,7 @@
       d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
       Title="IndexPage" Loaded="Page_Loaded">
     <Grid>
-        <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" IsInertiaEnabled="True">
+        <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
             <ItemsControl x:Name="Indexers" Margin="8,15,8,15" >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

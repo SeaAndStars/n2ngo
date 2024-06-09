@@ -54,7 +54,7 @@ namespace N2Nmc.Views.SubPages
                 return;
             }
 
-            if (false&&string.IsNullOrEmpty(name.Trim()))   // Disabled
+            if (false && string.IsNullOrEmpty(name.Trim()))   // Disabled
             {
                 SharedData.GetMainView.DoMessageDialog("房间名不能为空！", "无法创建房间");
                 return;
@@ -72,12 +72,31 @@ namespace N2Nmc.Views.SubPages
             }
 
             //ButtonCloseRoom.IsEnabled = true;
-            SharedData.GetMainView.DoMessageYesNoDialog(string.Format("房间创建成功，是否立即加入？\n名称：{0}\n代码：{1}\n管理员密钥：{2}",name, r[0], r[1]), "房间已创建", new List<Action<object>> { (_) => { if ((((_ as DialogMessage).MessageContent) as DialogYesNo).YesNo == DialogYesNo.YesNoE.Yes) QuickJoinPage.Join(needPassword, r[0], password); } });
+            SharedData.GetMainView.DoMessageYesNoDialog(string.Format("房间创建成功，是否立即加入？\n名称：{0}\n代码：{1}\n管理员密钥：{2}", name, r[0], r[1]), "房间已创建",
+                new List<Action<object>>
+                {
+                    (_) =>
+                    {
+                        var dialogMessage=_ as DialogMessage;
+                        if (dialogMessage != null)
+                        {
+                            var dialogYesNo =dialogMessage.MessageContent as DialogYesNo;
+                            if ( dialogYesNo != null )
+                            {
+                                if (dialogYesNo.YesNo == DialogYesNo.YesNoE.Yes) 
+                                {
+                                    QuickJoinPage.Join(needPassword, r[0], password);
+                                }
+                            }
+                        }
+                    }
+                }
+            );
         }
 
         private void CheckIsRoomInvisible_Click(object sender, RoutedEventArgs e)
         {
-            if (false&&CheckIsRoomInvisible.IsChecked != null)  // Disabled
+            if (false && CheckIsRoomInvisible.IsChecked != null)  // Disabled
             {
                 SharedData.GetMainView.DoMessageDialog("房间" + roomname.Text + "将" + ((bool)CheckIsRoomInvisible.IsChecked ? "不" : null) + "会发布到联机大厅", "提示");
             }

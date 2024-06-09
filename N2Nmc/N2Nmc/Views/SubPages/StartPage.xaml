@@ -14,11 +14,11 @@
         <Label x:Name="LabelOnlineTotal" Background="{DynamicResource MainColorSolidAlphaBrush}" BorderBrush="{x:Null}" Foreground="{DynamicResource MainColorSolidFontBrush}" HorizontalAlignment="Left" Margin="132,10,0,0" VerticalAlignment="Top" Width="154" Content="当前 0人在线"/>
         <TextBox x:Name="ForumBox" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="{DynamicResource MainColorSolidAlphaBrush}" HorizontalAlignment="Left" Width="398" Margin="10,45,0,54" BorderBrush="{x:Null}" Foreground="{DynamicResource MainColorSolidFontBrush}" FontSize="20" VerticalContentAlignment="Top"/>
         <TextBox x:Name="ForumCommitBox" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="{DynamicResource MainColorSolidAlphaBrush}" HorizontalAlignment="Left" Width="335" Margin="10,0,0,5" BorderBrush="{x:Null}" Foreground="{DynamicResource MainColorSolidFontBrush}" FontSize="20" VerticalAlignment="Bottom" Height="44" VerticalContentAlignment="Top"/>
-        <Button x:Name="ButtonForumCommit" Style="{StaticResource ButtonStyle}" Content="发送" VerticalAlignment="Bottom" Click="ButtonForumCommit_Click" Height="44" Width="58" HorizontalAlignment="Left" Margin="350,0,0,5"/>
+        <Button x:Name="ButtonForumCommit" Content="发送" VerticalAlignment="Bottom" Click="ButtonForumCommit_Click" Height="44" Width="58" HorizontalAlignment="Left" Margin="350,0,0,5"/>
 
         <Label x:Name="LabelVersion" Content="当前版本：" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="413,207,10,0" MouseDoubleClick="LabelVersion_MouseDoubleClick" Background="{DynamicResource MainColorSolidAlphaBrush}" BorderBrush="{x:Null}" Foreground="{DynamicResource MainColorSolidFontBrush}" Height="37" FontSize="16"/>
-        <Button x:Name="ButtonResetConnection" Style="{StaticResource ButtonStyle}" Content="（调试）重置连接" VerticalAlignment="Bottom" Click="ButtonDebug_ResetConnection_Click" Height="44" Width="165" HorizontalAlignment="Right" Margin="0,0,151,5"/>
-        <Button x:Name="ButtonUpdate" Style="{StaticResource ButtonStyle}" Content="检查更新" VerticalAlignment="Bottom" Click="ButtonUpdate_Click" Height="44" Width="141" HorizontalAlignment="Right" Margin="0,0,5,5"/>
+        <Button x:Name="ButtonResetConnection" Content="（调试）重置连接" VerticalAlignment="Bottom" Click="ButtonDebug_ResetConnection_Click" Height="44" Width="165" HorizontalAlignment="Right" Margin="0,0,151,5"/>
+        <Button x:Name="ButtonUpdate" Content="检查更新" VerticalAlignment="Bottom" Click="ButtonUpdate_Click" Height="44" Width="141" HorizontalAlignment="Right" Margin="0,0,5,5"/>
 
     </Grid>
 </Page>

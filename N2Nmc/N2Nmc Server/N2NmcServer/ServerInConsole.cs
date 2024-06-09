@@ -253,7 +253,6 @@ namespace N2Nmc_Server.N2NmcServer
         }
 
 
-        [Obsolete]
         public ServerInConsole(MineMP.ConsoleBuffer consoleBuffer)
         {
             if (consoleBuffer == null)

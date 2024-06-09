@@ -13,7 +13,7 @@
     <Grid>
         <Image Source="/Data/image/Community.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
 
-        <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" IsInertiaEnabled="True">
+        <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
             <ItemsControl x:Name="Indexers" Margin="8,15,8,15">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

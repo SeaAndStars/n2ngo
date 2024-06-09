@@ -17,17 +17,6 @@ namespace N2Nmc.Views.SubPages
         public SettingsPage()
         {
             InitializeComponent();
-
-            DisableAnimationSwitch();
-            DisableAnimationTB.Content = DisableAnimationSwitch() ? "关闭动画" : "启用动画";
-        }
-
-        public bool DisableAnimationSwitch()
-        {
-            MainView.EnableAnimation = !MainView.EnableAnimation;
-
-            SharedData.configFile?.Set("DisableAnimation", MainView.EnableAnimation ? "0" : "1");
-            return MainView.EnableAnimation;
         }
 
         //private void SelectBackgroundImageButton_Click(object sender, RoutedEventArgs e)
@@ -68,11 +57,6 @@ namespace N2Nmc.Views.SubPages
             SharedData.GetMainView.DoMessageDialog("着色器缓存已清除，重新启动应用以重新着色", "清理着色器缓存");
         }
 
-        private void DisableAnimationTB_Click(object sender, RoutedEventArgs e)
-        {
-            DisableAnimationTB.Content = DisableAnimationSwitch() ? "关闭动画" : "启用动画";
-        }
-
         int i = 0;
         private void BackgroundOSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -94,7 +78,24 @@ namespace N2Nmc.Views.SubPages
             SharedData.configFile?.Clear();
             SharedData.GetMainView.DoMessageDialog("重启应用以生效。", "设置");
         }
-        
+
+        private void ColorPaletteSeletion_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count <= 0)
+                return;
+
+            var snder = sender as HandyControl.Controls.ComboBox;
+            if (snder == null)
+                throw new ArgumentNullException("ColorPaletteSeletion_SelectionChanged sender arg null");
+
+            if (SharedData.GetMainView.isInitialized)
+                SharedData.configFile?.Set("CurrentColorPalette", snder.SelectedIndex.ToString());
+
+            var selectedItem = e.AddedItems[0] as string;
+            if (selectedItem != null)
+                SharedData.GetMainView.UpdateColorPalette(selectedItem);
+        }
+
         /*
         private void xunifangjian_Click(object sender, RoutedEventArgs e)
         {

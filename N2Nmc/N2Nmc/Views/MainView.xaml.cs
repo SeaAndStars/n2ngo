@@ -1,4 +1,5 @@
-﻿using HandyControl.Tools.Extension;
+﻿using CT.WPF.MagicEffects;
+using HandyControl.Tools.Extension;
 using N2Nmc.UtilsClass;
 using N2Nmc.Views.SubPages;
 using N2Nmc.Views.SubPages.Dialogs;
@@ -32,8 +33,6 @@ namespace N2Nmc.Views
         public readonly Brush BrushButtonUnselected = new SolidColorBrush(Color.FromRgb(211, 211, 211));
         public readonly Brush BrushButtonSelected = new SolidColorBrush(Color.FromRgb(211, 229, 240));
 
-        public static bool EnableAnimation = true;
-
         public RoomsPage? pageRooms { get; private set; } = null;
         public RoomingPage? pageRooming { get; private set; } = null;
         public QuickJoinPage? pageQuickJoin { get; private set; } = null;
@@ -63,9 +62,8 @@ namespace N2Nmc.Views
 
         DispatcherTimer n2nmc_server_reconnect_timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(15) };
 
+        public bool isInitialized { get; private set; } = false;
         bool canClose = false;
-
-        Dictionary<string, BitmapImage?> imgIcons = new Dictionary<string, BitmapImage?>();
 
         public static void PrintMemSet(string? Tag = null)
         {
@@ -76,133 +74,6 @@ namespace N2Nmc.Views
 
             Console.WriteLine(string.Format("({1})Memory usage: {0} MBytes", memoryUsageInMB, Tag));
         }
-
-        void ShaderImages()
-        {
-            PrintMemSet("Before Image Proc");
-            Stopwatch sw = Stopwatch.StartNew();
-
-            imgIcons["DayNight_Light"] = null;
-            imgIcons["Join_Light"] = null;
-            imgIcons["Log_Light"] = null;
-            imgIcons["Room_Light"] = null;
-            imgIcons["Rooming_Light"] = null;
-            imgIcons["Rooms_Light"] = null;
-            imgIcons["Root_Light"] = null;
-            imgIcons["Settings_Light"] = null;
-            imgIcons["Info_Light"] = null;
-            imgIcons["Wnd_Btn_Close_Light"] = null;
-            imgIcons["Wnd_Btn_Max_Light"] = null;
-            imgIcons["Wnd_Btn_Normal_Light"] = null;
-            imgIcons["Wnd_Btn_Min_Light"] = null;
-            imgIcons["Wnd_Btn_Back_Light"] = null;
-
-            imgIcons["DayNight_Dark"] = null;
-            imgIcons["Join_Dark"] = null;
-            imgIcons["Log_Dark"] = null;
-            imgIcons["Room_Dark"] = null;
-            imgIcons["Rooming_Dark"] = null;
-            imgIcons["Rooms_Dark"] = null;
-            imgIcons["Root_Dark"] = null;
-            imgIcons["Settings_Dark"] = null;
-            imgIcons["Info_Dark"] = null;
-            imgIcons["Wnd_Btn_Close_Dark"] = null;
-            imgIcons["Wnd_Btn_Max_Dark"] = null;
-            imgIcons["Wnd_Btn_Normal_Dark"] = null;
-            imgIcons["Wnd_Btn_Min_Dark"] = null;
-            imgIcons["Wnd_Btn_Back_Dark"] = null;
-
-            if (!Directory.Exists(SharedData.ShaderCacheDir))
-            {
-                Directory.CreateDirectory(SharedData.ShaderCacheDir);
-            }
-            string hashFileExt = ".md5Hash";
-
-            foreach (var icon in imgIcons)
-            {
-                string PathIconShaderCache = Path.Combine(SharedData.ShaderCacheDir, icon.Key + ".png");
-                string PathIconShaderCacheHash = PathIconShaderCache + hashFileExt;
-                if (File.Exists(Path.Combine(PathIconShaderCache)) && File.Exists(Path.Combine(PathIconShaderCacheHash)))
-                {
-                    Console.WriteLine("[Shader] Image shader cache hit! ({0})", PathIconShaderCache);
-                    var IconData = File.ReadAllBytes(PathIconShaderCache);
-
-                    var hashNow = MD5.HashData(IconData);
-                    var hashOri = File.ReadAllBytes(PathIconShaderCacheHash);
-                    if (MemoryExtensions.SequenceEqual(hashNow.AsSpan(), hashOri))
-                    {
-                        var s = new MemoryStream(IconData, false);
-                        BitmapImage b = new BitmapImage();
-                        b.BeginInit();
-                        b.CacheOption = BitmapCacheOption.OnLoad;
-                        b.StreamSource = s;
-                        b.EndInit();
-                        s.DisposeAsync();
-                        b.Freeze();
-
-                        //Dispatcher.InvokeAsync(() =>
-                        //{
-                        imgIcons[icon.Key] = b;
-                        //});
-                        continue;
-                    }
-                    else
-                        Console.WriteLine("[Shader] Image shader cache error: {0} ! Shading.");
-                }
-                else
-                    Console.WriteLine("[Shader] Image shader cache: {0} not found! Shading.", PathIconShaderCache);
-
-                ImageProcessor.ImageFactory imageFactory = new ImageProcessor.ImageFactory();
-
-                var path = new Uri("/Data/image/icon/" + icon.Key.Replace(icon.Key.Contains("_Light") ? "_Light" : icon.Key.Contains("_Dark") ? "_Dark" : throw new Exception("Cannot find valid img"), "").ToLower() + ".png", UriKind.Relative);
-                var resc = App.GetResourceStream(path).Stream;
-                imageFactory.Load(resc);
-
-                if (icon.Key.Contains("_Light"))
-                {
-                    //imageFactory.ReplaceColor(System.Drawing.Color.FromArgb(255, 0, 0, 0), System.Drawing.Color.FromArgb(255, 0x6A, 0x6A, 0x6A), 20);
-                    imageFactory.Tint(System.Drawing.Color.FromArgb(220, 76, 76, 76));
-                }
-                if (icon.Key.Contains("_Dark"))
-                {
-                    //imageFactory.ReplaceColor(System.Drawing.Color.FromArgb(255, 0, 0, 0), System.Drawing.Color.FromArgb(255, 0xDF, 0xDF, 0xDF), 20);
-                    imageFactory.Tint(System.Drawing.Color.FromArgb(188, 159, 169, 237));
-                }
-                var stream = new MemoryStream();
-                imageFactory.Save(stream);
-
-                imageFactory.Save(PathIconShaderCache);
-                File.WriteAllBytesAsync(PathIconShaderCacheHash, MD5.HashData(stream.ToArray()));
-
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = stream;
-                bitmapImage.EndInit();
-                stream.DisposeAsync();
-                bitmapImage.Freeze();
-
-                //Dispatcher.Invoke(() =>
-                //{
-                imgIcons[icon.Key] = bitmapImage;
-
-                //new DialogImageView(bitmapImage, string.Format("{0} - [{1}]", icon.Key, path)).Show();
-                //});
-
-
-                // conti:
-                imageFactory.Dispose();
-                continue;
-            }
-            sw.Stop();
-
-            PrintMemSet("After Image Proc");
-            Console.WriteLine("[Shader] Total time: {0}ms", sw.ElapsedMilliseconds);
-            Dispatcher.Invoke(() => SwitchColorNightDay(SharedData.configFile?.Get("DayNightColorMode", "0") == "1"));
-
-            return;
-        }
-
 
         public MainView()
         {
@@ -219,12 +90,8 @@ namespace N2Nmc.Views
             pageRoom = new RoomPage();
             pageInfo = new InfoPage();
 
-            Dispatcher.Invoke(() => SwitchColorNightDay(SharedData.configFile?.Get("DayNightColorMode", "1") == "1"));
-
             var r = App.Current.Resources;
             var MainColorBrush = (SolidColorBrush)r["MainColorSolidBrush"];
-
-            Task.Run(() => ShaderImages());
 
             SharedData.EdgeConnectionInfo.IsConnectedToEdge = false;
 
@@ -232,13 +99,14 @@ namespace N2Nmc.Views
             HandyControl.Controls.Growl.GrowlPanel = PanelMsg;
 
             Opacity = 0;
-            EnableAnimation = SharedData.configFile.Get("DisableAnimation", "0") == "0" ? true : false; // 读取配置：是否启用动画
+            SharedData.configFile.Get("DisableAnimation", "0");
             SharedData.configFile.Get("UserNickname", "NewToGO");
 
             int _alpha = 255;
             var s = SharedData.configFile.Get("WindowBackgroundAlpha", "245");  // 245 190 198
             int.TryParse(s, out _alpha);
             SetBackColor((byte?)_alpha);
+            SetWindowMaxNormalButtonImage();
             pageSettings.BackgroundOSlider.Value = _alpha;
 
             n2nmc_server_reconnect_timer.Tick += (_, __) =>
@@ -285,6 +153,29 @@ namespace N2Nmc.Views
 
                     return true;
                 };
+            }
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
+
+            isInitialized = true;
+        }
+
+        UInt32 _frameCounter = 0;
+        Stopwatch _stopwatch = new Stopwatch();
+        private void CompositionTarget_Rendering(object? sender, EventArgs e)
+        {
+            if (_frameCounter++ == 0)
+            {
+                // Starting timing.
+                _stopwatch.Start();
+            }
+
+            // Determine frame rate in fps (frames per second).
+            if (_frameCounter >=60)
+            {
+                long frameRate = (long)(_frameCounter / this._stopwatch.Elapsed.TotalSeconds);
+                DebugLabel_FPS.Content = String.Format("FPS: {0}", frameRate);
+                _frameCounter = 0;
+                _stopwatch.Restart();
             }
         }
 
@@ -440,8 +331,6 @@ namespace N2Nmc.Views
         }
 
 
-        //string lastIndPname = "";
-        object? ButtonLastBack = null;
         public void NavigatePage(Page? page)
         {
             if (page == null)
@@ -453,13 +342,6 @@ namespace N2Nmc.Views
 
             if (Framez.Content == page)
                 return;
-
-
-            if (!EnableAnimation)
-            {
-                Framez.Navigate(page);
-                return;
-            }
 
             // 开始动画
             page.Opacity = 0;
@@ -536,12 +418,19 @@ namespace N2Nmc.Views
             var at = new TaskCompletionSource<object>();
             fadeOutAnimationEx.Completed += (_, _) => at.SetResult(0);
 
-            var rt = (this.RenderTransform as ScaleTransform);
-            if (rt != null)
-            {
-                rt.CenterY = 0;
-                rt.BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation { To = 5.5, Duration = TimeSpan.FromSeconds(0.55), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } });
-            }
+            var tg = (this.RenderTransform as TransformGroup);
+            if (tg == null)
+                throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
+
+            var tg_st = tg.Children[0] as ScaleTransform;
+            if (tg_st == null)
+                throw new NullReferenceException("[MainView] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
+            var tg_tt = tg.Children[1] as TranslateTransform;
+            if (tg_tt == null)
+                throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
+
+            tg_tt.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation { To = 800, Duration = TimeSpan.FromSeconds(0.55), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } });
+            
             BeginAnimation(OpacityProperty, fadeOutAnimationEx);
 
             await Task.Run(() =>
@@ -580,144 +469,72 @@ namespace N2Nmc.Views
 
         private void SetWindowMaxNormalButtonImage()
         {
-            LBImage_Wnd_Btn_MaxNormal.Source = imgIcons["Wnd_Btn_" + (WindowState == WindowState.Maximized ? "Normal" : "Max") + (IsColorDay ? "_Light" : "_Dark")]; ;
+            LBImage_Wnd_Btn_MaxNormal.Source = new BitmapImage(new Uri(String.Format("/Data/image/icon/wnd_btn_{0}.png", (WindowState == WindowState.Maximized ? "normal" : "max")), UriKind.Relative));
         }
         public void SetBackColor(byte? a = null, byte? r = null, byte? g = null, byte? b = null)
         {
             var c = ((SolidColorBrush)App.Current.Resources["MainColorSolidBrush"]).Color;
-            RootControl.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(
+            ContentRoot.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(
                 a == null ? c.A : a.Value,
                 r == null ? c.R : r.Value,
                 g == null ? c.G : g.Value,
                 b == null ? c.B : b.Value));
         }
-        public bool IsColorDay { get; private set; } = false;
-        public void SwitchColorNightDay(bool? manualDayNight = null)
+
+        public async void UpdateColorPalette(string? NewColorPaletteName = null)
         {
-            /*
-             * <LinearGradientBrush x:Key="MainColorBrush"/>
-             * <LinearGradientBrush x:Key="MainColorAlphaBrush"/>
-             * <SolidColorBrush x:Key="MainColorSolidBrush" />
-             * <SolidColorBrush x:Key="MainColorSolidAlphaBrush"/>
-             * <SolidColorBrush x:Key="MainColorSolidFontBrush"/>
-             * <SolidColorBrush x:Key="MainColorHighLightSolidAlphaBrush"/>
-             */
-            var r = App.Current.Resources;
-            var MainColorBrush = (LinearGradientBrush)r["MainColorBrush"];
-            var MainColorAlphaBrush = (LinearGradientBrush)r["MainColorAlphaBrush"];
-            var MainColorSolidBrush = (SolidColorBrush)r["MainColorSolidBrush"];
-            var MainColorSolidAlphaBrush = (SolidColorBrush)r["MainColorSolidAlphaBrush"];
-            var MainColorSolidFontBrush = (SolidColorBrush)r["MainColorSolidFontBrush"];
-            var MainColorSolidForeBrush = (SolidColorBrush)r["MainColorSolidForeBrush"];
-            var MainColorHighLightSolidAlphaBrush = (SolidColorBrush)r["MainColorHighLightSolidAlphaBrush"];
-            Color? MainColorPrimaryColor = (Color)r["MainColorPrimaryColor"];
-            Color? MainColorSecondaryColor = (Color)r["MainColorSecondaryColor"];
+            if (!isInitialized)
+                return;
 
-            //var orig_MainColorBrush = new LinearGradientBrush {  };
-            //var orig_MainColorAlphaBrush = new LinearGradientBrush { };
-            //var orig_MainColorSolidBrush = new SolidColorBrush { Color= MainColorSolidBrush.Color };
-            //var orig_MainColorSolidAlphaBrush = new SolidColorBrush { };
-            //var orig_MainColorSolidFontBrush = new SolidColorBrush { };
-            //var orig_MainColorSolidForeBrush = new SolidColorBrush { };
-            //var orig_MainColorHighLightSolidAlphaBrush = new SolidColorBrush { };
+            var resCurrentColorPalette = App.Current.TryFindResource("CurrentColorPalette") as ResourceDictionary;
+            if (resCurrentColorPalette == null)
+                throw new NullReferenceException("Current Color Palette Resource null");
 
-            if (MainColorBrush == null ||
-                MainColorAlphaBrush == null ||
-                MainColorSolidBrush == null ||
-                MainColorSolidAlphaBrush == null ||
-                MainColorSolidFontBrush == null ||
-                MainColorSolidForeBrush == null ||
-                MainColorHighLightSolidAlphaBrush == null ||
-                MainColorPrimaryColor == null ||
-                MainColorSecondaryColor == null
-                )
-                throw new NullReferenceException("SwitchColorNightDay Resources null");
-
-            if (manualDayNight == null)
-                IsColorDay = !IsColorDay;
-            else
+            if (NewColorPaletteName!=null)
             {
-                IsColorDay = manualDayNight.Value;
-            }
-            SharedData.configFile?.Set("DayNightColorMode", IsColorDay ? "1" : "0");
+                var resNewColorPalette = App.Current.TryFindResource("BuiltinColorPalette_" + NewColorPaletteName) as ResourceDictionary;
+                if (resNewColorPalette == null)
+                    throw new NullReferenceException(string.Format("Target new Color Palette({0}) Resource null", NewColorPaletteName));
 
-            if (IsColorDay)
-            {
-                MainColorBrush = (LinearGradientBrush)r["MainColorLightBrush"];
-                MainColorAlphaBrush = (LinearGradientBrush)r["MainColorLightAlphaBrush"];
-                MainColorSolidBrush = (SolidColorBrush)r["MainColorLightSolidBrush"];
-                MainColorSolidAlphaBrush = (SolidColorBrush)r["MainColorLightSolidAlphaBrush"];
-                MainColorSolidFontBrush = (SolidColorBrush)r["MainColorLightSolidFontBrush"];
-                MainColorSolidForeBrush = (SolidColorBrush)r["MainColorLightSolidForeBrush"];
-                MainColorHighLightSolidAlphaBrush = (SolidColorBrush)r["MainColorLightHighLightSolidAlphaBrush"];
-                MainColorPrimaryColor = (Color)r["MainColorLightPrimaryColor"];
-                MainColorSecondaryColor = (Color)r["MainColorLightSecondaryColor"];
-            }
-            else
-            {
-                MainColorBrush = (LinearGradientBrush)r["MainColorDarkBrush"];
-                MainColorAlphaBrush = (LinearGradientBrush)r["MainColorDarkAlphaBrush"];
-                MainColorSolidBrush = (SolidColorBrush)r["MainColorDarkSolidBrush"];
-                MainColorSolidAlphaBrush = (SolidColorBrush)r["MainColorDarkSolidAlphaBrush"];
-                MainColorSolidFontBrush = (SolidColorBrush)r["MainColorDarkSolidFontBrush"];
-                MainColorSolidForeBrush = (SolidColorBrush)r["MainColorDarkSolidForeBrush"];
-                MainColorHighLightSolidAlphaBrush = (SolidColorBrush)r["MainColorDarkHighLightSolidAlphaBrush"];
-                MainColorPrimaryColor = (Color)r["MainColorDarkPrimaryColor"];
-                MainColorSecondaryColor = (Color)r["MainColorDarkSecondaryColor"];
-            }
-
-            var imgs = SharedData.FindVisualChildren<Image>(this);
-            foreach (Image cimg in imgs)
-            {
-                var n = cimg.Name;
-
-                if (n == LBImage_Wnd_Btn_MaxNormal.Name)
+                foreach (var key in resCurrentColorPalette.Keys)
                 {
-                    SetWindowMaxNormalButtonImage();
+                    if (resNewColorPalette.Contains(key))
+                    {
+                        resCurrentColorPalette[key] = resNewColorPalette[key];
+                    }
+                }
+
+                App.Current.Resources["CurrentColorPalette"] = resCurrentColorPalette;
+            }
+
+            {
+                var imgs = SharedData.FindVisualChildren<Image>(this);
+                foreach (Image cimg in imgs)
+                {
+                    var n = cimg.Name;
+
+                    if (n.Contains("LBImage_"))
+                    {
+                        await cimg.Dispatcher.InvokeAsync(() =>
+                        {
+                            (cimg.Effect as TexturedColorReplaceEffect)?.BeginAnimation(TexturedColorReplaceEffect.ReplacementColorProperty,
+                                new ColorAnimation { To = (Color)resCurrentColorPalette["Palette_50"], Duration = TimeSpan.FromSeconds(0.45) });
+                        });
+                    }
+
                     continue;
                 }
-
-                if (n.Contains("LBImage_"))
+                TitleBorder.Dispatcher.InvokeAsync(() =>
                 {
-                    n = n.Replace("LBImage_", "");
-
-                    var img = imgIcons[n + (IsColorDay ? "_Light" : "_Dark")];
-                    if (!(img == null))
-                        cimg.Dispatcher.BeginInvoke(() => cimg.Source = img);
-                }
-
-                continue;
+                    var b = new SolidColorBrush(((SolidColorBrush)TitleBorder.Background).Color);
+                    TitleBorder.Background = b;
+                    b.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)resCurrentColorPalette["Palette_400"], Duration = TimeSpan.FromSeconds(0.45) });
+                });
             }
-
-            //r["MainColorBrush"] = orig_MainColorBrush;
-            //r["MainColorAlphaBrush"] = orig_MainColorAlphaBrush;
-            //r["MainColorSolidBrush"] = orig_MainColorSolidBrush;
-            //r["MainColorSolidAlphaBrush"] = orig_MainColorSolidAlphaBrush;
-            //r["MainColorSolidFontBrush"] = orig_MainColorSolidFontBrush;
-            //r["MainColorHighLightSolidAlphaBrush"] = orig_MainColorHighLightSolidAlphaBrush;
-
-            r["MainColorBrush"] = MainColorBrush;
-            r["MainColorAlphaBrush"] = MainColorAlphaBrush;
-            r["MainColorSolidBrush"] = MainColorSolidBrush;
-            r["MainColorSolidAlphaBrush"] = MainColorSolidAlphaBrush;
-            r["MainColorSolidFontBrush"] = MainColorSolidFontBrush;
-            r["MainColorSolidForeBrush"] = MainColorSolidForeBrush;
-            r["MainColorHighLightSolidAlphaBrush"] = MainColorHighLightSolidAlphaBrush;
-            r["MainColorPrimaryColor"] = MainColorPrimaryColor;
-            r["MainColorSecondaryColor"] = MainColorSecondaryColor;
-
-            //var ScrollViewerStyle = (Style)r["ScrollViewerStyle"];
-            //if (ScrollViewerStyle != null)
-            //{
-            //    ((SolidColorBrush)ScrollViewerStyle.Resources["PrimaryTextBrush"]) = new SolidColorBrush(r["MainColorPrimaryColor"]);
-            //    ((SolidColorBrush)ScrollViewerStyle.Resources["SecondaryTextBrush"]) = new SolidColorBrush;
-            //}
 
             SetBackColor(pageSettings != null ? (byte)pageSettings.BackgroundOSlider.Value : null);
             SharedData.UIAnimation.Refresh();
             RefreshUIAnimations();
-
-            // orig_MainColorSolidBrush.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = MainColorSolidBrush.Color, EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } });
 
             return;
         }
@@ -747,7 +564,7 @@ namespace N2Nmc.Views
                         var di = dm.MessageContent as DialogInput;
                         if (di != null)
                         {
-                            di.InputBox.Text = SharedData.configFile?.Get("UserNickname", null);
+                            di.InputBox.Text = SharedData.configFile?.Get("UserNickname");
                             di.InputBox.SelectAll();
                         }
                     }
@@ -760,24 +577,33 @@ namespace N2Nmc.Views
         }
         private void ButtonWindowMin_Click(object sender, RoutedEventArgs e)
         {
-            var rt = (this.RenderTransform as ScaleTransform);
-            if (rt != null)
+            var tg = (this.RenderTransform as TransformGroup);
+            if (tg == null)
+                throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
+
+            var tg_st = tg.Children[0] as ScaleTransform;
+            if (tg_st == null)
+                throw new NullReferenceException("[MainView] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
+            var tg_tt = tg.Children[1] as TranslateTransform;
+            if (tg_tt == null)
+                throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
+
+            var anim1 = new DoubleAnimation { To = -800, Duration = TimeSpan.FromSeconds(0.45), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+            var at1 = new TaskCompletionSource<object>();
+            anim1.Completed += (s, _) => at1.SetResult(0);
+
+            var anim2 = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.28), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn } };
+            var at2 = new TaskCompletionSource<object>();
+            anim2.Completed += (s, _) => at2.SetResult(0);
+
+            Task.Run(() =>
             {
-                var anim1 = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
-                var at1 = new TaskCompletionSource<object>();
-                anim1.Completed += (s, _) => at1.SetResult(0);
-
-                rt.CenterY = 0;
-
-                Task.Run(() =>
-                {
-                    at1.Task.Wait();
-                    Dispatcher.Invoke(() => WindowState = WindowState.Minimized);
-                });
-                rt.BeginAnimation(ScaleTransform.ScaleYProperty, anim1);
-            }
-            else
-                WindowState = WindowState.Minimized;
+                at1.Task.Wait();
+                at2.Task.Wait();
+                Dispatcher.Invoke(() => WindowState = WindowState.Minimized);
+            });
+            tg_tt.BeginAnimation(TranslateTransform.YProperty, anim1);
+            this.BeginAnimation(OpacityProperty, anim2);
         }
         private void ButtonWindowMaxNormal_Click(object sender, RoutedEventArgs e)
         {
@@ -787,10 +613,6 @@ namespace N2Nmc.Views
         private void ButtonBack_Click(object sender, RoutedEventArgs e)
         {
             NavigatePage(null);
-        }
-        private void ButtonWindowColorSwitch_Click(object sender, RoutedEventArgs e)
-        {
-            SwitchColorNightDay();
         }
         private void ButtonLog_Click(object sender, RoutedEventArgs e)
         {
@@ -815,15 +637,20 @@ namespace N2Nmc.Views
 
         private async void AsyncLoading()
         {
-            var rt = (this.RenderTransform as ScaleTransform);
-            if (rt != null)
-            {
-                rt.CenterY = this.Height;
-                rt.BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation { From = 0, To = 1, Duration = TimeSpan.FromSeconds(0.55), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } });
-            }
+            var tg = (this.RenderTransform as TransformGroup);
+            if (tg == null)
+                throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
 
-            BeginAnimation(OpacityProperty, fadeInAnimationEx);
+            var tg_st = tg.Children[0] as ScaleTransform;
+            if (tg_st == null)
+                throw new NullReferenceException("[MainView] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
+            var tg_tt = tg.Children[1] as TranslateTransform;
+            if (tg_tt == null)
+                throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
 
+            tg_tt.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation { From = 450, To = 0, Duration = TimeSpan.FromSeconds(0.55), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } });
+
+            this.BeginAnimation(OpacityProperty, fadeInAnimationEx);
 
             NavigatePage(pageIndex);
 
@@ -833,19 +660,23 @@ namespace N2Nmc.Views
 
             await Task.Run(() =>
             {
+                if (SharedData.configFile == null)
+                    throw new NullReferenceException(nameof(SharedData.configFile));
                 if (pageRooms == null)
                     throw new NullReferenceException(nameof(pageRooms));
+                if (pageSettings == null)
+                    throw new NullReferenceException(nameof(pageSettings));
                 SharedData.ConnectAndPeek();
                 //Dispatcher.Invoke(() => pageRooms.Refresh());
 
-                if (SharedData.configFile?.Get("FirstRun", "1") == "1")
+                if (SharedData.configFile.Get("FirstRun", "1") == "1")
                 {
                     //Dispatcher.BeginInvoke(() => HandyControl.Controls.Growl.Ask(new HandyControl.Data.GrowlInfo { CancelStr = "", Type = HandyControl.Data.InfoType.Info, ActionBeforeClose = (bool b) => { return b ? b : b; }, ShowCloseButton = false, Message = "N2Nmc需要配合Tap虚拟网卡来使用，如果您未安装，请前往设置-安装Tap驱动。" }));
                     Dispatcher.InvokeAsync(() => DoMessageDialog("如果您未安装Tap驱动，请前往设置页面安装，如果您是第一次使用N2N GO，我们强烈建议您安装一次。", "首次运行"));
                     SharedData.configFile.Set("FirstRun", "0");
                 }
 
-                if (SharedData.configFile?.Get("NeedUpdate", "0") == "1")
+                if (SharedData.configFile.Get("NeedUpdate", "0") == "1")
                 {
                     DoMessageDialog("N2Nmc 上一次更新未成功，将会在本次关闭后重新尝试。");
                 }
@@ -855,6 +686,16 @@ namespace N2Nmc.Views
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     Run("Data/BinRef/Windows/WinIPBroadcast/WinIPBroadcast.exe run", true); // 运行WinIPBroadcast（数据转发到虚拟网卡）
 
+                var BuiltinColorPaletteNames = App.Current.FindResource("BuiltinColorPaletteNames") as Array;
+                if (BuiltinColorPaletteNames == null)
+                    throw new NullReferenceException("Resource BuiltinColorPaletteNames null");
+                pageSettings.Dispatcher.InvokeAsync(() =>
+                {
+                    var index = int.Parse(SharedData.configFile.Get("CurrentColorPalette", "0"));
+                    pageSettings.ColorPaletteSeletion.SelectedIndex = -1;
+                    pageSettings.ColorPaletteSeletion.ItemsSource = BuiltinColorPaletteNames;
+                    pageSettings.ColorPaletteSeletion.SelectedIndex = index;
+                });
             });
         }
 
@@ -878,14 +719,22 @@ namespace N2Nmc.Views
         {
             if (WindowState != WindowState.Minimized)
             {
-                var rt = (this.RenderTransform as ScaleTransform);
-                if (rt != null)
-                {
-                    var anim1 = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+                var tg = (this.RenderTransform as TransformGroup);
+                if (tg == null)
+                    throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
 
-                    rt.CenterY = 0;
-                    rt.BeginAnimation(ScaleTransform.ScaleYProperty, anim1);
-                }
+                var tg_st = tg.Children[0] as ScaleTransform;
+                if (tg_st == null)
+                    throw new NullReferenceException("[MainView] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
+                var tg_tt = tg.Children[1] as TranslateTransform;
+                if (tg_tt == null)
+                    throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
+
+                var anim1 = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.50), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+                var anim2 = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.40), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+
+                tg_tt.BeginAnimation(TranslateTransform.YProperty, anim1);
+                this.BeginAnimation(OpacityProperty, anim2);
             }
         }
 

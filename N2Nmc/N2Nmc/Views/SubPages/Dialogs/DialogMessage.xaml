@@ -8,8 +8,8 @@
       d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
       Title="DialogMessage" Loaded="Page_Loaded" Foreground="{DynamicResource MainColorSolidFontBrush}">
     <Grid>
-        <Canvas x:Name="BackgroundCanvas" Background="{DynamicResource MainColorSolidAlphaBrush}"/>
-        <Grid x:Name="ContentGrid" Background="{DynamicResource MainColorSolidAlphaBrush}" Width="400" Height="250" RenderTransformOrigin="0.5,0.5">
+        <Border x:Name="ContentBackground" Width="400" Height="250" Effect="{StaticResource EffectShadow4}" CacheMode="BitmapCache" Background="{DynamicResource MainColorSolidAlphaBrush}" />
+        <Grid x:Name="ContentGrid" Width="400" Height="250" RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
                 <ScaleTransform ScaleX="1.3" ScaleY="1.3"/>
             </Grid.RenderTransform>
@@ -18,7 +18,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             
-            <Grid Grid.Row="0" Background="{DynamicResource MainColorSolidBrush}">
+            <Grid Grid.Row="0" Background="{DynamicResource Palette_700}">
                 <Label x:Name="MessageTitle" Height="38" Foreground="{DynamicResource MainColorSolidForeBrush}" BorderBrush="{x:Null}" Background="{x:Null}" HorizontalAlignment="Stretch" FontSize="20"/>
             </Grid>
 

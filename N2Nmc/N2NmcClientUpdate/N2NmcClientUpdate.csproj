@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Build\**" />
+    <EmbeddedResource Remove="Build\**" />
+    <None Remove="Build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\N2Nmc_Protocol\N2Nmc_Protocol.csproj" />
   </ItemGroup>
 

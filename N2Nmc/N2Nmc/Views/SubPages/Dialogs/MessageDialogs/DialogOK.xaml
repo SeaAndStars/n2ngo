@@ -9,7 +9,7 @@
       Title="OK" Foreground="{DynamicResource MainColorSolidFontBrush}">
 
     <Grid>
-        <TextBlock x:Name="MessageContentRunner" TextWrapping="Wrap" Margin="0,0,0,65" FontSize="17.5" Padding="5,2,5,0"  Background="{DynamicResource MainColorSolidAlphaBrush}"/>
-        <Button x:Name="ButtonOK" Style="{DynamicResource ButtonStyle}" Width="90" VerticalAlignment="Bottom" Content="OK" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="0,0,0,20"/>
+        <TextBlock x:Name="MessageContentRunner" TextWrapping="Wrap" Margin="0,0,0,65" FontSize="17.5" Padding="5,2,5,0" />
+        <Button x:Name="ButtonOK" Width="90" VerticalAlignment="Bottom" Content="OK" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="0,0,0,20"/>
     </Grid>
 </Page>

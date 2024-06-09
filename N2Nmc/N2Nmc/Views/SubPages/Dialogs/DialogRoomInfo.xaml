@@ -16,7 +16,7 @@
             <TextBox x:Name="TextBoxPasswd" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" SelectionBrush="{DynamicResource MainColorHighLightSolidAlphaBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="29,0,0,0" Width="144" BorderBrush="{x:Null}"/>
         </Grid>
 
-        <Button x:Name="ButtonCancel" Style="{DynamicResource ButtonStyle}" Content="取消" VerticalAlignment="Bottom" Margin="0,0,8,45" Width="75" HorizontalAlignment="Right" Height="28" />
-        <Button x:Name="FuncButton" Style="{DynamicResource ButtonStyle}" Content="Function" VerticalAlignment="Bottom" Margin="0,0,8,10" Width="79" Height="30" HorizontalAlignment="Right" />
+        <Button x:Name="ButtonCancel" Content="取消" VerticalAlignment="Bottom" Margin="0,0,8,45" Width="75" HorizontalAlignment="Right" Height="28" />
+        <Button x:Name="FuncButton" Content="Function" VerticalAlignment="Bottom" Margin="0,0,8,10" Width="79" Height="30" HorizontalAlignment="Right" />
     </Grid>
 </Page>

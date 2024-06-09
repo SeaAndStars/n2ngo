@@ -83,16 +83,20 @@ namespace N2Nmc.UtilsClass
             return Data.ContainsKey(key);
         }
 
-        public string? Get(string key, string? default_)
+        public string Get(string key, string default_)
         {
             if (KeyExists(key))
             { return Data[key]; }
-
-            if (default_ != null)
+            else
             {
                 Data[key] = default_;
                 return default_;
             }
+        }
+        public string? Get(string key)
+        {
+            if (KeyExists(key))
+            { return Data[key]; }
 
             return null;
         }

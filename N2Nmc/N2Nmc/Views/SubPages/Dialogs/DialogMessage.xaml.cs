@@ -12,7 +12,7 @@ namespace N2Nmc.Views.SubPages.Dialogs
     public partial class DialogMessage : Page
     {
         List<Action<object>>? actsRet;
-        DoubleAnimation animOpIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.5), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        DoubleAnimation animOpIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
         DoubleAnimation animOpInDe = new DoubleAnimation { To = 1, BeginTime = TimeSpan.FromSeconds(0.2), Duration = TimeSpan.FromSeconds(0.4), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
         DoubleAnimation animOpOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
 
@@ -71,7 +71,7 @@ namespace N2Nmc.Views.SubPages.Dialogs
         public DialogMessage(List<Action<object>>? ActsRet = null)
         {
             InitializeComponent();
-            BackgroundCanvas.Opacity = 0;
+            ContentBackground.Opacity = 0;
             ContentGrid.Opacity = 0;
 
             SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)Content));
@@ -148,7 +148,7 @@ namespace N2Nmc.Views.SubPages.Dialogs
 
         private void Page_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            BackgroundCanvas.BeginAnimation(Canvas.OpacityProperty, animOpIn);
+            ContentBackground.BeginAnimation(Border.OpacityProperty, animOpIn);
             ContentGrid.BeginAnimation(Grid.OpacityProperty, animOpInDe);
             ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, animScIn);
             ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, animScIn);

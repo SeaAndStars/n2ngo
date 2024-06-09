@@ -10,7 +10,7 @@
 
     <Grid>
         <TextBlock x:Name="MessageContentRunner" TextWrapping="Wrap" Margin="0,0,0,65" FontSize="17.5" Padding="5,2,5,0" Background="{DynamicResource MainColorSolidAlphaBrush}"/>
-        <Button x:Name="ButtonYes" Style="{DynamicResource ButtonStyle}" Width="90" VerticalAlignment="Bottom" Content="Yes" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="0,0,104,20"/>
-        <Button x:Name="ButtonNo" Style="{DynamicResource ButtonStyle}" Width="90" VerticalAlignment="Bottom" Content="No" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="104,0,0,20"/>
+        <Button x:Name="ButtonYes" Width="90" VerticalAlignment="Bottom" Content="Yes" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="0,0,104,20"/>
+        <Button x:Name="ButtonNo" Width="90" VerticalAlignment="Bottom" Content="No" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="104,0,0,20"/>
     </Grid>
 </Page>

@@ -320,17 +320,17 @@ namespace N2Nmc.UtilsClass
         {
             public static void Refresh()
             {
-                btnDownAnimation = new ColorAnimation { To = Color.FromArgb(0x48, 0x80, 0x80, 0x80), Duration = TimeSpan.FromMilliseconds(100) };
-                btnUpAnimation = new ColorAnimation { To = ((SolidColorBrush)App.Current.Resources["MainColorSolidAlphaBrush"]).Color, Duration = TimeSpan.FromMilliseconds(300) };
-                btnEnterAnimation = new ColorAnimation { To = Color.FromArgb(0x50, 0xf0, 0xf0, 0xf0), Duration = TimeSpan.FromMilliseconds(120) };
-                btnLeaveAnimation = new ColorAnimation { To = ((SolidColorBrush)App.Current.Resources["MainColorSolidAlphaBrush"]).Color, Duration = TimeSpan.FromMilliseconds(170) };
+                btnDownAnimation = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(100) };
+                btnUpAnimation = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(300) };
+                btnEnterAnimation = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(120) };
+                btnLeaveAnimation = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(170) };
             }
 
 
-            public static ColorAnimation btnDownAnimation { get; private set; } = new ColorAnimation { To = Color.FromArgb(0x48, 0x80, 0x80, 0x80), Duration = TimeSpan.FromMilliseconds(100) };
-            public static ColorAnimation btnUpAnimation { get; private set; } = new ColorAnimation { To = ((SolidColorBrush)App.Current.Resources["MainColorSolidAlphaBrush"]).Color, Duration = TimeSpan.FromMilliseconds(300) };
-            public static ColorAnimation btnEnterAnimation { get; private set; } = new ColorAnimation { To = Color.FromArgb(0x50, 0xc0, 0xc0, 0xc0), Duration = TimeSpan.FromMilliseconds(120) };
-            public static ColorAnimation btnLeaveAnimation { get; private set; } = new ColorAnimation { To = ((SolidColorBrush)App.Current.Resources["MainColorSolidAlphaBrush"]).Color, Duration = TimeSpan.FromMilliseconds(170) };
+            public static ColorAnimation btnDownAnimation { get; private set; } = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(100) };
+            public static ColorAnimation btnUpAnimation { get; private set; } = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(300) };
+            public static ColorAnimation btnEnterAnimation { get; private set; } = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_200"], Duration = TimeSpan.FromMilliseconds(120) };
+            public static ColorAnimation btnLeaveAnimation { get; private set; } = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(170) };
 
             public static DoubleAnimation smallerAnimation { get; private set; } = new DoubleAnimation { To = 0.97, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
             public static DoubleAnimation smallsmallerAnimation { get; private set; } = new DoubleAnimation { To = 0.92, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
@@ -548,7 +548,7 @@ namespace N2Nmc.UtilsClass
 
                     Card_MouseLeave(card, null);
                 }
-                catch(Exception)
+                catch (Exception)
                 { }
             }
             public static void InitCards(IEnumerable<Control> cards)
@@ -712,10 +712,10 @@ namespace N2Nmc.UtilsClass
                     return null;
 
                 var package = rpackage.Value;
-                if ((BaseHeader)package.Header != BaseHeader.msg_string || package.external_data == null)
+                if ((BaseHeader)package.Header != BaseHeader.msg_string_long || package.external_data == null)
                     return null;
 
-                return Package.MsgExternalData.Decode.MsgString(package.external_data);
+                return Package.MsgExternalData.Decode.MsgStringLong(package.external_data);
             }
         }
 
@@ -765,27 +765,40 @@ namespace N2Nmc.UtilsClass
 
             lock (NM_Connection)
             {
-                if (NM_Connection.Send(Package.MakePackage(Protocol.BaseHeader._rooms_create)))
-                    if (NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomCode))))
-                        if (NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomName))))
-                            if (NM_Connection.Send(Package.MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)(IsRoomInvisible ? 1 : 0)))))
-                                if (NM_Connection.Send(Package.MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)(IsRoomPasswordNeeded ? 1 : 0)))))
-                                    if (NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomPassword))))
-                                        if (NM_Connection.Send(Package.MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong(MainColor))))
-                                            if (NM_Connection.Send(Package.MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong(MinorColor))))
-                                            {
-                                                var rpackage = NM_Connection.Receive(6000);
-                                                if (rpackage != null)
-                                                {
-                                                    var package = rpackage.Value;
-                                                    if ((BaseHeader)package.Header == BaseHeader.msg_string_long && package.external_data != null)
-                                                    {
-                                                        return new string[] { RoomCode, Package.MsgExternalData.Decode.MsgStringLong(package.external_data) };
-                                                    }
-                                                }
-                                            }
+                if (!NM_Connection.Send(Package.MakePackage(Protocol.BaseHeader._rooms_create)))
+                    goto CreateRoom_Fail;
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomCode))))
+                    goto CreateRoom_Fail;
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomName))))
+                    goto CreateRoom_Fail;
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)(IsRoomInvisible ? 1 : 0)))))
+                    goto CreateRoom_Fail;
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)(IsRoomPasswordNeeded ? 1 : 0)))))
+                    goto CreateRoom_Fail;
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomPassword))))
+                    goto CreateRoom_Fail;
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong(MainColor))))
+                    goto CreateRoom_Fail;
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong(MinorColor))))
+                    goto CreateRoom_Fail;
+
+                var rpackage = NM_Connection.Receive(6000);
+                if (rpackage != null)
+                {
+                    var package = rpackage.Value;
+                    if ((BaseHeader)package.Header == BaseHeader.msg_string_long && package.external_data != null)
+                    {
+                        var rrpackage = NM_Connection.Receive(6000);
+                        if (rrpackage != null)
+                        {
+                            if ((BaseHeader)rrpackage.Value.Header == BaseHeader.msg_ok)
+                                return new string[] { RoomCode, Package.MsgExternalData.Decode.MsgStringLong(package.external_data) };
+                        }
+                    }
+                }
             }
 
+        CreateRoom_Fail:
             return null;
         }
 
@@ -863,7 +876,7 @@ namespace N2Nmc.UtilsClass
 
                     if (rrr == 1)
 
-                    GetMainView.DoMessageDialog("抱歉\n您当前加入的房间\n请稍后重试", "加入房间失败");
+                        GetMainView.DoMessageDialog("抱歉\n您当前加入的房间\n请稍后重试", "加入房间失败");
                     goto joinRoom_fail_msg_handled;
                 }
                 if ((BaseHeader)rpackagev.Header != BaseHeader.msg_string || rpackagev.external_data == null)

@@ -10,8 +10,8 @@
         Background="{DynamicResource MainColorSolidAlphaBrush}">
     <Grid>
         <Label Height="40" VerticalAlignment="Top" Content="当前房间" HorizontalAlignment="Center" Style="{DynamicResource TitleStyle}" VerticalContentAlignment="Center" FontSize="24"/>
-        <Button x:Name="ButtonExitRoom" Style="{DynamicResource ButtonStyle}" Content="退出房间" VerticalAlignment="Top" Click="ButtonExitRoom_Click" Height="40" Width="120" FontSize="20" HorizontalAlignment="Right"/>
-        <!--<Button x:Name="ButtonRoomRefresh" Style="{DynamicResource ButtonStyle}" Content="刷新" VerticalAlignment="Top" Height="40" Width="60" FontSize="20" HorizontalAlignment="Right" Margin="0,0,130,0" Click="ButtonExitRoomRefresh_Click"/>-->
+        <Button x:Name="ButtonExitRoom" Content="退出房间" VerticalAlignment="Top" Click="ButtonExitRoom_Click" Height="40" Width="120" FontSize="20" HorizontalAlignment="Right"/>
+        <!--<Button x:Name="ButtonRoomRefresh" Content="刷新" VerticalAlignment="Top" Height="40" Width="60" FontSize="20" HorizontalAlignment="Right" Margin="0,0,130,0" Click="ButtonExitRoomRefresh_Click"/>-->
 
         <Grid Background="{DynamicResource MainColorSolidAlphaBrush}" Margin="0,40,0,0">
             <Grid.ColumnDefinitions>
@@ -23,7 +23,7 @@
             </Grid>
 
             <Grid Background="{DynamicResource MainColorSolidAlphaBrush}" Margin="10,10,10,10" Grid.Column="1">
-                <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Vertical" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsInertiaEnabled="True">
+                <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Vertical" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <ItemsControl Background="{DynamicResource MainColorSolidAlphaBrush}" MinWidth="100" MinHeight="100">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -41,7 +41,7 @@
             <Border x:Name="tip" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Height="60" CornerRadius="4" Background="{DynamicResource MainColorHighLightSolidAlphaBrush}" Margin="12,0,12,10" Grid.Row="0">
                 <Grid>
                     <TextBlock TextWrapping="Wrap" Padding="3" Text="请以您所在的国家为准，禁止发布及传播违反法律的内容" Foreground="{DynamicResource MainColorSolidFontBrush}" FontSize="17"/>
-                    <Button x:Name="ButtonKnown" Style="{DynamicResource ButtonStyle}" Content="我已了解" VerticalAlignment="Bottom" Height="31" Width="89" Padding="0,0,0,0" Click="ButtonKnown_Click" HorizontalAlignment="Right"/>
+                    <Button x:Name="ButtonKnown" Content="我已了解" VerticalAlignment="Bottom" Height="31" Width="89" Padding="0,0,0,0" Click="ButtonKnown_Click" HorizontalAlignment="Right"/>
                 </Grid>
             </Border>
         </Grid>

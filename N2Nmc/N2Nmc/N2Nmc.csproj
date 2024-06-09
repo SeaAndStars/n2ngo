@@ -33,6 +33,24 @@
     <None Remove="Data\font\2.ttc" />
     <None Remove="Data\font\f1.ttc" />
     <None Remove="Data\font\G_R1.ttf" />
+    <None Remove="Data\font\Roboto-Black.ttf" />
+    <None Remove="Data\font\Roboto-BlackItalic.ttf" />
+    <None Remove="Data\font\Roboto-Bold.ttf" />
+    <None Remove="Data\font\Roboto-BoldItalic.ttf" />
+    <None Remove="Data\font\Roboto-Italic.ttf" />
+    <None Remove="Data\font\Roboto-Light.ttf" />
+    <None Remove="Data\font\Roboto-LightItalic.ttf" />
+    <None Remove="Data\font\Roboto-Medium.ttf" />
+    <None Remove="Data\font\Roboto-MediumItalic.ttf" />
+    <None Remove="Data\font\Roboto-Regular.ttf" />
+    <None Remove="Data\font\Roboto-Thin.ttf" />
+    <None Remove="Data\font\Roboto-ThinItalic.ttf" />
+    <None Remove="Data\font\RobotoCondensed-Bold.ttf" />
+    <None Remove="Data\font\RobotoCondensed-BoldItalic.ttf" />
+    <None Remove="Data\font\RobotoCondensed-Italic.ttf" />
+    <None Remove="Data\font\RobotoCondensed-Light.ttf" />
+    <None Remove="Data\font\RobotoCondensed-LightItalic.ttf" />
+    <None Remove="Data\font\RobotoCondensed-Regular.ttf" />
     <None Remove="Data\font\simsun.ttc" />
     <None Remove="Data\image\About.png" />
     <None Remove="Data\image\Advanced.png" />
@@ -86,7 +104,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Data\font\f1.ttc" />
+    <Resource Include="Data\font\Roboto-Black.ttf" />
+    <Resource Include="Data\font\Roboto-BlackItalic.ttf" />
+    <Resource Include="Data\font\Roboto-Bold.ttf" />
+    <Resource Include="Data\font\Roboto-BoldItalic.ttf" />
+    <Resource Include="Data\font\Roboto-Italic.ttf" />
+    <Resource Include="Data\font\Roboto-Light.ttf" />
+    <Resource Include="Data\font\Roboto-LightItalic.ttf" />
+    <Resource Include="Data\font\Roboto-Medium.ttf" />
+    <Resource Include="Data\font\Roboto-MediumItalic.ttf" />
+    <Resource Include="Data\font\Roboto-Regular.ttf" />
+    <Resource Include="Data\font\Roboto-Thin.ttf" />
+    <Resource Include="Data\font\Roboto-ThinItalic.ttf" />
+    <Resource Include="Data\font\RobotoCondensed-Bold.ttf" />
+    <Resource Include="Data\font\RobotoCondensed-BoldItalic.ttf" />
+    <Resource Include="Data\font\RobotoCondensed-Italic.ttf" />
+    <Resource Include="Data\font\RobotoCondensed-Light.ttf" />
+    <Resource Include="Data\font\RobotoCondensed-LightItalic.ttf" />
+    <Resource Include="Data\font\RobotoCondensed-Regular.ttf" />
     <Resource Include="Data\image\About.png" />
     <Resource Include="Data\image\Advanced.png" />
     <Resource Include="Data\image\CheckUpdate.png" />
@@ -247,9 +282,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HandyControl" Version="3.4.0" />
-    <PackageReference Include="ImageProcessor" Version="2.9.0" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+    <PackageReference Include="HandyControl" Version="3.5.1" />
+    <PackageReference Include="MagicEffects" Version="1.0.0">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
