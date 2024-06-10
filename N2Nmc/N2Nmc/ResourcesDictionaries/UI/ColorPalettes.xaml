@@ -18,7 +18,7 @@
     <SolidColorBrush x:Key="MainColorSolidForeBrush" Color="#FFF5F5F5"/>
     <SolidColorBrush x:Key="MainColorHighLightSolidAlphaBrush" Color="#80757575"/>
 
-    <!-- Designer(Static Binding Only) -->
+    
     <SolidColorBrush x:Key="Palette_50">#FFEBEE</SolidColorBrush>
     <SolidColorBrush x:Key="Palette_100">#FFCDD2</SolidColorBrush>
     <SolidColorBrush x:Key="Palette_200">#EF9A9A</SolidColorBrush>

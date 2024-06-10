@@ -9,7 +9,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
-                <ResourceDictionary Source="ColorPalettes.xaml"/>
+                <ResourceDictionary Source="ResourcesDictionaries/UI/ColorPalettes.xaml"/>
+                <ResourceDictionary Source="ResourcesDictionaries/UI/locales/default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <system:Double x:Key="PageDesignHeight">530</system:Double>

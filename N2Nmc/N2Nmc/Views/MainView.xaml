@@ -120,7 +120,7 @@
                 </Grid>
             </Border>
 
-            <Button Height="55" Width="55" VerticalAlignment="Bottom" HorizontalAlignment="Left"  Style="{DynamicResource CylindricalButtonStyle}" Padding="0" Click="TitleIconButton_Click" Margin="40,0,0,55" Grid.Row="1">
+            <Button Height="55" Width="55" VerticalAlignment="Bottom" HorizontalAlignment="Left"  Style="{DynamicResource CylindricalButtonStyle}" ToolTip="日志" Padding="0" Click="TitleIconButton_Click" Margin="40,0,0,55" Grid.Row="1">
                 <Image x:Name="LBImage_Wnd_Btn_Log" Width="30" Height="30" Stretch="Fill" Source="/Data/image/icon/log.png">
                     <Image.Effect>
                         <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>

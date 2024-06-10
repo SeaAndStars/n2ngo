@@ -1,5 +1,6 @@
 ﻿using N2Nmc.UtilsClass;
 using System;
+using System.CodeDom;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -49,6 +50,14 @@ namespace N2Nmc
             }
 #endif
         }
+
+        public void UpdateColorPalette() { }
+
+        public void UpdateLanguage() { 
+
+        }
+
+
         private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
             var content = string.Format("N2N GO 发生了未处理的异常\n" +
@@ -100,7 +109,7 @@ namespace N2Nmc
                 exception.Message,
                 exception.HResult,
                 exception.StackTrace,
-                (e.IsTerminating? "Terminating | N2N GO 正在终止": "Ignore? | 要忽略并继续吗？")
+                (e.IsTerminating ? "Terminating | N2N GO 正在终止" : "Ignore? | 要忽略并继续吗？")
                 );
 
             if (!e.IsTerminating)
