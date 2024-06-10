@@ -251,8 +251,8 @@ namespace N2Nmc_Server.N2NmcServer
             }
 
             ServerConfig.SaveConfigDataToFile();
-            Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Info, "Config Saved.");
-            Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Info, "ServerStopped.");
+            Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Info, "Config Saved.\n");
+            Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Info, "ServerStopped.\n");
         }
 
 
@@ -290,7 +290,7 @@ namespace N2Nmc_Server.N2NmcServer
 
             if (!InitServer())
             {
-                Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, "Cannot Init Server.");
+                Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, "Cannot Init Server.\n");
 
                 return false;
             }
