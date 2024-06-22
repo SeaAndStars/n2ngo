@@ -107,7 +107,7 @@ namespace N2Nmc_Server.N2NmcServer
                                 if (c == null || n == null)
                                     throw new NullReferenceException();
 
-                                StringBuilder stringBuilder = new StringBuilder();
+                                StringBuilder stringBuilder = new();
                                 stringBuilder.AppendFormat(
                                     "\n" +
                                     "[{0}] Name: {1}\n" +
@@ -222,10 +222,10 @@ namespace N2Nmc_Server.N2NmcServer
 
                 if (cmdLower == "save_rooms")
                 {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i =0;i<Server.Rooms.Count;i++)
+                    StringBuilder sb = new();
+                    for (int i = 0; i < Server.Rooms.Count; i++)
                     {
-                        sb.AppendFormat("{0}|{1}|{2}|{3}|{4}|{5}|{6}", Server.Rooms[i].RoomCode, Server.Rooms[i].RoomName, Server.Rooms[i].IsRoomInvisible?'1':'0', Server.Rooms[i].IsRoomPasswordNeeded?'1':'0', Server.Rooms[i].RoomPassword, Server.Rooms[i].colorMain.data, Server.Rooms[i].colorMinor.data);
+                        sb.AppendFormat("{0}|{1}|{2}|{3}|{4}|{5}|{6}", Server.Rooms[i].RoomCode, Server.Rooms[i].RoomName, Server.Rooms[i].IsRoomInvisible ? '1' : '0', Server.Rooms[i].IsRoomPasswordNeeded ? '1' : '0', Server.Rooms[i].RoomPassword, Server.Rooms[i].colorMain.data, Server.Rooms[i].colorMinor.data);
                         sb.AppendLine();
                     }
                     File.WriteAllText("Rooms", sb.ToString());
@@ -239,8 +239,8 @@ namespace N2Nmc_Server.N2NmcServer
                     foreach (string s in lines)
                     {
                         string[] infos = s.Split('|');
-                        if (infos.Length ==7)
-                            Server.Rooms.Add(new Room { RoomCode = infos[0], RoomName = infos[1],IsRoomInvisible= infos[2]=="0"?false:true, IsRoomPasswordNeeded = infos[3] == "0" ? false : true, RoomPassword = infos[4], colorMain = new RoomColor(UInt32.Parse(infos[5])), colorMinor = new RoomColor(UInt32.Parse(infos[6])) });
+                        if (infos.Length == 7)
+                            Server.Rooms.Add(new Room { RoomCode = infos[0], RoomName = infos[1], IsRoomInvisible = infos[2] == "0" ? false : true, IsRoomPasswordNeeded = infos[3] == "0" ? false : true, RoomPassword = infos[4], colorMain = new RoomColor(UInt32.Parse(infos[5])), colorMinor = new RoomColor(UInt32.Parse(infos[6])) });
                     }
 
                     goto loop;
@@ -281,7 +281,7 @@ namespace N2Nmc_Server.N2NmcServer
 
                 Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "Server Config Loaded: Listen {0}:{1}\n", ipAddrV4.ToString(), portV4);
             }
-            
+
         }
 
         public bool Init()

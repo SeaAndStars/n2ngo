@@ -49,7 +49,7 @@ namespace N2Nmc.Views.SubPages
 
             Growl.Info("正在进入房间,请稍后...", GrowlToken);
 
-            ExecLog execLog = new ExecLog();
+            ExecLog execLog = new();
 
             DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             timer.Tick += (_, __) =>
@@ -68,10 +68,10 @@ namespace N2Nmc.Views.SubPages
 
             timer.Start();
 
-            string cmd = edgePath + " -c " + roomCode + " -k " + (needPassword == true ? roomPassword : SharedData.DefaultRoomPasswd) + " -l " + SharedData.n2nServerIPP;
+            string cmd = EdgePath + " -c " + roomCode + " -k " + (needPassword == true ? roomPassword : SharedData.DefaultRoomPasswd) + " -l " + SharedData.n2nServerIPP;
             EdgeConnectionInfo.CurrentRoomCode = roomCode;
 
-            //EdgeInvoker edgeInvoker = new EdgeInvoker();
+            //EdgeInvoker edgeInvoker = new();
             //edgeInvoker.PushArgs(" -c " + roomCode + " -k " + (needPassword == true ? roomPassword : SharedData.DefaultRoomPasswd) + " -l " + SharedData.n2nServerIPP);
             //edgeInvoker.Call();
 

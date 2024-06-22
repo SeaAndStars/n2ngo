@@ -12,6 +12,9 @@
     <Grid>
         <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
             <ItemsControl x:Name="Indexers" Margin="8,15,8,15" >
+                <ItemsControl.Resources>
+                    <local1:IndexerTextConverter x:Key="IndexerTextConverter"/>
+                </ItemsControl.Resources>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal"/>
@@ -22,26 +25,22 @@
                         <Border x:Name="ItemMainParent" Margin="5" Width="240" Height="500"  Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
             Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp">
                             <Grid x:Name="TempGrid">
-                                <Image Name="ContentBackgroundImage" Opacity="0.5" Source="{Binding IndexerCBI}" Stretch="UniformToFill" Margin="25,250,0,0">
-                                    <Image.Effect>
-                                        <BlurEffect KernelType="Box" RenderingBias="Performance" Radius="4"/>
-                                    </Image.Effect>
-                                </Image>
+                                <Image Name="ContentBackgroundImage" Opacity="0.5" Source="{Binding IndexerCBI}" Stretch="UniformToFill" Margin="25,250,0,0"/>
                                 <TextBlock Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" TextWrapping="Wrap">
-                                    <Run Text="{Binding IndexerTitle}" FontWeight="Bold" FontSize="34"/>
+                                    <Run Name="_dynamicTextIndexerTitle" Text="{Binding IndexerTitle}" FontWeight="Bold" FontSize="34"/>
                                     <LineBreak/>
-                                    <Run Text="{Binding IndexerDescription}" FontSize="16" Foreground="#FF313131"/>
+                                    <Run Name="_dynamicTextIndexerDescription" Text="{Binding IndexerDescription}" FontSize="16" Foreground="#FF313131"/>
                                 </TextBlock>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
 
-                <local1:Indexer nagivKey="community"  IndexerTitle="大厅" IndexerDescription="在这里查看社区所有可见的公开房间" IndexerCBI="/Data/image/Community.png"/>
-                <local1:Indexer nagivKey="hosting" IndexerTitle="主持" IndexerDescription="创建一个属于您的房间" IndexerCBI="/Data/image/Hosting.png"/>
-                <local1:Indexer nagivKey="clienting" IndexerTitle="加入" IndexerDescription="通过您获得的线索加入房间" IndexerCBI="/Data/image/Clienting.png"/>
-                <local1:Indexer nagivKey="advanced" IndexerTitle="高级选项" IndexerDescription="更多高级的内容" IndexerCBI="/Data/image/Advanced.png"/>
-                <local1:Indexer nagivKey="about" IndexerTitle="关于" IndexerDescription="更多关于我们的信息" IndexerCBI="/Data/image/About.png"/>
+                <local1:Indexer nagivKey="community"  IndexerTitle="@LOCALE_Index-Community_Title" IndexerDescription="@LOCALE_Index-Community_Description" IndexerCBI="/Data/image/Community.png"/>
+                <local1:Indexer nagivKey="hosting" IndexerTitle="@LOCALE_Index-Hosting_Title" IndexerDescription="@LOCALE_Index-Hosting_Description" IndexerCBI="/Data/image/Hosting.png"/>
+                <local1:Indexer nagivKey="clienting" IndexerTitle="@LOCALE_Index-Clienting_Title" IndexerDescription="@LOCALE_Index-Clienting_Description" IndexerCBI="/Data/image/Clienting.png"/>
+                <local1:Indexer nagivKey="advanced" IndexerTitle="@LOCALE_Index-Advanced_Title" IndexerDescription="@LOCALE_Index-Advanced_Description" IndexerCBI="/Data/image/Advanced.png"/>
+                <local1:Indexer nagivKey="about" IndexerTitle="@LOCALE_Index-About_Title" IndexerDescription="@LOCALE_Index-About_Description" IndexerCBI="/Data/image/About.png"/>
             </ItemsControl>
         </hc:ScrollViewer>
     </Grid>

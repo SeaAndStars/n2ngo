@@ -25,7 +25,7 @@ namespace N2Nmc.Views.SubPages
     /// </summary>
     public partial class InfoPage : Page
     {
-        Storyboard storyboard = new Storyboard();
+        Storyboard storyboard = new();
         public InfoPage()
         {
             InitializeComponent();

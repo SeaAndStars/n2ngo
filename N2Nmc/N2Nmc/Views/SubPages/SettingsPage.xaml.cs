@@ -2,10 +2,14 @@
 using N2Nmc.UtilsClass;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Threading;
+using static N2Nmc.UtilsClass.SharedData.CurrentApp;
 
 namespace N2Nmc.Views.SubPages
 {
@@ -17,6 +21,26 @@ namespace N2Nmc.Views.SubPages
         public SettingsPage()
         {
             InitializeComponent();
+
+            UpdateColorPaletteSelectionItems();
+        }
+
+        public void UpdateColorPaletteSelectionItems()
+        {
+            if (SharedData.ConfigFile == null)
+                throw new NullReferenceException(nameof(SharedData.ConfigFile));
+
+            var builtinColorPaletteNames = App.Current.FindResource("BuiltinColorPaletteNames") as Array;
+            if (builtinColorPaletteNames == null)
+                throw new NullReferenceException("Resource BuiltinColorPaletteNames null");
+
+            ColorPaletteSeletion.Items.Clear();
+            ColorPaletteSeletion.SelectedIndex = -1;
+            foreach ( var item in builtinColorPaletteNames )
+            {
+                ColorPaletteSeletion.Items.Add(item);
+            }
+            ColorPaletteSeletion.SelectedIndex = int.Parse(SharedData.ConfigFile.Get("CurrentColorPalette", "0"));
         }
 
         //private void SelectBackgroundImageButton_Click(object sender, RoutedEventArgs e)
@@ -61,13 +85,14 @@ namespace N2Nmc.Views.SubPages
         private void BackgroundOSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var slider = (Slider)sender;
-            //OSliderInd.Content = string.Format("{0:0.00}% 背景不透明度", (e.NewValue / (slider.Maximum - slider.Minimum) * 100));
-            OSliderInd.Content = string.Format("{0:0}% 背景不透明度", (e.NewValue / (slider.Maximum - slider.Minimum) * 100));
+
+            if (OSliderInd != null)
+                OSliderInd.Text = string.Format("{0:0.0}%", (e.NewValue / (slider.Maximum - slider.Minimum) * 100));
 
             if (i > 1)
             {
                 SharedData.GetMainView.SetBackColor((byte)e.NewValue);
-                SharedData.configFile?.Set("WindowBackgroundAlpha", ((int)e.NewValue).ToString());
+                SharedData.ConfigFile.Set("WindowBackgroundAlpha", ((int)e.NewValue).ToString());
             }
             else
                 ++i;
@@ -75,7 +100,7 @@ namespace N2Nmc.Views.SubPages
 
         private void ResetConfigButton_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.configFile?.Clear();
+            SharedData.ConfigFile.Clear();
             SharedData.GetMainView.DoMessageDialog("重启应用以生效。", "设置");
         }
 
@@ -84,16 +109,36 @@ namespace N2Nmc.Views.SubPages
             if (e.AddedItems.Count <= 0)
                 return;
 
-            var snder = sender as HandyControl.Controls.ComboBox;
-            if (snder == null)
+            var combo = sender as HandyControl.Controls.ComboBox;
+            if (combo == null)
                 throw new ArgumentNullException("ColorPaletteSeletion_SelectionChanged sender arg null");
 
             if (SharedData.GetMainView.isInitialized)
-                SharedData.configFile?.Set("CurrentColorPalette", snder.SelectedIndex.ToString());
+                SharedData.ConfigFile.Set("CurrentColorPalette", combo.SelectedIndex.ToString());
 
             var selectedItem = e.AddedItems[0] as string;
             if (selectedItem != null)
                 SharedData.GetMainView.UpdateColorPalette(selectedItem);
+        }
+
+        private void SwitchLogButtonButton_Click(object sender, RoutedEventArgs e)
+        {
+            SharedData.GetMainView.LogButtonVisibility = SharedData.GetMainView.LogButtonVisibility == Visibility.Visible? Visibility.Collapsed: Visibility.Visible;
+        }
+
+        private void LocaleSeletion_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count <= 0)
+                return;
+
+            var combo = sender as HandyControl.Controls.ComboBox;
+            if (combo == null)
+                throw new ArgumentNullException("LocaleSeletion_SelectionChanged sender arg null");
+
+            var selectedItem = e.AddedItems[0] as string;
+            if (selectedItem != null)
+                SharedData.CurrentApp.Locale.UpdateLocale(selectedItem);
+
         }
 
         /*
@@ -276,5 +321,62 @@ namespace N2Nmc.Views.SubPages
         }
         */
     }
+
+    public class ColorPaletteSelectionConverter : IValueConverter
+    {
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+
+            var res = SharedData.CurrentApp.Get.TryFindResource($"BuiltinColorPalette_{value}") as ResourceDictionary;
+            if (res == null)
+                return null;
+
+            return new SolidColorBrush((Color)res["Palette_500"]);
+        }
+
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+    }
+
+    public class LocaleSelectionConverter : IValueConverter
+    {
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+
+            var objAsString = value as string;
+            if (objAsString == null)
+                return null;
+
+            var res = SharedData.CurrentApp.Locale.ReadLocal(objAsString);
+            if (res == null)
+                return null;
+            return res.Language;
+        }
+
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
+    }
+    public class LocaleSelectionFlagIconConverter : IValueConverter
+    {
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+
+            var objAsString = value as string;
+            if (objAsString == null)
+                return null;
+
+            var res = SharedData.CurrentApp.Locale.ReadLocal(objAsString);
+            if (res == null)
+                return null;
+            return $"/Data/FlagIcons/{res.RegionCode.ToLower()}.svg";
+        }
+
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
+    }
+    
 }
 

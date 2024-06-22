@@ -7,7 +7,7 @@ namespace N2Nmc_Server
     {
         static void Main(string[] args)
         {
-            MineMP.ConsoleBuffer consoleBuffer = new MineMP.ConsoleBuffer();
+            MineMP.ConsoleBuffer consoleBuffer = new();
             consoleBuffer.ReadingInputLinePeeking += ConsoleBuffer_ReadingInputLinePeeking;
             consoleBuffer.ReadingInputLine += ConsoleBuffer_ReadingInputLine;
             consoleBuffer.ControlSymbolBufferPushed += ConsoleBuffer_ControlSymbolBufferPushed;

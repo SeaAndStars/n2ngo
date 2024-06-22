@@ -27,7 +27,7 @@ namespace N2Nmc.Views.SubPages
 
             CheckIsRoomPasswordNeeded_Click(null, null);
 
-            timer = new DispatcherTimer();
+            timer = new();
             timer.Interval = TimeSpan.FromSeconds(1);
         }
 
@@ -83,7 +83,7 @@ namespace N2Nmc.Views.SubPages
                             var dialogYesNo =dialogMessage.MessageContent as DialogYesNo;
                             if ( dialogYesNo != null )
                             {
-                                if (dialogYesNo.YesNo == DialogYesNo.YesNoE.Yes) 
+                                if (dialogYesNo.YesNo == DialogYesNo.YesNoE.Yes)
                                 {
                                     QuickJoinPage.Join(needPassword, r[0], password);
                                 }

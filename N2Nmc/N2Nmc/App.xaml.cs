@@ -1,10 +1,13 @@
 ﻿using N2Nmc.UtilsClass;
 using System;
 using System.CodeDom;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace N2Nmc
 {
@@ -16,11 +19,14 @@ namespace N2Nmc
 #if DEBUG
         bool _debugConsoleAlloc = false;
 #endif
-        App()
+        public App()
         {
+#if DEBUG
+#else
             TaskScheduler.UnobservedTaskException += new EventHandler<UnobservedTaskExceptionEventArgs>(TaskScheduler_UnobservedTaskException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             this.DispatcherUnhandledException += new System.Windows.Threading.DispatcherUnhandledExceptionEventHandler(Application_DispatcherUnhandledException);
+#endif
 
             Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
 #if DEBUG
@@ -31,7 +37,7 @@ namespace N2Nmc
             {
                 _debugConsoleAlloc = true;
 
-                Console.Title = string.Format("N2Nmc({0}) Debug Console", SharedData.versionString);
+                Console.Title = string.Format("N2Nmc({0}) Debug Console", SharedData.VersionString);
             }
             else MessageBox.Show("Cannot alloc a new console", "N2Nmc Debug");
 #endif
@@ -50,13 +56,6 @@ namespace N2Nmc
             }
 #endif
         }
-
-        public void UpdateColorPalette() { }
-
-        public void UpdateLanguage() { 
-
-        }
-
 
         private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {

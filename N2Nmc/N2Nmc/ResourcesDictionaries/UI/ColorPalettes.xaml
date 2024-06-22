@@ -75,7 +75,7 @@
         <system:String>Blue-Grey</system:String>
     </x:Array>
     <!-- Red -->
-    <ResourceDictionary x:Key="BuiltinColorPalette_Red">
+    <ResourceDictionary x:Key="BuiltinColorPalette_Red" x:Name="BuiltinColorPalette_Red">
         <Color x:Key="Palette_50">#FFEBEE</Color>
         <Color x:Key="Palette_100">#FFCDD2</Color>
         <Color x:Key="Palette_200">#EF9A9A</Color>

@@ -59,7 +59,7 @@ namespace N2Nmc.UtilsClass
 
         public bool SaveConfigDataToFile()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach(var cfg in Data)
             {
                 sb.AppendFormat("{0} = {1}", cfg.Key,cfg.Value);

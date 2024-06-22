@@ -41,7 +41,7 @@ namespace N2NmcClientUpdate
 
                 try
                 {
-                    Process DotNetCheck = new Process();
+                    Process DotNetCheck = new();
                     DotNetCheck.StartInfo = new ProcessStartInfo { CreateNoWindow = true, RedirectStandardOutput = true, FileName = "dotnet", Arguments = "--list-runtimes" };
                     DotNetCheck.Start();
                     DotNetCheck.WaitForExit();
@@ -85,7 +85,7 @@ namespace N2NmcClientUpdate
 
         public static async Task DownloadFileAsync(string url, string path)
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClient client = new())
             {
                 using (HttpResponseMessage response = await client.GetAsync(url))
                 {

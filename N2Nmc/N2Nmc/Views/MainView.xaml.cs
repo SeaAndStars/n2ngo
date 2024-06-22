@@ -6,13 +6,15 @@ using N2Nmc.Views.SubPages.Dialogs;
 using N2Nmc.Views.SubPages.Dialogs.MessageDialogs;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -63,7 +65,10 @@ namespace N2Nmc.Views
         DispatcherTimer n2nmc_server_reconnect_timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(15) };
 
         public bool isInitialized { get; private set; } = false;
-        bool canClose = false;
+        bool _canClose = false;
+
+        public Visibility LogButtonVisibility { get => ButtonLog.Visibility; set => ButtonLog.Visibility = value; }
+
 
         public static void PrintMemSet(string? Tag = null)
         {
@@ -77,18 +82,19 @@ namespace N2Nmc.Views
 
         public MainView()
         {
+            Stopwatch swbm = Stopwatch.StartNew();
+
             InitializeComponent();
-            SharedData.configFile = new EasyConfig("Data/config.ini");  // Do this first
 
             // 初始化页面实例
-            pageRooms = new RoomsPage();
-            pageRooming = new RoomingPage();
-            pageQuickJoin = new QuickJoinPage();
-            pageLog = new LogPage();
-            pageSettings = new SettingsPage();
-            pageIndex = new IndexPage();
-            pageRoom = new RoomPage();
-            pageInfo = new InfoPage();
+            pageRooms = new();
+            pageRooming = new();
+            pageQuickJoin = new();
+            pageLog = new();
+            pageSettings = new();
+            pageRoom = new();
+            pageInfo = new();
+            pageIndex = new();
 
             var r = App.Current.Resources;
             var MainColorBrush = (SolidColorBrush)r["MainColorSolidBrush"];
@@ -99,15 +105,53 @@ namespace N2Nmc.Views
             HandyControl.Controls.Growl.GrowlPanel = PanelMsg;
 
             Opacity = 0;
-            SharedData.configFile.Get("DisableAnimation", "0");
-            SharedData.configFile.Get("UserNickname", "NewToGO");
+            SharedData.ConfigFile.Get("DisableAnimation", "0");
+            SharedData.ConfigFile.Get("UserNickname", "NewToGO");
+
+            if (SharedData.ConfigFile.Get("FirstRun", "1") == "1")
+            {
+                var culture = CultureInfo.CurrentCulture;
+                var locale = culture.Name;
+                var localeHead = SharedData.CurrentApp.Locale.ReadLocal(locale);
+                if (localeHead == null)
+                {
+                    DoMessageDialog($"暂无针对您当前的地区语言的翻译副本({culture.NativeName})，我们将会为您启用默认语言", "抱歉");
+                    SharedData.ConfigFile.Set("locale", "default");
+                    locale = "default";
+                }
+                SharedData.CurrentApp.Locale.UpdateLocale(locale);
+                pageSettings.LocaleSeletion.SelectedItem = locale;
+            }
+            else
+            {
+                var locale = SharedData.ConfigFile.Get("locale", "default");
+                var localeHead = SharedData.CurrentApp.Locale.ReadLocal(locale);
+                if (localeHead == null)
+                {
+                    DoMessageDialog($"暂无针对您当前使用的语言的翻译副本({locale})，我们将会为您启用默认语言", "抱歉");
+                    SharedData.ConfigFile.Set("locale", "default");
+                    locale = "default";
+                }
+                SharedData.CurrentApp.Locale.UpdateLocale(locale);
+                pageSettings.LocaleSeletion.SelectedItem = locale;
+            }
 
             int _alpha = 255;
-            var s = SharedData.configFile.Get("WindowBackgroundAlpha", "245");  // 245 190 198
+            var s = SharedData.ConfigFile.Get("WindowBackgroundAlpha", "245");  // 245 190 198 209
             int.TryParse(s, out _alpha);
             SetBackColor((byte?)_alpha);
             SetWindowMaxNormalButtonImage();
             pageSettings.BackgroundOSlider.Value = _alpha;
+
+            {
+                LogButtonVisibility =
+#if DEBUG
+                Visibility.Visible
+#else
+                Visibility.Collapsed
+#endif
+                ;
+            }
 
             n2nmc_server_reconnect_timer.Tick += (_, __) =>
             {
@@ -124,8 +168,8 @@ namespace N2Nmc.Views
                     }
 
 
-                    SharedData.NM_Connection.disconnectedGrowlInfo.Message = "是否要尝试重新连接？";
-                    HandyControl.Controls.Growl.Ask(SharedData.NM_Connection.disconnectedGrowlInfo);
+                    SharedData.NM_Connection.DisconnectedGrowlInfo.Message = "是否要尝试重新连接？";
+                    HandyControl.Controls.Growl.Ask(SharedData.NM_Connection.DisconnectedGrowlInfo);
                     SharedData.NM_Connection.LockingVars.DEC();
                 }
 
@@ -135,11 +179,11 @@ namespace N2Nmc.Views
 
             lock (SharedData.NM_Connection)
             {
-                SharedData.NM_Connection.disconnectedGrowlInfo.ActionBeforeClose = (bool b) =>
+                SharedData.NM_Connection.DisconnectedGrowlInfo.ActionBeforeClose = (bool b) =>
                 {
                     lock (SharedData.NM_Connection.LockingVars)
                     {
-                        if (SharedData.NM_Connection.LockingVars.disconnectedGrowlInfoAction > 0)
+                        if (SharedData.NM_Connection.LockingVars.DisconnectedGrowlInfoAction > 0)
                             return true;
 
                         SharedData.NM_Connection.LockingVars.INC();
@@ -157,6 +201,9 @@ namespace N2Nmc.Views
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
             isInitialized = true;
+
+            swbm.Stop();
+            Console.WriteLine($"AppMainView initialization finished({swbm.Elapsed.ToString()})");
         }
 
         UInt32 _frameCounter = 0;
@@ -170,7 +217,7 @@ namespace N2Nmc.Views
             }
 
             // Determine frame rate in fps (frames per second).
-            if (_frameCounter >=60)
+            if (_frameCounter >= 60)
             {
                 long frameRate = (long)(_frameCounter / this._stopwatch.Elapsed.TotalSeconds);
                 DebugLabel_FPS.Content = String.Format("FPS: {0}", frameRate);
@@ -262,7 +309,7 @@ namespace N2Nmc.Views
             Frame? m = null;
 
             if (ActsRet == null)
-                ActsRet = new List<Action<object>>();
+                ActsRet = new();
             ActsRet.Add((_) =>
             {
                 if (m == null)
@@ -286,7 +333,7 @@ namespace N2Nmc.Views
             Frame? m = null;
 
             if (ActsRet == null)
-                ActsRet = new List<Action<object>>();
+                ActsRet = new();
             ActsRet.Add((_) =>
             {
                 if (m == null)
@@ -310,7 +357,7 @@ namespace N2Nmc.Views
             Frame? m = null;
 
             if (ActsRet == null)
-                ActsRet = new List<Action<object>>();
+                ActsRet = new();
             ActsRet.Add((_) =>
             {
                 if (m == null)
@@ -385,9 +432,9 @@ namespace N2Nmc.Views
 
         static string Run(string command, bool noWindow = false)
         {
-            Process process = new Process();
+            Process process = new();
 
-            ProcessStartInfo startInfo = new ProcessStartInfo();
+            ProcessStartInfo startInfo = new();
             startInfo.FileName = "cmd.exe";
             startInfo.Arguments = "/c " + command;
             startInfo.RedirectStandardOutput = true;
@@ -408,8 +455,11 @@ namespace N2Nmc.Views
 
         private async void CloseExit()
         {
-            canClose = false;
-            if (SharedData.configFile?.Get("NeedUpdate", "0") == "1")
+            _canClose = false;
+
+            SharedData.ConfigFile.Set("locale", SharedData.CurrentApp.Locale.CurrentLocale);
+
+            if (SharedData.ConfigFile.Get("NeedUpdate", "0") == "1")
                 HandyControl.Controls.Growl.SuccessGlobal("开始退出并更新 N2Nmc ...");
             else
                 HandyControl.Controls.Growl.SuccessGlobal("开始退出 N2Nmc ...");
@@ -430,7 +480,7 @@ namespace N2Nmc.Views
                 throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
 
             tg_tt.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation { To = 800, Duration = TimeSpan.FromSeconds(0.55), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } });
-            
+
             BeginAnimation(OpacityProperty, fadeOutAnimationEx);
 
             await Task.Run(() =>
@@ -441,18 +491,18 @@ namespace N2Nmc.Views
                 {
                     SharedData.ExitRoom();
 
-                    SharedData.configFile?.SaveConfigDataToFile();
+                    SharedData.ConfigFile.SaveConfigDataToFile();
                     Console.WriteLine("(Exit) Config Wrote");
 
-                    if (File.Exists(SharedData.updateClientExecFile))
-                        try { File.Delete(SharedData.updateClientExecFile); } catch { }
+                    if (File.Exists(SharedData.UpdateClientExecFile))
+                        try { File.Delete(SharedData.UpdateClientExecFile); } catch { }
 
-                    File.Copy(SharedData.updateClientPath, SharedData.updateClientExecFile);
-                    if (SharedData.configFile?.Get("NeedUpdate", "0") == "1")
+                    File.Copy(SharedData.UpdateClientPath, SharedData.UpdateClientExecFile);
+                    if (SharedData.ConfigFile.Get("NeedUpdate", "0") == "1")
                     {
                         try
                         {
-                            new Process { StartInfo = new ProcessStartInfo { FileName = SharedData.updateClientExecFile, Arguments = Process.GetCurrentProcess().Id.ToString() } }.Start();
+                            new Process { StartInfo = new ProcessStartInfo { FileName = SharedData.UpdateClientExecFile, Arguments = Process.GetCurrentProcess().Id.ToString() } }.Start();
                         }
                         catch (Exception ex)
                         {
@@ -461,7 +511,7 @@ namespace N2Nmc.Views
                     }
 
                     HandyControl.Controls.Growl.SuccessGlobal("N2Nmc 已退出...");
-                    canClose = true;
+                    _canClose = true;
                     Close();
                 });
             });
@@ -481,7 +531,7 @@ namespace N2Nmc.Views
                 b == null ? c.B : b.Value));
         }
 
-        public async void UpdateColorPalette(string? NewColorPaletteName = null)
+        public async void UpdateColorPalette(string? newColorPaletteName = null)
         {
             if (!isInitialized)
                 return;
@@ -490,11 +540,11 @@ namespace N2Nmc.Views
             if (resCurrentColorPalette == null)
                 throw new NullReferenceException("Current Color Palette Resource null");
 
-            if (NewColorPaletteName!=null)
+            if (newColorPaletteName != null)
             {
-                var resNewColorPalette = App.Current.TryFindResource("BuiltinColorPalette_" + NewColorPaletteName) as ResourceDictionary;
+                var resNewColorPalette = App.Current.TryFindResource("BuiltinColorPalette_" + newColorPaletteName) as ResourceDictionary;
                 if (resNewColorPalette == null)
-                    throw new NullReferenceException(string.Format("Target new Color Palette({0}) Resource null", NewColorPaletteName));
+                    throw new NullReferenceException(string.Format("Target new Color Palette({0}) Resource null", newColorPaletteName));
 
                 foreach (var key in resCurrentColorPalette.Keys)
                 {
@@ -505,6 +555,13 @@ namespace N2Nmc.Views
                 }
 
                 App.Current.Resources["CurrentColorPalette"] = resCurrentColorPalette;
+            }
+
+            foreach (var key in resCurrentColorPalette.Keys)
+            {
+                var brush = new SolidColorBrush(((SolidColorBrush)App.Current.Resources[key]).Color);
+                brush.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)resCurrentColorPalette[key], Duration = TimeSpan.FromSeconds(0.45) });
+                App.Current.Resources[key] = brush;
             }
 
             {
@@ -551,7 +608,7 @@ namespace N2Nmc.Views
                             if (di != null)
                             {
                                 var newName = di.InputBox.Text;
-                                SharedData.configFile?.Set("UserNickname", newName);
+                                SharedData.ConfigFile.Set("UserNickname", newName);
                             }
                         }
                     } },
@@ -564,7 +621,7 @@ namespace N2Nmc.Views
                         var di = dm.MessageContent as DialogInput;
                         if (di != null)
                         {
-                            di.InputBox.Text = SharedData.configFile?.Get("UserNickname");
+                            di.InputBox.Text = SharedData.ConfigFile.Get("UserNickname");
                             di.InputBox.SelectAll();
                         }
                     }
@@ -618,12 +675,12 @@ namespace N2Nmc.Views
         {
             NavigatePage(pageLog);
         }
-        bool bLogShow = false;
+        bool _bLogShow = false;
         private void TitleIconButton_Click(object sender, RoutedEventArgs e)
         {
-            bLogShow = !bLogShow;
+            _bLogShow = !_bLogShow;
 
-            if (bLogShow)
+            if (_bLogShow)
                 NavigatePage(pageLog);
             else
                 NavigatePage(null);
@@ -637,6 +694,8 @@ namespace N2Nmc.Views
 
         private async void AsyncLoading()
         {
+            Stopwatch swbm = Stopwatch.StartNew();
+
             var tg = (this.RenderTransform as TransformGroup);
             if (tg == null)
                 throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
@@ -656,12 +715,12 @@ namespace N2Nmc.Views
 
             RefreshUIAnimations();
 
-            DoMessageDialog("Hi！这里是N2N GO！", "欢迎！", new List<Action<object>>() { (_) => DoMessageDialog("当您看见这个，代表您正使用Dev开发版本。\n我们推荐您使用正式版本，您可以选择手动下载并切换，或者使用检测更新功能。", "欢迎！") });
+            //DoMessageDialog("Hi！这里是N2N GO！", "欢迎！", new List<Action<object>>() { (_) => DoMessageDialog("当您看见这个，代表您正使用Dev开发版本。\n我们推荐您使用正式版本，您可以选择手动下载并切换，或者使用检测更新功能。", "欢迎！") });
 
             await Task.Run(() =>
             {
-                if (SharedData.configFile == null)
-                    throw new NullReferenceException(nameof(SharedData.configFile));
+                if (SharedData.ConfigFile == null)
+                    throw new NullReferenceException(nameof(SharedData.ConfigFile));
                 if (pageRooms == null)
                     throw new NullReferenceException(nameof(pageRooms));
                 if (pageSettings == null)
@@ -669,14 +728,14 @@ namespace N2Nmc.Views
                 SharedData.ConnectAndPeek();
                 //Dispatcher.Invoke(() => pageRooms.Refresh());
 
-                if (SharedData.configFile.Get("FirstRun", "1") == "1")
+                if (SharedData.ConfigFile.Get("FirstRun", "1") == "1")
                 {
                     //Dispatcher.BeginInvoke(() => HandyControl.Controls.Growl.Ask(new HandyControl.Data.GrowlInfo { CancelStr = "", Type = HandyControl.Data.InfoType.Info, ActionBeforeClose = (bool b) => { return b ? b : b; }, ShowCloseButton = false, Message = "N2Nmc需要配合Tap虚拟网卡来使用，如果您未安装，请前往设置-安装Tap驱动。" }));
                     Dispatcher.InvokeAsync(() => DoMessageDialog("如果您未安装Tap驱动，请前往设置页面安装，如果您是第一次使用N2N GO，我们强烈建议您安装一次。", "首次运行"));
-                    SharedData.configFile.Set("FirstRun", "0");
+                    SharedData.ConfigFile.Set("FirstRun", "0");
                 }
 
-                if (SharedData.configFile.Get("NeedUpdate", "0") == "1")
+                if (SharedData.ConfigFile.Get("NeedUpdate", "0") == "1")
                 {
                     DoMessageDialog("N2Nmc 上一次更新未成功，将会在本次关闭后重新尝试。");
                 }
@@ -686,17 +745,11 @@ namespace N2Nmc.Views
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     Run("Data/BinRef/Windows/WinIPBroadcast/WinIPBroadcast.exe run", true); // 运行WinIPBroadcast（数据转发到虚拟网卡）
 
-                var BuiltinColorPaletteNames = App.Current.FindResource("BuiltinColorPaletteNames") as Array;
-                if (BuiltinColorPaletteNames == null)
-                    throw new NullReferenceException("Resource BuiltinColorPaletteNames null");
-                pageSettings.Dispatcher.InvokeAsync(() =>
-                {
-                    var index = int.Parse(SharedData.configFile.Get("CurrentColorPalette", "0"));
-                    pageSettings.ColorPaletteSeletion.SelectedIndex = -1;
-                    pageSettings.ColorPaletteSeletion.ItemsSource = BuiltinColorPaletteNames;
-                    pageSettings.ColorPaletteSeletion.SelectedIndex = index;
-                });
+                pageSettings.Dispatcher.Invoke(() => pageSettings.UpdateColorPaletteSelectionItems());
             });
+            
+            swbm.Stop();
+            Console.WriteLine($"App asynchronous loading finished({swbm.Elapsed.ToString()})");
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -705,9 +758,9 @@ namespace N2Nmc.Views
             AsyncLoading();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (!canClose)
+            if (!_canClose)
             {
                 CloseExit();
                 e.Cancel = true;
@@ -738,7 +791,7 @@ namespace N2Nmc.Views
             }
         }
 
-        //Point ___tmp_pos = new Point();
+        //Point ___tmp_pos = Point();
         //private void Window_MouseMove(object sender, MouseEventArgs e)
         //{
         //    ___tmp_pos = e.GetPosition(this);
@@ -747,5 +800,38 @@ namespace N2Nmc.Views
 
         //    ImageBackgroundImage.RenderTransformOrigin = ___tmp_pos;
         //}
+        private void LocaleSeletion_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count <= 0)
+                return;
+
+            var combo = sender as HandyControl.Controls.ComboBox;
+            if (combo == null)
+                throw new ArgumentNullException("LocaleSeletion_SelectionChanged sender arg null");
+
+            var selectedItem = e.AddedItems[0] as string;
+            if (selectedItem != null)
+                SharedData.CurrentApp.Locale.UpdateLocale(selectedItem);
+        }
+    }
+
+    public class LocaleSelectionConverter : IValueConverter
+    {
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return null;
+
+            var objAsString = value as string;
+            if (objAsString == null)
+                return null;
+
+            var res = SharedData.CurrentApp.Locale.ReadLocal(objAsString);
+            if (res == null)
+                return null;
+            return res.Language;
+        }
+
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
     }
 }

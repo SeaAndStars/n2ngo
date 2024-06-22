@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:N2Nmc"
         xmlns:hc="clr-namespace:HandyControl.Controls;assembly=HandyControl"
-        xmlns:hc1="https://handyorg.github.io/handycontrol" xmlns:system="clr-namespace:System;assembly=netstandard" xmlns:MagicEffects="clr-namespace:CT.WPF.MagicEffects;assembly=CT.WPF.MagicEffects" x:Class="N2Nmc.Views.MainView"
+        xmlns:hc1="https://handyorg.github.io/handycontrol" xmlns:system="clr-namespace:System;assembly=netstandard" xmlns:MagicEffects="clr-namespace:CT.WPF.MagicEffects;assembly=CT.WPF.MagicEffects" xmlns:local1="clr-namespace:N2Nmc.Views" x:Class="N2Nmc.Views.MainView"
         mc:Ignorable="d"
         Title="N2Nmc" Height="600" Width="930"
-        TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="Auto" TextOptions.TextHintingMode="Auto" RenderOptions.BitmapScalingMode="Unspecified" RenderOptions.EdgeMode="Unspecified" WindowStartupLocation="CenterScreen" Icon="/Data/image/logo13.ico" WindowStyle="None" AllowsTransparency="True" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="{DynamicResource MainFont}" StateChanged="Window_StateChanged" Background="{x:Null}">
+        TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Auto" TextOptions.TextHintingMode="Auto" RenderOptions.BitmapScalingMode="Unspecified" RenderOptions.EdgeMode="Unspecified" WindowStartupLocation="CenterScreen" Icon="/Data/image/logo13.ico" WindowStyle="None" AllowsTransparency="True" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="{DynamicResource MainFont}" StateChanged="Window_StateChanged" Background="{x:Null}">
     <Window.RenderTransform>
         <TransformGroup>
             <ScaleTransform/>
@@ -59,7 +59,7 @@
 
                     <!-- 消息对话框集合 -->
                     <Grid x:Name="MessageDialogs" Grid.Column="1"/>
-                    <hc1:SimpleStackPanel x:Name="PanelMsg" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"/>
+                    <hc1:SimpleStackPanel x:Name="PanelMsg" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"/>
 
                 </Grid>
             </Border>
@@ -68,7 +68,7 @@
             <Border x:Name="TitleBorder" CacheMode="BitmapCache" MouseLeftButtonDown="WinMove_main" Grid.Row="0" Background="{DynamicResource Palette_500}" Margin="10,10,10,0">
                 <Border.Resources>
                     <ResourceDictionary>
-                        <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}"></Style>
+                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MenuButtonStyle}"/>
                     </ResourceDictionary>
                 </Border.Resources>
                 <Border.BitmapEffect>
@@ -113,6 +113,20 @@
                                 </Image.Effect>
                             </Image>
                         </Button>
+
+                        <hc:ComboBox x:Name="LocaleSeletion" Visibility="Collapsed" Height="39" Width="160" SelectedIndex="0" SelectionChanged="LocaleSeletion_SelectionChanged">
+                            <ComboBox.Resources>
+                                <local1:LocaleSelectionConverter x:Key="LocaleConverter"/>
+                            </ComboBox.Resources>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource LocaleConverter}, Mode=OneWay}" FontSize="16" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <system:String>default</system:String>
+                            <system:String>zh-CN</system:String>
+                            <system:String>en-US</system:String>
+                        </hc:ComboBox>
                         <!--<Button x:Name="ButtonLog" Margin="0,0,155,0" Click="ButtonLog_Click" Width="35">
                         <Image x:Name="LBImage_Log" Source="/Data/image/icon/log.png" Height="20" Width="20"/>
                     </Button>-->
@@ -120,14 +134,14 @@
                 </Grid>
             </Border>
 
-            <Button Height="55" Width="55" VerticalAlignment="Bottom" HorizontalAlignment="Left"  Style="{DynamicResource CylindricalButtonStyle}" ToolTip="日志" Padding="0" Click="TitleIconButton_Click" Margin="40,0,0,55" Grid.Row="1">
+            <Button x:Name="ButtonLog" Height="55" Width="55" VerticalAlignment="Bottom" HorizontalAlignment="Left"  Style="{DynamicResource CylindricalButtonStyle}" ToolTip="日志" Padding="0" Click="TitleIconButton_Click" Margin="40,0,0,55" Grid.Row="1">
                 <Image x:Name="LBImage_Wnd_Btn_Log" Width="30" Height="30" Stretch="Fill" Source="/Data/image/icon/log.png">
                     <Image.Effect>
                         <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
                     </Image.Effect>
                 </Image>
             </Button>
-            <Border x:Name="DebugOverlay" Visibility="Visible" Grid.RowSpan="4" Effect="{StaticResource EffectShadow4}" Background="#8C272727" Margin="10,50,770,425">
+            <Border x:Name="DebugOverlay" Visibility="Collapsed" Grid.RowSpan="4" Effect="{StaticResource EffectShadow4}" Background="#8C272727" Margin="10,50,770,425">
                 <Label x:Name="DebugLabel_FPS" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource Palette_50}" HorizontalAlignment="Stretch" Content="FPS: 0" FontSize="22" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Height="95"/>
             </Border>
         </Grid>

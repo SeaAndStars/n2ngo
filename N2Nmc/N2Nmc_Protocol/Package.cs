@@ -27,7 +27,7 @@ namespace N2Nmc_Protocol
                 public static byte[] MsgShort(Int16 data) { return new byte[2] { (byte)(data >> 8), (byte)data }; }
                 public static byte[] MsgUShort(UInt16 data) { return new byte[2] { (byte)(data >> 8), (byte)data }; }
                 public static byte[] MsgLong(Int32 data) { return new byte[4] { (byte)((data >> 24) & 0xFF), (byte)((data >> 16) & 0xFF), (byte)((data >> 8) & 0xFF), (byte)(data & 0xFF) }; }
-                public static byte[] MsgULong(UInt32 data) { return new byte[4] { (byte)((data >> 24) & 0xFF), (byte)((data >> 16) & 0xFF), (byte)((data >> 8) & 0xFF), (byte)(data  & 0xFF) }; }
+                public static byte[] MsgULong(UInt32 data) { return new byte[4] { (byte)((data >> 24) & 0xFF), (byte)((data >> 16) & 0xFF), (byte)((data >> 8) & 0xFF), (byte)(data & 0xFF) }; }
                 public static byte[] MsgLongLong(Int64 data) { throw new NotImplementedException(); }
                 public static byte[] MsgULongLong(UInt64 data) { throw new NotImplementedException(); }
                 public static byte[] MsgFloat(float data) { throw new NotImplementedException(); }
@@ -60,7 +60,7 @@ namespace N2Nmc_Protocol
 
         public static Package MakePackage(Protocol.BaseHeader header = Protocol.BaseHeader.undefined, byte[]? package_data = null)
         {
-            Package package = new Package();
+            Package package = new();
 
             package.Header = (byte)header;
             package.external_data = package_data != null ? package_data : new byte[0] { };
@@ -71,7 +71,7 @@ namespace N2Nmc_Protocol
 
         public static byte[] BuildPackage(Package package)
         {
-            List<byte> bytes_processing = new List<byte>();
+            List<byte> bytes_processing = new();
 
             if (package.external_data == null)
                 throw new NullReferenceException(nameof(package.external_data));
@@ -84,7 +84,7 @@ namespace N2Nmc_Protocol
 
         public static Package ResolvePackage(byte[] package_data)
         {
-            Package package = new Package();
+            Package package = new();
 
             package.Header = package_data[0];
             if (package_data.Length > 1)
@@ -105,7 +105,7 @@ namespace N2Nmc_Protocol
             public int ReadTimeOut = 15000, WriteTimeOut = 15000;
             public IO_Tool()
             {
-                
+
             }
 
             public bool Send(TcpClient Client, Package package, bool timeOut = false)
@@ -143,7 +143,7 @@ namespace N2Nmc_Protocol
                     var stream = Client.GetStream();
                     stream.Flush();
 
-                    if (!stream.CanRead||!Client.Connected)
+                    if (!stream.CanRead || !Client.Connected)
                         return package;
 
                     int h;
@@ -219,7 +219,7 @@ namespace N2Nmc_Protocol
                     }
                 str_resolved:
                     {
-                        List<byte> externalBytes = new List<byte>();
+                        List<byte> externalBytes = new();
                         byte[] bytes = new byte[data_size];
 
                         stream.Read(bytes, 0, bytes.Length);

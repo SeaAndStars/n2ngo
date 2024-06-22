@@ -1,19 +1,19 @@
 ﻿using HandyControl.Controls;
 using HandyControl.Data;
-using HandyControl.Tools.Extension;
 using N2Nmc.Views;
 using N2Nmc.Views.SubPages;
 using N2Nmc_Protocol;
-using N2Nmc_Protocol.Objects;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,31 +27,101 @@ namespace N2Nmc.UtilsClass
 {
     public static class SharedData
     {
-        public static EasyConfig? configFile = null;
-        public readonly static Version version = new Version(4, 0, 0);
-        public readonly static string versionTag = "Dev";
+        public readonly static EasyConfig ConfigFile = new("Data/config.ini");
+        public readonly static Version Version = new(4, 0, 0);
+        public readonly static string VersionTag = "Dev";
 
         public static string n2nServerIPP = N2Nmc_Protocol.UserDef.GlobalServer_Ip + ':' + N2Nmc_Protocol.UserDef.ExternServerOptions.N2N_SuperNode_Server_Port;
         public static string n2nServerApiIPP = N2Nmc_Protocol.UserDef.GlobalServer_Ip + ':' + N2Nmc_Protocol.UserDef.ExternServerOptions.N2N_SuperNode_API_Server_Port;
 
         public static string DefaultRoomPasswd = "null";
-        public static string versionString { get { return version.ToString() + ' ' + versionTag; } }
+        public static string VersionString { get { return Version.ToString() + ' ' + VersionTag; } }
 
 
         public static string ShaderCacheDir = "Data/ShaderCache";
-        public static string binRefDir
+        public static string BinRefDir
             => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? Path.Combine("Data", "BinRef", "Windows") : RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? Path.Combine("Data", "BinRef", "Linux") : throw new Exception("OS Platform not support");
 
-        public static string edgeExecFile
+        public static string EdgeExecFile
             => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "edge.exe" : RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "edge" : throw new Exception("OS Platform not support");
-        public static string edgePath =>
-            Path.Combine(binRefDir, "n2n", edgeExecFile);
-        public static string updateClientExecFile
+        public static string EdgePath =>
+            Path.Combine(BinRefDir, "n2n", EdgeExecFile);
+        public static string UpdateClientExecFile
             => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "N2NmcClientUpdate.exe" : throw new NotImplementedException();
-        public static string updateClientPath =>
-            Path.Combine(binRefDir, updateClientExecFile);
+        public static string UpdateClientPath =>
+            Path.Combine(BinRefDir, UpdateClientExecFile);
 
         public static MainView GetMainView { get => (MainView)App.Current.MainWindow; }
+
+        public static class CurrentApp
+        {
+            public static App Get
+            {
+                get
+                {
+                    var app = Application.Current as App;
+                    if (app == null)
+                        throw new NullReferenceException("Cannot get current app as App");
+                    return app;
+                }
+            }
+
+            public static class Locale
+            {
+                public class LocaleHead
+                {
+                    public string Name { get; set; } = "null";
+                    public string Language { get; private set; } = "null";
+                    public string ISOLanguageCode { get; private set; } = "null";
+                    public string RegionCode { get; private set; } = "null";
+
+                    public LocaleHead() { }
+                    public LocaleHead(string Language) : this()
+                    {
+                        this.Language = Language;
+                        this.Name = Language;
+                    }
+                    public LocaleHead(string Name, string Language, string ISOLanguageCode, string RegionCode) : this()
+                    {
+                        this.Name = Name;
+                        this.Language = Language;
+                        this.ISOLanguageCode = ISOLanguageCode;
+                        this.RegionCode = RegionCode;
+                    }
+                }
+
+                public static string CurrentLocale { get; private set; } = "default";
+
+                const string _path = "ResourcesDictionaries/UI/Locales/";
+                public static void UpdateLocale(string locale = "default")
+                {
+                    var ds = CurrentApp.Get.Resources.MergedDictionaries
+                            .Cast<ResourceDictionary>()
+                            .Where(_d => _d.Source.OriginalString.Contains(_path))
+                            .ToList();
+                    foreach (var d in ds)
+                        CurrentApp.Get.Resources.MergedDictionaries.Remove(d);
+
+                    CurrentApp.Get.Resources.MergedDictionaries.Add(new ResourceDictionary { Source= new($"{_path}{locale}.xaml", UriKind.Relative) });
+                    CurrentLocale = locale;
+                }
+
+                public static LocaleHead? ReadLocal(string locale = "default")
+                {
+                    ResourceDictionary l;
+                    try
+                    {
+                        l = new ResourceDictionary { Source = new($"{_path}{locale}.xaml", UriKind.Relative) };
+                    }
+                    catch (IOException)
+                    {
+                        return null;
+                    }
+
+                    return new((string)l["LHEAD_Name"],(string)l["LHEAD_Language"], (string)l["LHEAD_ISOLanguageCode"], (string)l["LHEAD_RegionCode"]);
+                }
+            }
+        }
 
         public class ExecLog
         {
@@ -64,7 +134,7 @@ namespace N2Nmc.UtilsClass
             public void SetCommand(string command)
             {
                 add_log("Command: " + command + Environment.NewLine);
-                ProcessExecuteCommand = new Process();
+                ProcessExecuteCommand = new();
 
                 ProcessExecuteCommand.StartInfo.FileName = "cmd.exe";
                 ProcessExecuteCommand.StartInfo.Arguments = "/c " + command;
@@ -123,9 +193,9 @@ namespace N2Nmc.UtilsClass
                 ignore
             }
 
-            public string serverip = N2Nmc_Protocol.UserDef.GlobalServer_Ip;
-            public int serverport = N2Nmc_Protocol.UserDef.ExternServerOptions.N2Nmc_Server_Port;
-            public GrowlInfo disconnectedGrowlInfo = new GrowlInfo
+            public string ServerIP = N2Nmc_Protocol.UserDef.GlobalServer_Ip;
+            public int ServerPort = N2Nmc_Protocol.UserDef.ExternServerOptions.N2Nmc_Server_Port;
+            public GrowlInfo DisconnectedGrowlInfo = new()
             {
                 CancelStr = "稍后询问我",
                 ConfirmStr = "重新连接",
@@ -134,25 +204,25 @@ namespace N2Nmc.UtilsClass
             };
             public class _lockingVars
             {
-                public int disconnectedGrowlInfoAction { get; private set; } = 0;
+                public int DisconnectedGrowlInfoAction { get; private set; } = 0;
                 public void INC()
                 {
                     lock (this)
-                        disconnectedGrowlInfoAction++;
+                        DisconnectedGrowlInfoAction++;
                 }
                 public void DEC()
                 {
                     lock (this)
-                        if (disconnectedGrowlInfoAction <= 0)
-                            disconnectedGrowlInfoAction = 0;
+                        if (DisconnectedGrowlInfoAction <= 0)
+                            DisconnectedGrowlInfoAction = 0;
                         else
-                            disconnectedGrowlInfoAction--;
+                            DisconnectedGrowlInfoAction--;
                 }
             }
-            public _lockingVars LockingVars = new _lockingVars();
+            public _lockingVars LockingVars = new();
 
-            public n2nmc_server_disconnected_actions n2nmc_server_disconnected_action { get; private set; } = n2nmc_server_disconnected_actions.ask;
-            private TcpClient? Client = new TcpClient();
+            public n2nmc_server_disconnected_actions N2NmcServerDisconnectedActions { get; private set; } = n2nmc_server_disconnected_actions.ask;
+            private TcpClient? _client = new();
 
             public static void ClientExHandler(Exception ex, GrowlInfo growlInfo)
             {
@@ -165,16 +235,16 @@ namespace N2Nmc.UtilsClass
                 lock (this)
                 {
                     Close();
-                    Client = new TcpClient();
+                    _client = new();
 
                     try
                     {
-                        Client.Connect(serverip, serverport);
-                        if (Client.Connected) return true;
+                        _client.Connect(ServerIP, ServerPort);
+                        if (_client.Connected) return true;
                     }
                     catch (Exception ex)
                     {
-                        ClientExHandler(ex, disconnectedGrowlInfo);
+                        ClientExHandler(ex, DisconnectedGrowlInfo);
                         return false;
                     }
                     return false;
@@ -185,21 +255,21 @@ namespace N2Nmc.UtilsClass
             {
                 lock (this)
                 {
-                    if (Client == null)
-                        throw new NullReferenceException(nameof(Client));
+                    if (_client == null)
+                        throw new NullReferenceException(nameof(_client));
 
-                    Package.IO_Tool iO_Tool = new Package.IO_Tool();
+                    Package.IO_Tool iO_Tool = new();
                     if (timeOut != null)
                     {
                         iO_Tool.WriteTimeOut = timeOut.Value;
                     }
 
-                    if (!iO_Tool.Send(Client, package, timeOut != null))
+                    if (!iO_Tool.Send(_client, package, timeOut != null))
                     {
                         if (iO_Tool.latestEx != null)
-                            ClientExHandler(iO_Tool.latestEx, disconnectedGrowlInfo);
+                            ClientExHandler(iO_Tool.latestEx, DisconnectedGrowlInfo);
                         else
-                            ClientExHandler(new NetworkInformationException(), disconnectedGrowlInfo);
+                            ClientExHandler(new NetworkInformationException(), DisconnectedGrowlInfo);
 
                         return false;
                     }
@@ -212,24 +282,24 @@ namespace N2Nmc.UtilsClass
             {
                 lock (this)
                 {
-                    if (Client == null)
-                        throw new NullReferenceException(nameof(Client));
+                    if (_client == null)
+                        throw new NullReferenceException(nameof(_client));
 
                     Package? package = null;
 
-                    Package.IO_Tool iO_Tool = new Package.IO_Tool();
+                    Package.IO_Tool iO_Tool = new();
                     if (timeOut != null)
                     {
                         iO_Tool.ReadTimeOut = timeOut.Value;
                     }
 
-                    package = iO_Tool.Receive(Client, null, timeOut != null);
+                    package = iO_Tool.Receive(_client, null, timeOut != null);
 
                     if (package == null)
                         if (iO_Tool.latestEx != null)
-                            ClientExHandler(iO_Tool.latestEx, disconnectedGrowlInfo);
+                            ClientExHandler(iO_Tool.latestEx, DisconnectedGrowlInfo);
                         else
-                            ClientExHandler(new NullReferenceException(), disconnectedGrowlInfo);
+                            ClientExHandler(new NullReferenceException(), DisconnectedGrowlInfo);
 
                     return package;
                 }
@@ -239,10 +309,10 @@ namespace N2Nmc.UtilsClass
             {
                 lock (this)
                 {
-                    if (Client == null)
-                        throw new NullReferenceException(nameof(Client));
+                    if (_client == null)
+                        throw new NullReferenceException(nameof(_client));
 
-                    Client?.GetStream().Flush();
+                    _client?.GetStream().Flush();
                 }
             }
 
@@ -250,8 +320,8 @@ namespace N2Nmc.UtilsClass
             {
                 lock (this)
                 {
-                    if (Client == null)
-                        throw new NullReferenceException(nameof(Client));
+                    if (_client == null)
+                        throw new NullReferenceException(nameof(_client));
 
                     try
                     {
@@ -259,13 +329,13 @@ namespace N2Nmc.UtilsClass
                         Send(pkg);
 
                         byte[] bytes = new byte[1];
-                        Client.GetStream().Read(bytes, 0, 1);
+                        _client.GetStream().Read(bytes, 0, 1);
                         Package pkg_get = Package.ResolvePackage(bytes);
                         return (Protocol.BaseHeader)pkg_get.Header == Protocol.BaseHeader.peek_ok;
                     }
                     catch (Exception ex)
                     {
-                        ClientExHandler(ex, disconnectedGrowlInfo);
+                        ClientExHandler(ex, DisconnectedGrowlInfo);
                         return false;
                     }
                 }
@@ -274,21 +344,21 @@ namespace N2Nmc.UtilsClass
             public bool IsConnected()
             {
                 lock (this)
-                    return Client == null ? false : Client.Connected;
+                    return _client == null ? false : _client.Connected;
             }
 
             public void Close()
             {
-                if (Client != null)
+                if (_client != null)
                 {
-                    Client.Close();
-                    Client.Dispose();
-                    Client = null;
+                    _client.Close();
+                    _client.Dispose();
+                    _client = null;
                 }
             }
 
         }
-        public static N2NmcServerConnection NM_Connection = new N2NmcServerConnection();
+        public static N2NmcServerConnection NM_Connection = new();
 
         public static class EdgeConnectionInfo
         {
@@ -320,37 +390,37 @@ namespace N2Nmc.UtilsClass
         {
             public static void Refresh()
             {
-                btnDownAnimation = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(100) };
-                btnUpAnimation = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(300) };
-                btnEnterAnimation = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(120) };
-                btnLeaveAnimation = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(170) };
+                ButtonDownAnimation = new () { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(100) };
+                ButtonUpAnimation = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(300) };
+                ButtonEnterAnimation = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(120) };
+                ButtonLeaveAnimation = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(170) };
             }
 
 
-            public static ColorAnimation btnDownAnimation { get; private set; } = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(100) };
-            public static ColorAnimation btnUpAnimation { get; private set; } = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(300) };
-            public static ColorAnimation btnEnterAnimation { get; private set; } = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_200"], Duration = TimeSpan.FromMilliseconds(120) };
-            public static ColorAnimation btnLeaveAnimation { get; private set; } = new ColorAnimation { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(170) };
+            public static ColorAnimation ButtonDownAnimation { get; private set; } = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(100) };
+            public static ColorAnimation ButtonUpAnimation { get; private set; } = new () { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(300) };
+            public static ColorAnimation ButtonEnterAnimation { get; private set; } = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_200"], Duration = TimeSpan.FromMilliseconds(120) };
+            public static ColorAnimation ButtonLeaveAnimation { get; private set; } = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(170) };
 
-            public static DoubleAnimation smallerAnimation { get; private set; } = new DoubleAnimation { To = 0.97, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
-            public static DoubleAnimation smallsmallerAnimation { get; private set; } = new DoubleAnimation { To = 0.92, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
-            public static DoubleAnimation normalsizeAnimation { get; private set; } = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.25), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
-            public static DoubleAnimation biggerAnimation { get; private set; } = new DoubleAnimation { To = 1.03, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
-            public static DoubleAnimation bigbiggerAnimation { get; private set; } = new DoubleAnimation { To = 1.07, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+            public static DoubleAnimation SmallerAnimation { get; private set; } = new() { To = 0.97, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+            public static DoubleAnimation SmallSmallerAnimation { get; private set; } = new() { To = 0.92, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+            public static DoubleAnimation NormalSizeAnimation { get; private set; } = new() { To = 1, Duration = TimeSpan.FromSeconds(0.25), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+            public static DoubleAnimation BiggerAnimation { get; private set; } = new() { To = 1.03, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
+            public static DoubleAnimation BigBiggerAnimation { get; private set; } = new() { To = 1.07, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
 
 
-            public static void Btn_MouseUp(object sender, MouseEventArgs? e)
+            public static void Button_MouseUp(object sender, MouseEventArgs? e)
             {
                 if ((bool)((Control)sender).Resources["UIA_Locked"])
                     return;
 
-                ((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, btnUpAnimation);
+                ((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, ButtonUpAnimation);
 
                 TransformGroup TG = (TransformGroup)((Control)sender).RenderTransform;
                 ScaleTransform st = (ScaleTransform)TG.Children[0];
 
-                st.BeginAnimation(ScaleTransform.ScaleXProperty, normalsizeAnimation);
-                st.BeginAnimation(ScaleTransform.ScaleYProperty, normalsizeAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleXProperty, NormalSizeAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleYProperty, NormalSizeAnimation);
 
                 var ue = (UIElement)sender;
                 var uers = ue.RenderSize;
@@ -362,15 +432,15 @@ namespace N2Nmc.UtilsClass
                         (rpx > uers.Width || rpy > uers.Height) ||
                         (rpx < 0 || rpy < 0)
                         ))
-                    { Btn_MouseEnter(sender, e); }
+                    { Button_MouseEnter(sender, e); }
                 }
             }
-            public static void Btn_MouseDown(object sender, MouseEventArgs? e)
+            public static void Button_MouseDown(object sender, MouseEventArgs? e)
             {
                 if ((bool)((Control)sender).Resources["UIA_Locked"])
                     return;
 
-                ((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, btnDownAnimation);
+                ((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, ButtonDownAnimation);
 
                 TransformGroup TG = (TransformGroup)((Control)sender).RenderTransform;
                 ScaleTransform st = (ScaleTransform)TG.Children[0];
@@ -383,24 +453,24 @@ namespace N2Nmc.UtilsClass
                     st.CenterY = p.Y;
                 }
 
-                st.BeginAnimation(ScaleTransform.ScaleXProperty, smallsmallerAnimation);
-                st.BeginAnimation(ScaleTransform.ScaleYProperty, smallsmallerAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleXProperty, SmallSmallerAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleYProperty, SmallSmallerAnimation);
             }
-            public static void Btn_MouseLeave(object sender, MouseEventArgs? e)
+            public static void Button_MouseLeave(object sender, MouseEventArgs? e)
             {
                 if ((bool)((Control)sender).Resources["UIA_Locked"])
                     return;
 
-                ((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, btnLeaveAnimation);
+                ((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, ButtonLeaveAnimation);
             }
-            public static void Btn_MouseEnter(object sender, MouseEventArgs? e)
+            public static void Button_MouseEnter(object sender, MouseEventArgs? e)
             {
                 if ((bool)((Control)sender).Resources["UIA_Locked"])
                     return;
 
-                ((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, btnEnterAnimation);
+                ((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, ButtonEnterAnimation);
             }
-            public static void Btn_MouseMove(object sender, MouseEventArgs? e)
+            public static void Button_MouseMove(object sender, MouseEventArgs? e)
             {
                 TransformGroup TG = (TransformGroup)((Control)sender).RenderTransform;
                 ScaleTransform st = (ScaleTransform)TG.Children[0];
@@ -423,13 +493,13 @@ namespace N2Nmc.UtilsClass
                     var color = (SolidColorBrush)button.Background == null ? Colors.Transparent : ((SolidColorBrush)button.Background).Color;
                     button.Background = new SolidColorBrush(color); // reinit
 
-                    button.MouseEnter += Btn_MouseEnter;
-                    button.MouseLeave += Btn_MouseLeave;
-                    button.PreviewMouseDown += Btn_MouseDown;
-                    button.PreviewMouseUp += Btn_MouseUp;
-                    button.PreviewMouseMove += Btn_MouseMove;
+                    button.MouseEnter += Button_MouseEnter;
+                    button.MouseLeave += Button_MouseLeave;
+                    button.PreviewMouseDown += Button_MouseDown;
+                    button.PreviewMouseUp += Button_MouseUp;
+                    button.PreviewMouseMove += Button_MouseMove;
 
-                    Btn_MouseLeave(button, null);
+                    Button_MouseLeave(button, null);
                 }
                 catch (Exception)
                 {
@@ -453,8 +523,8 @@ namespace N2Nmc.UtilsClass
                 TransformGroup TG = (TransformGroup)((Control)sender).RenderTransform;
                 ScaleTransform st = (ScaleTransform)TG.Children[0];
 
-                st.BeginAnimation(ScaleTransform.ScaleXProperty, normalsizeAnimation);
-                st.BeginAnimation(ScaleTransform.ScaleYProperty, normalsizeAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleXProperty, NormalSizeAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleYProperty, NormalSizeAnimation);
             }
             public static void Card_MouseDown(object sender, MouseEventArgs? e)
             {
@@ -472,8 +542,8 @@ namespace N2Nmc.UtilsClass
                     st.CenterY = p.Y;
                 }
 
-                st.BeginAnimation(ScaleTransform.ScaleXProperty, smallerAnimation);
-                st.BeginAnimation(ScaleTransform.ScaleYProperty, smallerAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleXProperty, SmallerAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleYProperty, SmallerAnimation);
             }
             public static void Card_MouseLeave(object sender, MouseEventArgs? e)
             {
@@ -483,10 +553,10 @@ namespace N2Nmc.UtilsClass
                 TransformGroup TG = (TransformGroup)((Control)sender).RenderTransform;
                 ScaleTransform st = (ScaleTransform)TG.Children[0];
 
-                st.BeginAnimation(ScaleTransform.ScaleXProperty, normalsizeAnimation);
-                st.BeginAnimation(ScaleTransform.ScaleYProperty, normalsizeAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleXProperty, NormalSizeAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleYProperty, NormalSizeAnimation);
 
-                //var anim = btnLeaveAnimation;
+                //var anim = ButtonLeaveAnimation;
                 //anim.To = (Color)((Control)sender).Resources["_UIA_Color"];
                 //((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, anim);
             }
@@ -506,9 +576,9 @@ namespace N2Nmc.UtilsClass
                     st.CenterY = p.Y;
                 }
 
-                st.BeginAnimation(ScaleTransform.ScaleXProperty, biggerAnimation);
-                st.BeginAnimation(ScaleTransform.ScaleYProperty, biggerAnimation);
-                //((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, btnEnterAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleXProperty, BiggerAnimation);
+                st.BeginAnimation(ScaleTransform.ScaleYProperty, BiggerAnimation);
+                //((Control)sender).Background.BeginAnimation(SolidColorBrush.ColorProperty, ButtonEnterAnimation);
             }
             public static void Card_MouseMove(object sender, MouseEventArgs? e)
             {
@@ -630,14 +700,14 @@ namespace N2Nmc.UtilsClass
 
                         string versionString = Package.MsgExternalData.Decode.MsgString(pkg_get.external_data);
                         Version serverVersionGet = Version.Parse(versionString);
-                        if (SharedData.version < serverVersionGet)
+                        if (SharedData.Version < serverVersionGet)
                         {
-                            StringBuilder strNewVersionMsg = new StringBuilder();
+                            StringBuilder strNewVersionMsg = new();
                             strNewVersionMsg.AppendLine("发现新版本: " + serverVersionGet.ToString());
-                            strNewVersionMsg.AppendLine("当前版本: " + SharedData.versionString);
+                            strNewVersionMsg.AppendLine("当前版本: " + SharedData.VersionString);
                             strNewVersionMsg.AppendLine("是否要更新？");
 
-                            GrowlInfo newVersionGrowlInfo = new GrowlInfo
+                            GrowlInfo newVersionGrowlInfo = new()
                             {
                                 Message = strNewVersionMsg.ToString(),
                                 CancelStr = "忽略",
@@ -653,7 +723,7 @@ namespace N2Nmc.UtilsClass
                                             Task.Run(() =>
                                             {
                                                 new WebClient().DownloadFile("http://" + N2Nmc_Protocol.UserDef.GlobalServer_Ip + ':' + N2Nmc_Protocol.UserDef.ExternServerOptions.N2Nmc_File_Server_Port + '/' + N2Nmc_Protocol.UserDef.UpdatePackageFileName, N2Nmc_Protocol.UserDef.UpdatePackageFileName);
-                                                SharedData.configFile?.Set("NeedUpdate", "1");
+                                                SharedData.ConfigFile.Set("NeedUpdate", "1");
                                                 HandyControl.Controls.Growl.Success("N2Nmc更新包 已下载，将在关闭 N2Nmc 后升级。");
                                             });
                                         }
@@ -681,7 +751,7 @@ namespace N2Nmc.UtilsClass
                 }
                 else
                 {
-                    N2NmcServerConnection.ClientExHandler(new Exception("检测更新时发生错误：未连接至N2Nmc服务器"), NM_Connection.disconnectedGrowlInfo);
+                    N2NmcServerConnection.ClientExHandler(new Exception("检测更新时发生错误：未连接至N2Nmc服务器"), NM_Connection.DisconnectedGrowlInfo);
                 }
         }
 
@@ -697,8 +767,8 @@ namespace N2Nmc.UtilsClass
                 else
                 {
                     HandyControl.Controls.Growl.Error("无法连接至 N2Nmc 服务器");
-                    NM_Connection.disconnectedGrowlInfo.Message = "是否要尝试重新连接？";
-                    HandyControl.Controls.Growl.Ask(NM_Connection.disconnectedGrowlInfo);
+                    NM_Connection.DisconnectedGrowlInfo.Message = "是否要尝试重新连接？";
+                    HandyControl.Controls.Growl.Ask(NM_Connection.DisconnectedGrowlInfo);
                 }
             }
         }
@@ -730,12 +800,12 @@ namespace N2Nmc.UtilsClass
             //return hexNumber;
         }
 
-        public static bool CheckRoomExists(string RoomCode)
+        public static bool CheckRoomExists(string roomCode)
         {
             Package? _pkg_get = null;
             lock (NM_Connection)
             {
-                NM_Connection.Send(Package.MakePackage(Protocol.BaseHeader._rooms_is_code_exists, Package.MsgExternalData.Encode.MsgString(RoomCode)));
+                NM_Connection.Send(Package.MakePackage(Protocol.BaseHeader._rooms_is_code_exists, Package.MsgExternalData.Encode.MsgString(roomCode)));
                 _pkg_get = NM_Connection.Receive();
             }
 
@@ -756,12 +826,12 @@ namespace N2Nmc.UtilsClass
             return false;
         }
 
-        public static string[]? CreateRoom(string RoomName, bool IsRoomInvisible, bool IsRoomPasswordNeeded, string RoomPassword, UInt32 MainColor, UInt32 MinorColor)
+        public static string[]? CreateRoom(string roomName, bool isRoomInvisible, bool isRoomPasswordNeeded, string roomPassword, UInt32 mainColor, UInt32 minorColor)
         {
-            string RoomCode = GetRoomCode(RoomName);
+            string RoomCode = GetRoomCode(roomName);
 
             while (CheckRoomExists(RoomCode))
-                RoomCode = GetRoomCode(RoomName);
+                RoomCode = GetRoomCode(roomName);
 
             lock (NM_Connection)
             {
@@ -769,17 +839,17 @@ namespace N2Nmc.UtilsClass
                     goto CreateRoom_Fail;
                 if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomCode))))
                     goto CreateRoom_Fail;
-                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomName))))
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(roomName))))
                     goto CreateRoom_Fail;
-                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)(IsRoomInvisible ? 1 : 0)))))
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)(isRoomInvisible ? 1 : 0)))))
                     goto CreateRoom_Fail;
-                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)(IsRoomPasswordNeeded ? 1 : 0)))))
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)(isRoomPasswordNeeded ? 1 : 0)))))
                     goto CreateRoom_Fail;
-                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomPassword))))
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(roomPassword))))
                     goto CreateRoom_Fail;
-                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong(MainColor))))
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong(mainColor))))
                     goto CreateRoom_Fail;
-                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong(MinorColor))))
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong(minorColor))))
                     goto CreateRoom_Fail;
 
                 var rpackage = NM_Connection.Receive(6000);
@@ -802,18 +872,18 @@ namespace N2Nmc.UtilsClass
             return null;
         }
 
-        public static string? GetRoomNameByCode(string RoomCode)
+        public static string? GetRoomNameByCode(string roomCode)
         {
             string? name = null;
 
-            if (!CheckRoomExists(RoomCode))
+            if (!CheckRoomExists(roomCode))
                 return name;
 
             Package? _pkg_get = null;
             lock (NM_Connection)
             {
                 NM_Connection.Send(Package.MakePackage(Protocol.BaseHeader._rooms_get_name));
-                NM_Connection.Send(Package.MakePackage(Protocol.BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomCode)));
+                NM_Connection.Send(Package.MakePackage(Protocol.BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(roomCode)));
 
                 _pkg_get = NM_Connection.Receive();
             }
@@ -829,17 +899,17 @@ namespace N2Nmc.UtilsClass
             return name;
         }
 
-        public static string? JoinRoom(string RoomCode, string RoomPassword, string NickName)
+        public static string? JoinRoom(string roomCode, string roomPassword, string nickName)
         {
             lock (NM_Connection)
             {
                 if (!NM_Connection.Send(Package.MakePackage(Protocol.BaseHeader._room_client_join)))
                     goto joinRoom_fail;
-                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomCode))))
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(roomCode))))
                     goto joinRoom_fail;
-                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(RoomPassword))))
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(roomPassword))))
                     goto joinRoom_fail;
-                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(NickName))))
+                if (!NM_Connection.Send(Package.MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(nickName))))
                     goto joinRoom_fail;
 
                 var rpackage = NM_Connection.Receive(6000);
@@ -911,14 +981,14 @@ namespace N2Nmc.UtilsClass
             EdgeConnectionInfo.IsConnectedToEdge = false;
         }
 
-        public static void MakeMessageBoxContent(string Content, string Caption)
+        public static void MakeMessageBoxContent(string content, string caption)
         {
-            if (System.Windows.MessageBox.Show(string.Format("{0}\n\n(复制内容到剪切板？)", Content), Caption, MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            if (System.Windows.MessageBox.Show(string.Format("{0}\n\n(复制内容到剪切板？)", content), caption, MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
                 // WPF Error: OpenClipboard HRESULT:0x800401D0 (CLIPBRD_E_CANT_OPEN))
-                // Clipboard.SetText(Content); 
+                // Clipboard.SetText(content); 
 
-                Clipboard.SetDataObject(Content);
+                Clipboard.SetDataObject(content);
             }
         }
     }

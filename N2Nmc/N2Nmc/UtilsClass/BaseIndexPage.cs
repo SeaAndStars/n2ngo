@@ -9,6 +9,11 @@ using System.Windows.Media;
 using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Input;
+using System.Runtime.CompilerServices;
+using System.Globalization;
+using System.Windows.Data;
+using System.Text.RegularExpressions;
+using System.Windows.Documents;
 
 namespace N2Nmc.UtilsClass
 {
@@ -22,7 +27,7 @@ namespace N2Nmc.UtilsClass
 
         public BaseIndexPage()
         {
-            indexers = new List<UIElement>();
+            indexers = new();
         }
 
         protected void PlayIndexerIn()
@@ -86,6 +91,20 @@ namespace N2Nmc.UtilsClass
             {
                 border.RenderTransform = new TransformGroup { Children = new TransformCollection(new Transform[] { new ScaleTransform(1, 1, border.Width * .5, border.Height * .5), new SkewTransform(0, 0, 0, 0), new TranslateTransform() }) };
                 indexer.TransformInited = true;
+            }
+
+            var textbs = border.FindVisualChildren<TextBlock>();
+            foreach (var textb in textbs)
+            {
+                var Runs = new List<Run>();
+                foreach (var inline in textb.Inlines)
+                    if (inline is Run run && run.Name.Contains("_dynamic"))
+                        Runs.Add(run);
+                foreach (var run in Runs)
+                {
+                    if (run.Text.StartsWith("@"))
+                        run.SetResourceReference(Run.TextProperty, run.Text.Remove(0,1));
+                }
             }
         }
         protected void TempGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -189,13 +208,36 @@ namespace N2Nmc.UtilsClass
         }
     }
 
-    public class Indexer
+    public class Indexer : DependencyObject
     {
         public bool TransformInited = false;
+
         public string IndexerTitle { get; set; } = string.Empty;
         public string IndexerDescription { get; set; } = string.Empty;
         public ImageSource? IndexerCBI { get; set; } = null;
 
         public string nagivKey { get; set; } = string.Empty;
+    }
+
+    public class IndexerTextConverter : IValueConverter
+    {
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var valueString = value as string;
+            if (valueString != null)
+            {
+                if (valueString.StartsWith("@"))
+                    valueString = valueString.Remove(0, 1);
+
+                var resource = Application.Current.FindResource(valueString);
+                if (resource is string stringResource)
+                {
+                    return stringResource;
+                }
+            }
+            return value;
+        }
+
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
     }
 }

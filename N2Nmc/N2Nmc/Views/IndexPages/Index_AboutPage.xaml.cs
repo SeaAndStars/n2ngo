@@ -28,13 +28,14 @@ namespace N2Nmc.Views.SubPages
 
             Indexers.Items.Add(new Indexer { IndexerTitle = "N2N GO(应用程序)", 
                 IndexerDescription=string.Format("版本 {0}\n构建日期 {1}\n链接 {2}\nRuntime {3}\n.NET {4}", 
-                SharedData.versionString,
+                SharedData.VersionString,
                 "4/28/2024",
                 "https://gitee.com/xue-jiangbin/n2nmc-private",
                 (Environment.Is64BitProcess?"64-bit": "32-bit"),
                 RuntimeEnvironment.GetRuntimeDirectory()
                 ), nagivKey="N2NGO" });
-            Indexers.Items.Add(new Indexer { IndexerTitle = "n2n(库)", 
+            Indexers.Items.Add(new Indexer
+            { IndexerTitle = "n2n(库)", 
                 IndexerDescription=string.Format("版本 {0}\n构建日期 {1}\n链接 {2}",
                     "v.3.1.1-71-g9618512-dirty-r1255 x64_static for Windows", "27/Apr/2024 20:44:00", "https://github.com/ntop/n2n"
                     ) });

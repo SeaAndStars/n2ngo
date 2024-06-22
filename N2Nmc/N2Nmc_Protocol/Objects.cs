@@ -105,7 +105,7 @@ namespace N2Nmc_Protocol.Objects
             CB.lastReqTime = DateTime.Now;
             CB.AdminKey = RandomKeyString();
 
-            CB.thRoomHandler = new Thread(() =>
+            CB.thRoomHandler = new(() =>
             {
                 while (CB.IsAlive)
                 {
@@ -151,7 +151,7 @@ namespace N2Nmc_Protocol.Objects
 
         public Tuple<Member, RuledMember> CreateMember(string userKey, string nickName, string iP)
         {
-            Member member = new Member { ID = RandomKeyString(), NickName = nickName, IpAddress = iP, UserKey = userKey };
+            Member member = new() { ID = RandomKeyString(), NickName = nickName, IpAddress = iP, UserKey = userKey };
             RuledMember ruledMember = new RuledMember { Behaviour = RuledMember.MemberBehaviour.None, ID = member.ID, IpAddress = member.IpAddress, NickName = member.NickName, UserKey = member.UserKey };
 
             Member? memberInRoom = GetMember(userKey);

@@ -45,7 +45,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                 objTime = DateTime.Now;
 
                 this.client = client;
-                clientHandlerThread = new Thread(() => handlerFunc(client));
+                clientHandlerThread = new(() => handlerFunc(client));
 
                 if (startHandler)
                     clientHandlerThread.Start();
@@ -60,7 +60,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
         public TcpListener? serverv4 { get; private set; }
         public TcpListener? serverv6 { get; private set; }
         public List<ClientControlBlock>? tcpClients { get; private set; }
-        public List<Task> listenerTasks { get; private set; } = new List<Task> ();
+        public List<Task> listenerTasks { get; private set; } = new List<Task>();
 
 
         public N2NmcServer(MineMP.ConsoleBuffer consoleBuffer, IPAddress ip, int port)
@@ -68,7 +68,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
             ConsoleBuffer = consoleBuffer;
 
             serverv4 = new TcpListener(ip, port);
-            tcpClients = new List<ClientControlBlock>();
+            tcpClients = new();
 
             CCB_GC.Elapsed += CCB_GC_Elapsed;
             CCB_GC.Enabled = true;
@@ -83,12 +83,12 @@ namespace N2Nmc_Server.N2NmcServer.Base
             ConsoleBuffer = consoleBuffer;
 
             serverv4 = tcpListener;
-            tcpClients = new List<ClientControlBlock>();
+            tcpClients = new();
 
             CCB_GC.Elapsed += CCB_GC_Elapsed;
             CCB_GC.Enabled = true;
         }
-        public N2NmcServer(MineMP.ConsoleBuffer consoleBuffer, TcpListener tcpListener, TcpListener tcpListenerv6):this(consoleBuffer, tcpListener)
+        public N2NmcServer(MineMP.ConsoleBuffer consoleBuffer, TcpListener tcpListener, TcpListener tcpListenerv6) : this(consoleBuffer, tcpListener)
         {
             serverv6 = tcpListenerv6;
         }
@@ -197,7 +197,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             }
                         case BaseHeader._user_key_get:
                             {
-                                IO_Tool iO_Tool = new IO_Tool();
+                                IO_Tool iO_Tool = new();
 
                                 if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_string_long, MsgExternalData.Encode.MsgStringLong(userKey))))
                                     goto RemoveClient;
@@ -206,7 +206,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             }
                         case BaseHeader._pull_online_total:
                             {
-                                IO_Tool iO_Tool = new IO_Tool();
+                                IO_Tool iO_Tool = new();
 
                                 var total = tcpClients != null ? tcpClients.Count : 0;
 
@@ -217,7 +217,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             }
                         case BaseHeader._rooms_pull_rooms_pages:
                             {
-                                IO_Tool iO_Tool = new IO_Tool();
+                                IO_Tool iO_Tool = new();
 
                                 var total = Rooms.Where(_ => !_.IsRoomInvisible && _.RoomCode != null).ToList().Count;
                                 var pages = (total < _PullRoomsRoomsTake) ? 1 : ((total % _PullRoomsRoomsTake > 0) ? (total / _PullRoomsRoomsTake + 1) : (total / _PullRoomsRoomsTake));
@@ -229,7 +229,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             }
                         case BaseHeader._rooms_pull_rooms:
                             {
-                                IO_Tool iO_Tool = new IO_Tool();
+                                IO_Tool iO_Tool = new();
 
                                 UInt32 page_index = 0;
 
@@ -285,7 +285,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             }
                         case BaseHeader._rooms_create:
                             {
-                                IO_Tool iO_Tool = new IO_Tool();
+                                IO_Tool iO_Tool = new();
 
                                 string code, name;
                                 bool IRI, IRP;
@@ -360,7 +360,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             }
                         case BaseHeader._rooms_is_code_exists:
                             {
-                                IO_Tool iO_Tool = new IO_Tool();
+                                IO_Tool iO_Tool = new();
                                 Package? pkg_app = iO_Tool.Receive(client, (byte)BaseHeader.msg_string);
                                 if (pkg_app != null)
                                     if (pkg_app.Value.external_data != null)
@@ -379,7 +379,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             }
                         case BaseHeader._rooms_get_name:
                             {
-                                IO_Tool iO_Tool = new IO_Tool();
+                                IO_Tool iO_Tool = new();
                                 Package? pkg_app = iO_Tool.Receive(client);
                                 if (pkg_app != null)
                                     if (pkg_app.Value.Header == (byte)BaseHeader.msg_string && pkg_app.Value.external_data != null)
@@ -408,7 +408,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
 
                         case BaseHeader._room_client_join:
                             {
-                                IO_Tool iO_Tool = new IO_Tool();
+                                IO_Tool iO_Tool = new();
 
                                 if (currentRoom != null)
                                 {

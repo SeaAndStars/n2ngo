@@ -18,8 +18,8 @@ namespace N2Nmc.UtilsClass
 
 
         private Task? taskInvoke=null;
-        private Mutex EdgeInvokeLock = new Mutex();
-        public List<string> args { get; private set; } = new List<string>();
+        private Mutex EdgeInvokeLock = new();
+        public List<string> args { get; private set; } = new();
 
 
         public EdgeInvoker()
@@ -36,7 +36,7 @@ namespace N2Nmc.UtilsClass
         public void NewArgs()
         {
             lock (this)
-                args = new List<string>()
+                args = new()
                 {
                     "edge" // edge.exe arg0
                 };
@@ -58,7 +58,7 @@ namespace N2Nmc.UtilsClass
                 args.AddRange(arg.Split(' '));
         }
 
-        private CancellationTokenSource cts = new CancellationTokenSource();
+        private CancellationTokenSource cts = new();
         public void CancelCall()
         {
             cts.Cancel();

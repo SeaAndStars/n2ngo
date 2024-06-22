@@ -25,22 +25,18 @@
                         <Border x:Name="ItemMainParent" Margin="5" Width="240" Height="500"  Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
             Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp">
                             <Grid x:Name="TempGrid">
-                                <Image Name="ContentBackgroundImage" Opacity="0.5" Source="{Binding IndexerCBI}" Stretch="UniformToFill" Margin="25,250,0,0">
-                                    <Image.Effect>
-                                        <BlurEffect KernelType="Box" RenderingBias="Performance" Radius="4"/>
-                                    </Image.Effect>
-                                </Image>
+                                <Image Name="ContentBackgroundImage" Opacity="0.5" Source="{Binding IndexerCBI}" Stretch="UniformToFill" Margin="25,250,0,0"/>
                                 <TextBlock Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" TextWrapping="Wrap">
-                                    <Run Text="{Binding IndexerTitle}" FontWeight="Bold" FontSize="34"/>
+                                    <Run Name="_dynamicIndexerTitle" Text="{Binding IndexerTitle}" FontWeight="Bold" FontSize="34"/>
                                     <LineBreak/>
-                                    <Run Text="{Binding IndexerDescription}" FontSize="16" Foreground="#FF313131"/>
+                                    <Run Name="_dynamicIndexerDescription" Text="{Binding IndexerDescription}" FontSize="16" Foreground="#FF313131"/>
                                 </TextBlock>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
 
-                <local1:Indexer nagivKey="goback"  IndexerTitle="返回" IndexerDescription="返回至上一个索引"/>
+                <local1:Indexer nagivKey="goback"  IndexerTitle="@LOCALE_Index-GoBack_Title" IndexerDescription="@LOCALE_Index-GoBack_Description"/>
             </ItemsControl>
         </hc:ScrollViewer>
     </Grid>

@@ -1,0 +1,41 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=netstandard">
+    <!-- Locale Resource Dictionary Header -->
+    <system:String x:Key="LHEAD_Name">default</system:String>
+    <system:String x:Key="LHEAD_Language">English (Default)</system:String>
+    <system:String x:Key="LHEAD_ISOLanguageCode">en</system:String>
+    <system:String x:Key="LHEAD_RegionCode">US</system:String>
+
+    <!-- User Resources Definitions -->
+    <system:String x:Key="LOCALE_Index-GoBack_Title">Back</system:String>
+    <system:String x:Key="LOCALE_Index-GoBack_Description">Go Back to the Previous Index</system:String>
+    
+    <system:String x:Key="LOCALE_Index-Community_Title">Community</system:String>
+    <system:String x:Key="LOCALE_Index-Community_Description">View all visible public rooms in the community here</system:String>
+    <system:String x:Key="LOCALE_Index-Hosting_Title">Hosting</system:String>
+    <system:String x:Key="LOCALE_Index-Hosting_Description">Host your own room</system:String>
+    <system:String x:Key="LOCALE_Index-Clienting_Title">Join</system:String>
+    <system:String x:Key="LOCALE_Index-Clienting_Description">Join the room using the clue you've uncovered</system:String>
+    <system:String x:Key="LOCALE_Index-Advanced_Title">Advanced</system:String>
+    <system:String x:Key="LOCALE_Index-Advanced_Description">Advanced Content</system:String>
+    <system:String x:Key="LOCALE_Index-About_Title">About</system:String>
+    <system:String x:Key="LOCALE_Index-About_Description">Information About Us</system:String>
+    
+    <system:String x:Key="LOCALE_Index_AboutPage-AboutUs_Title">About Us</system:String>
+    <system:String x:Key="LOCALE_Index_AboutPage-AboutUs_Description" xml:space="preserve">Founder 未来之乡&#13;Developers&#13;未来之乡 LDX LGF </system:String>
+
+    <system:String x:Key="LOCALE_Index_AdvancedPage-Settings_Title">Setting</system:String>
+    <system:String x:Key="LOCALE_Index_AdvancedPage-Settings_Description">N2N GO Application Settings</system:String>
+    <system:String x:Key="LOCALE_Index_AdvancedPage-CheckUpdate_Title">Update</system:String>
+    <system:String x:Key="LOCALE_Index_AdvancedPage-CheckUpdate_Description" xml:space="preserve">Check for updates&#13;&#13;Updates to the following applications:&#13;N2N GO&#13;n2n</system:String>
+    
+    <system:String x:Key="LOCALE_Index_CommunityPage-View_Title">View Rooms</system:String>
+    <system:String x:Key="LOCALE_Index_CommunityPage-View_Description">Check public rooms here</system:String>
+
+    <system:String x:Key="LOCALE_ToggleLogButton">Toggle Log Button</system:String>
+    <system:String x:Key="LOCALE_InstallTap">Install Tap</system:String>
+    <system:String x:Key="LOCALE_ClearShaderCache">Clear Shader Cache</system:String>
+    <system:String x:Key="LOCALE_BackgroundOpacity">Background Opacity</system:String>
+    <system:String x:Key="LOCALE_ResetSettings">Reset to Defaults</system:String>
+</ResourceDictionary>

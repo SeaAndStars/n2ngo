@@ -112,6 +112,8 @@ namespace N2Nmc.Views.SubPages
             GridFuncLS = true;
             SwitchGridFunc(false);
 
+            Refresh();
+
             Cards.Items.Clear();
             timer.Interval = TimeSpan.FromSeconds(1);
         }
@@ -144,7 +146,7 @@ namespace N2Nmc.Views.SubPages
         {
             dispatcher.Invoke(() =>
             {
-                TaskCompletionSource<object> animationCompletedTask1 = new TaskCompletionSource<object>();
+                TaskCompletionSource<object> animationCompletedTask1 = new();
                 DoubleAnimation _loadingDialogFadeOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.45), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn } };
                 _loadingDialogFadeOut.Completed += (s, _) =>
                 {
@@ -169,7 +171,7 @@ namespace N2Nmc.Views.SubPages
 
         public static string GetSortKey(string value)
         {
-            StringBuilder sortKey = new StringBuilder();
+            StringBuilder sortKey = new();
 
             foreach (char c in value)
             {
@@ -472,9 +474,14 @@ namespace N2Nmc.Views.SubPages
                                             //random.NextBytes(rgb);
                                             //Dispatcher.InvokeAsync(() => cards.Add(new Card { RoomName = RoomName, RoomCode = RoomCode, IsRoomPasswordNeeded = IsRoomPasswordNeeded, ThemeBrushMinor = new SolidColorBrush(Color.FromArgb(0xFF, rgb[0], rgb[1], rgb[2])) }));
 
-                                            Dispatcher.InvokeAsync(() => cards.Add(new Card { RoomName = RoomName, RoomCode = RoomCode, IsRoomPasswordNeeded = IsRoomPasswordNeeded,
+                                            Dispatcher.InvokeAsync(() => cards.Add(new Card
+                                            {
+                                                RoomName = RoomName,
+                                                RoomCode = RoomCode,
+                                                IsRoomPasswordNeeded = IsRoomPasswordNeeded,
                                                 ThemeBrushMajor = new SolidColorBrush(Color.FromArgb(0xFF, ColorMajor.R, ColorMajor.G, ColorMajor.B)),
-                                                ThemeBrushMinor = new SolidColorBrush(Color.FromArgb(0xFF, ColorMinor.R, ColorMinor.G, ColorMinor.B)) }));
+                                                ThemeBrushMinor = new SolidColorBrush(Color.FromArgb(0xFF, ColorMinor.R, ColorMinor.G, ColorMinor.B))
+                                            }));
                                         }
                                         ;
 
@@ -600,7 +607,7 @@ namespace N2Nmc.Views.SubPages
 
                 if (card.IsRoomPasswordNeeded)
                 {
-                    ExecLog execLog = new ExecLog();
+                    ExecLog execLog = new();
 
                     string password = ((DialogRoomInfo)CardDialogBorderFrame.Content).TextBoxPasswd.Text;
                     if (string.IsNullOrEmpty(password.Trim()))
@@ -610,7 +617,7 @@ namespace N2Nmc.Views.SubPages
                     }
 
                     timer.Stop();
-                    timer = new DispatcherTimer();
+                    timer = new();
                     timer.Tick += (_, __) =>
                     {
                         if (execLog.LogOut.Contains("[OK] edge <<< ================ >>> supernode"))
@@ -642,7 +649,7 @@ namespace N2Nmc.Views.SubPages
 
                     timer.Start();
 
-                    string cmd = edgePath + " -c " + card.RoomCode + " -k " + password + " -l " + SharedData.n2nServerIPP;
+                    string cmd = EdgePath + " -c " + card.RoomCode + " -k " + password + " -l " + SharedData.n2nServerIPP;
                     EdgeConnectionInfo.CurrentRoomCode = card.RoomCode;
 
                     execLog.SetCommand(cmd);
@@ -658,10 +665,10 @@ namespace N2Nmc.Views.SubPages
                 }
                 else
                 {
-                    ExecLog execLog = new ExecLog();
+                    ExecLog execLog = new();
 
                     timer.Stop();
-                    timer = new DispatcherTimer();
+                    timer = new();
                     timer.Tick += (_, __) =>
                     {
                         if (execLog.LogOut.Contains("[OK] edge <<< ================ >>> supernode"))
@@ -691,7 +698,7 @@ namespace N2Nmc.Views.SubPages
 
                     timer.Start();
 
-                    string cmd = edgePath + " -c " + card.RoomCode + " -k " + SharedData.DefaultRoomPasswd + " -l " + SharedData.n2nServerIPP;
+                    string cmd = EdgePath + " -c " + card.RoomCode + " -k " + SharedData.DefaultRoomPasswd + " -l " + SharedData.n2nServerIPP;
                     EdgeConnectionInfo.CurrentRoomCode = card.RoomCode;
 
                     execLog.SetCommand(cmd);
@@ -745,7 +752,7 @@ namespace N2Nmc.Views.SubPages
 
             if (card.IsRoomPasswordNeeded)
             {
-                ExecLog execLog = new ExecLog();
+                ExecLog execLog = new();
 
                 Growl.Warning("房间需要密码，请输入密码", GrowlToken);
 
@@ -759,7 +766,7 @@ namespace N2Nmc.Views.SubPages
                     }
 
                     timer.Stop();
-                    timer = new DispatcherTimer();
+                    timer = new();
                     timer.Tick += (_, __) =>
                     {
                         if (execLog.LogOut.Contains("[OK] edge <<< ================ >>> supernode"))
@@ -787,7 +794,7 @@ namespace N2Nmc.Views.SubPages
 
                     timer.Start();
 
-                    string cmd = edgePath + " -c " + card.RoomCode + " -k " + password + " -l " + SharedData.n2nServerIPP;
+                    string cmd = EdgePath + " -c " + card.RoomCode + " -k " + password + " -l " + SharedData.n2nServerIPP;
                     EdgeConnectionInfo.CurrentRoomCode = card.RoomCode;
 
                     execLog.SetCommand(cmd);
@@ -807,10 +814,10 @@ namespace N2Nmc.Views.SubPages
             }
             else
             {
-                ExecLog execLog = new ExecLog();
+                ExecLog execLog = new();
 
                 timer.Stop();
-                timer = new DispatcherTimer();
+                timer = new();
                 timer.Tick += (_, __) =>
                 {
                     if (execLog.LogOut.Contains("[OK] edge <<< ================ >>> supernode"))
@@ -840,7 +847,7 @@ namespace N2Nmc.Views.SubPages
 
                 timer.Start();
 
-                string cmd = edgePath + " -c " + card.RoomCode + " -k " + SharedData.DefaultRoomPasswd + " -l " + SharedData.n2nServerIPP;
+                string cmd = EdgePath + " -c " + card.RoomCode + " -k " + SharedData.DefaultRoomPasswd + " -l " + SharedData.n2nServerIPP;
                 EdgeConnectionInfo.CurrentRoomCode = card.RoomCode;
 
                 execLog.SetCommand(cmd);
@@ -920,7 +927,7 @@ namespace N2Nmc.Views.SubPages
         {
             get
             {
-                return MembersCount.ToString()+"人";
+                return MembersCount.ToString() + "人";
             }
         }
     }

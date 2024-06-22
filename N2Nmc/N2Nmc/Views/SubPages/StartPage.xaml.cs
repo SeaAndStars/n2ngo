@@ -15,13 +15,13 @@ namespace N2Nmc.Views.SubPages
     /// </summary>
     public partial class StartPage : Page
     {
-        DispatcherTimer timerRefreshData = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(800)};
+        DispatcherTimer timerRefreshData = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(800) };
 
         public StartPage()
         {
             InitializeComponent();
 
-            LabelVersion.Content += SharedData.versionString;
+            LabelVersion.Content += SharedData.VersionString;
             //NewsOfflineBox.Text = File.ReadAllText("Data/NewsOffline.txt");
 
             timerRefreshData.Tick += TimerRefreshData_Tick;
@@ -42,7 +42,7 @@ namespace N2Nmc.Views.SubPages
             set
             {
                 onlineTotal = value;
-                LabelOnlineTotal.Content = string.Format("当前 {0}人在线",value);
+                LabelOnlineTotal.Content = string.Format("当前 {0}人在线", value);
             }
         }
 
@@ -54,7 +54,7 @@ namespace N2Nmc.Views.SubPages
         private void ButtonDebug_ResetConnection_Click(object sender, RoutedEventArgs e)
         {
             SharedData.NM_Connection.Close();
-            SharedData.NM_Connection = new SharedData.N2NmcServerConnection();
+            SharedData.NM_Connection = new();
             SharedData.ConnectAndPeek();
         }
 
@@ -95,7 +95,7 @@ namespace N2Nmc.Views.SubPages
                                         try
                                         {
                                             int i = int.Parse(totalMembers);
-                                            Dispatcher.InvokeAsync(()=>OnlineTotal = i);
+                                            Dispatcher.InvokeAsync(() => OnlineTotal = i);
                                         }
                                         catch (Exception ex)
                                         {

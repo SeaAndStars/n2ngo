@@ -48,7 +48,7 @@ namespace N2Nmc.Views.SubPages.Dialogs
             ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, animScOut);
             ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, animScOut);
 
-            TaskCompletionSource<object> animationCompletedTask = new TaskCompletionSource<object>();
+            TaskCompletionSource<object> animationCompletedTask = new ();
             animOpOut.Completed += (s, _) =>
             {
                 animationCompletedTask.SetResult(0);
