@@ -33,6 +33,9 @@
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Title">View Rooms</system:String>
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Description">Check public rooms here</system:String>
 
+    <system:String x:Key="LOCALE_Index_HostingPage-Create_Title">Create</system:String>
+    <system:String x:Key="LOCALE_Index_HostingPage-Create_Description">Build your new room here</system:String>
+    
     <system:String x:Key="LOCALE_ToggleLogButton">Toggle Log Button</system:String>
     <system:String x:Key="LOCALE_InstallTap">Install Tap</system:String>
     <system:String x:Key="LOCALE_ClearShaderCache">Clear Shader Cache</system:String>
