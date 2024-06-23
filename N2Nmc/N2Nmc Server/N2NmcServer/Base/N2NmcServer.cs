@@ -59,7 +59,7 @@ namespace N2Nmc_Server.N2NmcServer.Base
 
         public TcpListener? serverv4 { get; private set; }
         public TcpListener? serverv6 { get; private set; }
-        public List<ClientControlBlock>? tcpClients { get; private set; }
+        public List<ClientControlBlock> tcpClients { get; private set; }
         public List<Task> listenerTasks { get; private set; } = new List<Task>();
 
 
@@ -95,9 +95,6 @@ namespace N2Nmc_Server.N2NmcServer.Base
 
         private void CCB_GC_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
-            if (tcpClients == null)
-                throw new NullReferenceException(nameof(tcpClients));
-
             lock (tcpClients)
                 for (int i = 0; i < tcpClients.Count; i++)
                     if (!tcpClients[i].clientHandlerThread.IsAlive)
@@ -208,9 +205,9 @@ namespace N2Nmc_Server.N2NmcServer.Base
                             {
                                 IO_Tool iO_Tool = new();
 
-                                var total = tcpClients != null ? tcpClients.Count : 0;
+                                var total = tcpClients.Count;
 
-                                if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, MsgExternalData.Encode.MsgString(total.ToString()))))
+                                if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_long, MsgExternalData.Encode.MsgLong(total))))
                                     goto RemoveClient;
 
                                 break;

@@ -102,7 +102,7 @@ namespace N2Nmc.UtilsClass
                     foreach (var d in ds)
                         CurrentApp.Get.Resources.MergedDictionaries.Remove(d);
 
-                    CurrentApp.Get.Resources.MergedDictionaries.Add(new ResourceDictionary { Source= new($"{_path}{locale}.xaml", UriKind.Relative) });
+                    CurrentApp.Get.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new($"{_path}{locale}.xaml", UriKind.Relative) });
                     CurrentLocale = locale;
                 }
 
@@ -118,7 +118,7 @@ namespace N2Nmc.UtilsClass
                         return null;
                     }
 
-                    return new((string)l["LHEAD_Name"],(string)l["LHEAD_Language"], (string)l["LHEAD_ISOLanguageCode"], (string)l["LHEAD_RegionCode"]);
+                    return new((string)l["LHEAD_Name"], (string)l["LHEAD_Language"], (string)l["LHEAD_ISOLanguageCode"], (string)l["LHEAD_RegionCode"]);
                 }
             }
         }
@@ -230,6 +230,7 @@ namespace N2Nmc.UtilsClass
                 HandyControl.Controls.Growl.Ask(growlInfo);
             }
 
+            #region Base Operations
             public bool Connect()
             {
                 lock (this)
@@ -356,7 +357,62 @@ namespace N2Nmc.UtilsClass
                     _client = null;
                 }
             }
+            #endregion
 
+            public enum ProtocolOperationReturnStatus
+            {
+                None = 0, Success = 1,
+                Fail_NotConnected,
+                Fail_NullPackage,
+                Fail_NullPackageExternalData,
+                Fail_InvalidPackageHeader,
+            }
+            public struct ProtocolOperationReturnType<T>
+            {
+                public ProtocolOperationReturnStatus Status { get; private set; }
+                public T? Value { get; private set; }
+
+                public ProtocolOperationReturnType(T value)
+                {
+                    Value = value;
+                    Status = ProtocolOperationReturnStatus.Success;
+                }
+                public ProtocolOperationReturnType(T? value, ProtocolOperationReturnStatus status)
+                {
+                    Value = value;
+                    Status = status;
+                }
+
+                public static bool operator true(ProtocolOperationReturnType<T> inst) => inst.Status == ProtocolOperationReturnStatus.Success;
+                public static bool operator false(ProtocolOperationReturnType<T> inst) => inst.Status != ProtocolOperationReturnStatus.Success;
+            }
+            #region Protocol Operations
+            public ProtocolOperationReturnType<int> PullTotalOnlines()
+            {
+                if (!IsConnected())
+                    return new(-1, ProtocolOperationReturnStatus.Fail_NotConnected);
+
+                Package? p = null;
+                lock (this)
+                {
+                    Send(Package.MakePackage(Protocol.BaseHeader._pull_online_total));
+                    p = Receive();
+                }
+
+                if (p == null)
+                    return new(-1, ProtocolOperationReturnStatus.Fail_NullPackage);
+
+                var v = p.Value;
+                if ((Protocol.BaseHeader)v.Header != Protocol.BaseHeader.msg_long)
+                    return new(-1, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+
+                if (v.external_data == null)
+                    return new(-1, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+
+                var totalMembers = Package.MsgExternalData.Decode.MsgLong(v.external_data);
+                return new(totalMembers);
+            }
+            #endregion
         }
         public static N2NmcServerConnection NM_Connection = new();
 
@@ -390,7 +446,7 @@ namespace N2Nmc.UtilsClass
         {
             public static void Refresh()
             {
-                ButtonDownAnimation = new () { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(100) };
+                ButtonDownAnimation = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(100) };
                 ButtonUpAnimation = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(300) };
                 ButtonEnterAnimation = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(120) };
                 ButtonLeaveAnimation = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(170) };
@@ -398,7 +454,7 @@ namespace N2Nmc.UtilsClass
 
 
             public static ColorAnimation ButtonDownAnimation { get; private set; } = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_500"], Duration = TimeSpan.FromMilliseconds(100) };
-            public static ColorAnimation ButtonUpAnimation { get; private set; } = new () { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(300) };
+            public static ColorAnimation ButtonUpAnimation { get; private set; } = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(300) };
             public static ColorAnimation ButtonEnterAnimation { get; private set; } = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_200"], Duration = TimeSpan.FromMilliseconds(120) };
             public static ColorAnimation ButtonLeaveAnimation { get; private set; } = new() { To = (Color)((ResourceDictionary)App.Current.Resources["CurrentColorPalette"])["Palette_300"], Duration = TimeSpan.FromMilliseconds(170) };
 
@@ -676,8 +732,6 @@ namespace N2Nmc.UtilsClass
          */
         public static void CheckN2NClientUpdate(Dispatcher? dispatcher = null)
         {
-            //HandyControl.Controls.Growl.Info("正在从服务器获取更新");
-
             lock (NM_Connection)
                 if (Peek())
                 {
@@ -771,6 +825,13 @@ namespace N2Nmc.UtilsClass
                     HandyControl.Controls.Growl.Ask(NM_Connection.DisconnectedGrowlInfo);
                 }
             }
+        }
+
+        public static void ResetConnection()
+        {
+            SharedData.NM_Connection.Close();
+            SharedData.NM_Connection = new();
+            SharedData.ConnectAndPeek();
         }
 
         public static string? GetUserKey()

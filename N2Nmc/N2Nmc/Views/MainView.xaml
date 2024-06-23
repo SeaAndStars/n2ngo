@@ -82,6 +82,7 @@
                             </Image.Effect>
                         </Image>
                     </Button>
+                    <Button x:Name="TestButton" Width="40" Height="40" Margin="100,0,0,0" Click="TestButton_Click" Content="Test" HorizontalAlignment="Left"/>
                     <Label x:Name="LabelTitle" Content="     N2N GO     " CacheMode="BitmapCache" Style="{StaticResource TitleStyle}" FontSize="24" FontWeight="Normal" />
                     <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
                         <StackPanel.Resources>

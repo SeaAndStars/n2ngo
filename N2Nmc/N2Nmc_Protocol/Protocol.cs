@@ -40,7 +40,7 @@ namespace N2Nmc_Protocol
 
             /* Obsolete Protocols */
             _ver_check = 0x20,                  // Client requests the latest version as class 'Version', server returns package: { Version(msg_string) }
-            _pull_online_total,                 // Client requests the number of server's total members, server returns package: { msg_string, ((Int64)MembersCount).ToString() }
+            _pull_online_total,                 // Client requests the number of server's total members, server returns package: { MembersCount(msg_string) }
             _user_key_get,                      // Client requests userkey, server returns userkey as 'msg_string'
 
             _rooms_pull_rooms_pages = 0x40,     // Client requests the rooms pages, server returns pages as number using 'msg_ulong'

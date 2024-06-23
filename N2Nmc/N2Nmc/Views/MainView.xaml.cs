@@ -144,13 +144,13 @@ namespace N2Nmc.Views
             pageSettings.BackgroundOSlider.Value = _alpha;
 
             {
-                LogButtonVisibility =
 #if DEBUG
-                Visibility.Visible
+                LogButtonVisibility = Visibility.Visible;
+                TestButton.Visibility = Visibility.Visible;
 #else
-                Visibility.Collapsed
+                LogButtonVisibility = Visibility.Collapsed;
+                TestButton.Visibility = Visibility.Collapsed;
 #endif
-                ;
             }
 
             n2nmc_server_reconnect_timer.Tick += (_, __) =>
@@ -812,6 +812,16 @@ namespace N2Nmc.Views
             var selectedItem = e.AddedItems[0] as string;
             if (selectedItem != null)
                 SharedData.CurrentApp.Locale.UpdateLocale(selectedItem);
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            Task.Run(() =>
+            {
+                var onlines = SharedData.NM_Connection.PullTotalOnlines();
+                if (onlines)
+                    Dispatcher.InvokeAsync(() => DoMessageDialog($"Onlines: {onlines.Value}", "Test"));
+            });
         }
     }
 
