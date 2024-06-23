@@ -30,32 +30,6 @@ namespace N2Nmc.Views.SubPages
 
     public partial class RoomsPage : Page
     {
-        public string SwitchFakeServerContenter { get => _FakeServer ? "虚拟列表" : "真实列表"; }
-
-        private bool _FakeServer = false;
-        public bool FakeServer
-        {
-            get => _FakeServer;
-
-            set
-            {
-                bool? isRefreshing = null;
-                Dispatcher.Invoke(() => isRefreshing = IsRefreshing);
-                if (isRefreshing == true)
-                    return;
-
-                if (_FakeServer == value)
-                    return;
-
-                _FakeServer = value;
-
-                Refresh();
-
-                //SwitchFakeServer.IsChecked = value;
-                //SwitchFakeServer.Content = SwitchFakeServerContenter;
-            }
-        }
-
         private bool IsRefreshing = false;
 
         private enum SortMode
@@ -316,43 +290,6 @@ namespace N2Nmc.Views.SubPages
 
                 Dispatcher.Invoke(() =>
                 {
-                    if (_FakeServer)
-                    {
-                        refreshThread = new Thread(() =>
-                        {
-                            Dispatcher.Invoke(() => IsRefreshing = true);
-
-                            int i = 5; // Cards to make
-                            while (i-- > 0)
-                            {
-                                cards.Add(new Card { RoomName = "普通测试房间卡：" + i, RoomCode = SharedData.GetRoomCode("普通测试房间卡：" + i) });
-                            }
-                            cards.Add(new Card { RoomName = "隐藏测试房间卡", RoomCode = SharedData.GetRoomCode("隐藏测试房间卡"), IsRoomVisible = false });
-                            cards.Add(new Card { RoomName = "有密码测试房间卡", RoomCode = SharedData.GetRoomCode("有密码测试房间卡"), IsRoomPasswordNeeded = true });
-
-                            cards.AddRange(new Card[] {
-                                new Card{RoomName="w"} ,
-                                new Card{RoomName="W"} ,
-                                new Card{RoomName="1"} ,
-                                new Card{RoomName="2"} ,
-                                new Card{RoomName="吧"} ,
-                                new Card{RoomName="都"} ,
-                                new Card{RoomName="去"} ,
-                                new Card{RoomName="啊"} ,
-                            });
-
-                            Filter_Sort(default);
-
-
-                            LoadingDialogOut(Dispatcher);
-
-                            IsRefreshing = false;
-                            return;
-                        }); refreshThread.Start();
-
-                        return;
-                    }
-
                     Random random = new Random(DateTime.Now.Millisecond);
                     refreshThread = new Thread(() =>
                     {
@@ -698,22 +635,6 @@ namespace N2Nmc.Views.SubPages
             }, (_, __) => HideCardInfoDialog()));
 
             ShowCardInfoDialog();
-        }
-
-        private void SwitchFakeServer_Checked(object sender, RoutedEventArgs e)
-        {
-            FakeServer = true;
-        }
-
-        private void SwitchFakeServer_Unchecked(object sender, RoutedEventArgs e)
-        {
-            FakeServer = false;
-        }
-
-        private void SwitchFakeServer_Initialized(object sender, EventArgs e)
-        {
-            ((ToggleButton)sender).IsChecked = FakeServer;
-            ((ToggleButton)sender).Content = SwitchFakeServerContenter;
         }
 
         private void RoomsFiltering_SearchStarted(object sender, HandyControl.Data.FunctionEventArgs<string> e)
