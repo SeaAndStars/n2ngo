@@ -85,7 +85,10 @@ namespace N2Nmc.UtilsClass
 
             var indexer = border.DataContext as Indexer;
             if (indexer == null)
-                throw new NullReferenceException(nameof(indexer));
+            {
+                indexer = new Indexer();
+                border.DataContext = indexer;
+            }
 
             if (!indexer.TransformInited)
             {

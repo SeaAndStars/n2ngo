@@ -8,10 +8,10 @@ namespace N2NmcClientUpdate
     internal class Program
     {
         readonly static string N2NmcUpdatePackPath = UserDef.UpdatePackageFileName;
-        readonly static string tempPath = "temp";
-        readonly static string downloadFile = "windowsdesktop-runtime-6.0.30-win-x86.exe";
-        readonly static string downloadUrl = "https://download.visualstudio.microsoft.com/download/pr/94bd5cf9-0c22-4790-89c6-d1ce4b4fe952/2a01badbae5ec0c3e199f3c2a7ae764f/windowsdesktop-runtime-6.0.30-win-x86.exe";
-        static string downloadPath { get => Path.Combine(tempPath, downloadFile); }
+        readonly static string TempPath = "temp";
+        readonly static string DownloadFile = "windowsdesktop-runtime-6.0.30-win-x86.exe";
+        readonly static string DownloadUrl = "https://download.visualstudio.microsoft.com/download/pr/94bd5cf9-0c22-4790-89c6-d1ce4b4fe952/2a01badbae5ec0c3e199f3c2a7ae764f/windowsdesktop-runtime-6.0.30-win-x86.exe";
+        static string DownloadPath { get => Path.Combine(TempPath, DownloadFile); }
 
         static void Main(string[] args)
         {
@@ -76,11 +76,11 @@ namespace N2NmcClientUpdate
 
         static void InstallDotNet_6_Core_Desktop()
         {
-            Directory.CreateDirectory(tempPath);
+            Directory.CreateDirectory(TempPath);
 
-            DownloadFileAsync(downloadUrl, downloadPath);
+            DownloadFileAsync(DownloadUrl, DownloadPath);
 
-            Process.Start(downloadPath, "/quiet").WaitForExit();
+            Process.Start(DownloadPath, "/quiet").WaitForExit();
         }
 
         public static async Task DownloadFileAsync(string url, string path)

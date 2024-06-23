@@ -35,7 +35,17 @@
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-
+                
+                <Border x:Name="ItemMainParent" Margin="5" Width="240" Height="500"  Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp">
+                    <Grid x:Name="TempGrid">
+                        <TextBlock Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" TextWrapping="Wrap">
+                        <Run Name="_dynamicTextIndexerTitle" Text="A" FontWeight="Bold" FontSize="34"/>
+                        <LineBreak/>
+                        <Run Name="_dynamicTextIndexerDescription" Text="B" FontSize="16" Foreground="#FF313131"/>
+                        </TextBlock>
+                    </Grid>
+                </Border>
                 <local1:Indexer nagivKey="community"  IndexerTitle="@LOCALE_Index-Community_Title" IndexerDescription="@LOCALE_Index-Community_Description" IndexerCBI="/Data/image/Community.png"/>
                 <local1:Indexer nagivKey="hosting" IndexerTitle="@LOCALE_Index-Hosting_Title" IndexerDescription="@LOCALE_Index-Hosting_Description" IndexerCBI="/Data/image/Hosting.png"/>
                 <local1:Indexer nagivKey="clienting" IndexerTitle="@LOCALE_Index-Clienting_Title" IndexerDescription="@LOCALE_Index-Clienting_Description" IndexerCBI="/Data/image/Clienting.png"/>

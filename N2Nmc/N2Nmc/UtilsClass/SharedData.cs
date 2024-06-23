@@ -2,6 +2,8 @@
 using HandyControl.Data;
 using N2Nmc.Views;
 using N2Nmc.Views.SubPages;
+using N2Nmc.Views.SubPages.Dialogs;
+using N2Nmc.Views.SubPages.Dialogs.MessageDialogs;
 using N2Nmc_Protocol;
 using System;
 using System.Collections.Generic;
@@ -9,9 +11,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -725,12 +729,47 @@ namespace N2Nmc.UtilsClass
             }
         }
 
-        /*
-         * Coding Example: 
-         *  Task.Run(() => SharedData.CheckN2NClientUpdate(Dispatcher));
-         *  
-         */
-        public static void CheckN2NClientUpdate(Dispatcher? dispatcher = null)
+        public static async void DownloadN2NGOUpdateAsync(Dispatcher dispatcher)
+        {
+            try
+            {
+                using (HttpClient client = new())
+                {
+                    using (HttpResponseMessage response = await
+                        client.GetAsync($"http://{N2Nmc_Protocol.UserDef.GlobalServer_Ip}:{N2Nmc_Protocol.UserDef.ExternServerOptions.N2Nmc_File_Server_Port}/{N2Nmc_Protocol.UserDef.UpdatePackageFileName}")
+                        )
+                    {
+                        try
+                        {
+                            response.EnsureSuccessStatusCode();
+                        }
+                        catch (HttpRequestException e)
+                        {
+                            Console.WriteLine($"{e.Message}");
+                        }
+
+                        using (FileStream fileStream = File.Create(N2Nmc_Protocol.UserDef.UpdatePackageFileName))
+                        {
+                            await response.Content.CopyToAsync(fileStream);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dispatcher.Invoke(() => GetMainView.DoMessageDialog($"从服务器下载更新包时失败：{ex.Message}", "更新N2N GO"));
+            }
+
+            SharedData.ConfigFile.Set("NeedUpdate", "1");
+            dispatcher.Invoke(() => GetMainView.DoMessageDialog("N2N GO 更新包 已下载，将在N2N GO 关闭后升级。", "更新N2N GO"));
+        }
+
+        /// <summary>
+        /// * Coding Example: <br/>
+        /// *  Task.Run(() => SharedData.CheckN2NGOClientUpdate());
+        /// </summary>
+        /// <param name="dispatcher">Dispatcher for invoking MainView Message Dialogs</param>
+        public static void CheckN2NGOClientUpdate(Dispatcher dispatcher)
         {
             lock (NM_Connection)
                 if (Peek())
@@ -745,7 +784,7 @@ namespace N2Nmc.UtilsClass
                             _pkg_get = NM_Connection.Receive();
                             if (_pkg_get == null || (BaseHeader)_pkg_get.Value.Header != BaseHeader.msg_string || _pkg_get.Value.external_data == null)
                             {
-                                HandyControl.Controls.Growl.Error("无法从服务器获取更新：错误的服务器配置");
+                                dispatcher.Invoke(() => GetMainView.DoMessageDialog("无法从服务器获取更新：错误的服务器配置", "更新N2N GO"));
                                 return;
                             }
                         }
@@ -758,48 +797,32 @@ namespace N2Nmc.UtilsClass
                         {
                             StringBuilder strNewVersionMsg = new();
                             strNewVersionMsg.AppendLine("发现新版本: " + serverVersionGet.ToString());
-                            strNewVersionMsg.AppendLine("当前版本: " + SharedData.VersionString);
+                            strNewVersionMsg.AppendLine($"{SharedData.VersionString} -> {serverVersionGet.ToString()}");
                             strNewVersionMsg.AppendLine("是否要更新？");
 
-                            GrowlInfo newVersionGrowlInfo = new()
-                            {
-                                Message = strNewVersionMsg.ToString(),
-                                CancelStr = "忽略",
-                                ConfirmStr = "更新至" + serverVersionGet.ToString(),
-                                Type = InfoType.Success,
-                                ShowCloseButton = false,
-                                ActionBeforeClose = (_) =>
-                                {
-                                    if (_)
+                            dispatcher.Invoke(() => GetMainView.DoMessageYesNoDialog(strNewVersionMsg.ToString(), "发现新版本",
+                                new() {
+                                    (_dialogMessage) =>
                                     {
-                                        try
-                                        {
-                                            Task.Run(() =>
-                                            {
-                                                new WebClient().DownloadFile("http://" + N2Nmc_Protocol.UserDef.GlobalServer_Ip + ':' + N2Nmc_Protocol.UserDef.ExternServerOptions.N2Nmc_File_Server_Port + '/' + N2Nmc_Protocol.UserDef.UpdatePackageFileName, N2Nmc_Protocol.UserDef.UpdatePackageFileName);
-                                                SharedData.ConfigFile.Set("NeedUpdate", "1");
-                                                HandyControl.Controls.Growl.Success("N2Nmc更新包 已下载，将在关闭 N2Nmc 后升级。");
-                                            });
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            HandyControl.Controls.Growl.Error("从服务器下载更新包时失败：" + ex.Message);
-                                        }
+                                        var dialogMessage = _dialogMessage as DialogMessage;
+                                        if (dialogMessage == null)
+                                            throw new NullReferenceException(nameof(dialogMessage));
+                                        var rr = dialogMessage.MessageContent as DialogYesNo;
+                                        if ( rr == null || rr.YesNo != DialogYesNo.YesNoE.Yes)
+                                            return;
+
+                                        DownloadN2NGOUpdateAsync(dispatcher);
                                     }
-
-                                    return true;
                                 }
-                            };
-
-                            HandyControl.Controls.Growl.Ask(newVersionGrowlInfo);
+                                )
+                            );
                         }
                         else
-                            //HandyControl.Controls.Growl.Success("N2Nmc 已是最新版");
-                            dispatcher?.Invoke(() => GetMainView?.DoMessageDialog("N2N GO 已是最新版", "更新"));
+                            dispatcher.Invoke(() => GetMainView.DoMessageDialog("N2N GO 已是最新版", "更新"));
                     }
                     catch (Exception ex)
                     {
-                        HandyControl.Controls.Growl.Error("无法从服务器获取更新：" + ex.Message);
+                        dispatcher.Invoke(() => GetMainView.DoMessageDialog($"无法从服务器获取更新：{ex.Message}"));
                         return;
                     }
                 }

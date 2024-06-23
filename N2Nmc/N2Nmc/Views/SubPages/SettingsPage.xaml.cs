@@ -64,10 +64,10 @@ namespace N2Nmc.Views.SubPages
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => SharedData.GetMainView?.DoMessageDialog("在尝试安装Tap驱动时发生异常：" + ex.Message + "\n请尝试以管理员身份运行N2Nmc或\n手动安装该文件：Data/TapWindowsInstaller/9.21.2.exe", "Tap驱动安装"));
+                Dispatcher.Invoke(() => SharedData.GetMainView.DoMessageDialog("在尝试安装Tap驱动时发生异常：" + ex.Message + "\n请尝试以管理员身份运行N2Nmc或\n手动安装该文件：Data/TapWindowsInstaller/9.21.2.exe", "Tap驱动安装"));
                 return;
             }
-            Dispatcher.Invoke(() => SharedData.GetMainView?.DoMessageDialog("Tap驱动已完成安装", "Tap驱动安装"));
+            Dispatcher.Invoke(() => SharedData.GetMainView.DoMessageDialog("Tap驱动已完成安装", "Tap驱动安装"));
         }
 
         private void ClearShaderCacheButton_Click(object sender, RoutedEventArgs e)

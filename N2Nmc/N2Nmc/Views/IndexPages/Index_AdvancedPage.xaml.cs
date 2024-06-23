@@ -49,7 +49,7 @@ namespace N2Nmc.Views.SubPages
 
                 case "CheckUpdate":
                     {
-                        Task.Run(() => SharedData.CheckN2NClientUpdate(Dispatcher));
+                        Task.Run(() => SharedData.CheckN2NGOClientUpdate(this.Dispatcher));
                         break;
                     }
             }

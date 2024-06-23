@@ -740,7 +740,7 @@ namespace N2Nmc.Views
                     DoMessageDialog("N2Nmc 上一次更新未成功，将会在本次关闭后重新尝试。");
                 }
                 else
-                    SharedData.CheckN2NClientUpdate(Dispatcher);
+                    SharedData.CheckN2NGOClientUpdate(this.Dispatcher);
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     Run("Data/BinRef/Windows/WinIPBroadcast/WinIPBroadcast.exe run", true); // 运行WinIPBroadcast（数据转发到虚拟网卡）
