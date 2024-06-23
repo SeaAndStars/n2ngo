@@ -1,5 +1,4 @@
 ﻿using HandyControl.Controls;
-using HandyControl.Data;
 using N2Nmc.Views;
 using N2Nmc.Views.SubPages;
 using N2Nmc.Views.SubPages.Dialogs;
@@ -10,14 +9,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Security.Policy;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -56,6 +51,18 @@ namespace N2Nmc.UtilsClass
             Path.Combine(BinRefDir, UpdateClientExecFile);
 
         public static MainView GetMainView { get => (MainView)App.Current.MainWindow; }
+        private static Dispatcher? _mainViewDispatcher;
+        public static Dispatcher MainViewDispatcher
+        {
+            get
+            {
+                if (_mainViewDispatcher == null)
+                    throw new NullReferenceException(nameof(_mainViewDispatcher));
+
+                return _mainViewDispatcher;
+            }
+            set => _mainViewDispatcher = value;
+        }
 
         public static class CurrentApp
         {
@@ -174,7 +181,7 @@ namespace N2Nmc.UtilsClass
                     LogOut += newLog;
 
                     // Output to LogPage
-                    LogPage? lp = ((MainView)App.Current.MainWindow).pageLog;
+                    LogPage? lp = GetMainView.pageLog;
                     if (lp != null)
                         lp.textlog.Text += newLog;
                 });
@@ -190,51 +197,34 @@ namespace N2Nmc.UtilsClass
 
         public class N2NmcServerConnection
         {
-            public enum n2nmc_server_disconnected_actions
-            {
-                ask = 0,
-                reconnect,
-                ignore
-            }
-
             public string ServerIP = N2Nmc_Protocol.UserDef.GlobalServer_Ip;
             public int ServerPort = N2Nmc_Protocol.UserDef.ExternServerOptions.N2Nmc_Server_Port;
-            public GrowlInfo DisconnectedGrowlInfo = new()
-            {
-                CancelStr = "稍后询问我",
-                ConfirmStr = "重新连接",
-                Type = InfoType.Ask,
-                ShowCloseButton = true
-            };
-            public class _lockingVars
-            {
-                public int DisconnectedGrowlInfoAction { get; private set; } = 0;
-                public void INC()
-                {
-                    lock (this)
-                        DisconnectedGrowlInfoAction++;
-                }
-                public void DEC()
-                {
-                    lock (this)
-                        if (DisconnectedGrowlInfoAction <= 0)
-                            DisconnectedGrowlInfoAction = 0;
-                        else
-                            DisconnectedGrowlInfoAction--;
-                }
-            }
-            public _lockingVars LockingVars = new();
 
-            public n2nmc_server_disconnected_actions N2NmcServerDisconnectedActions { get; private set; } = n2nmc_server_disconnected_actions.ask;
-            private TcpClient? _client = new();
+            private TcpClient _client = new();
 
-            public static void ClientExHandler(Exception ex, GrowlInfo growlInfo)
+            public void ClientExHandler(Exception? ex = null)
             {
-                growlInfo.Message = "与 N2Nmc 服务器通信断开或错误，信息：" + ex.Message;
-                HandyControl.Controls.Growl.Ask(growlInfo);
+                MainViewDispatcher.Invoke(()=>GetMainView.DoMessageYesNoDialog($"我们与N2N GO 服务器通信断开或错误，信息：{ex?.Message}\n要重新连接吗？", "N2N GO 连接异常",
+                    new() {
+                        (_dialogMessage) =>
+                            {
+                                var dialogMessage = _dialogMessage as DialogMessage;
+                                if (dialogMessage == null)
+                                    throw new NullReferenceException(nameof(dialogMessage));
+                                var rr = dialogMessage.MessageContent as DialogYesNo;
+                                if ( rr == null || rr.YesNo != DialogYesNo.YesNoE.Yes)
+                                    return;
+
+                                Task.Run(() => ResetConnection(true));
+                            }
+                        }
+                    ));
             }
 
             #region Base Operations
+            /// <summary>
+            /// <see cref="Package.IO_Tool.Send">Send</see> a <see cref="Package">package</see> through the <see cref="_client">Connection Client</see>
+            /// </summary>
             public bool Connect()
             {
                 lock (this)
@@ -249,20 +239,23 @@ namespace N2Nmc.UtilsClass
                     }
                     catch (Exception ex)
                     {
-                        ClientExHandler(ex, DisconnectedGrowlInfo);
+                        ClientExHandler(ex);
                         return false;
                     }
                     return false;
                 }
             }
 
+            /// <summary>
+            /// <see cref="Package.IO_Tool.Send">Send</see> a <see cref="Package">package</see> through the <see cref="_client">Connection Client</see>
+            /// </summary>
+            /// <param name="package">Package to be sent</param>
+            /// <param name="timeOut">Sets <seealso cref="TcpClient.ReceiveTimeout"/></param>
+            /// <returns>true if successful, otherwise false.</returns>
             public bool Send(Package package, int? timeOut = null)
             {
                 lock (this)
                 {
-                    if (_client == null)
-                        throw new NullReferenceException(nameof(_client));
-
                     Package.IO_Tool iO_Tool = new();
                     if (timeOut != null)
                     {
@@ -272,9 +265,9 @@ namespace N2Nmc.UtilsClass
                     if (!iO_Tool.Send(_client, package, timeOut != null))
                     {
                         if (iO_Tool.latestEx != null)
-                            ClientExHandler(iO_Tool.latestEx, DisconnectedGrowlInfo);
+                            ClientExHandler(iO_Tool.latestEx);
                         else
-                            ClientExHandler(new NetworkInformationException(), DisconnectedGrowlInfo);
+                            ClientExHandler(new("Unknown"));
 
                         return false;
                     }
@@ -283,13 +276,15 @@ namespace N2Nmc.UtilsClass
                 }
             }
 
+            /// <summary>
+            /// <see cref="Package.IO_Tool.Receive">Receive</see> a <see cref="Package">package</see> through the <see cref="_client">Connection Client</see>
+            /// </summary>
+            /// <param name="timeOut">Sets <seealso cref="TcpClient.ReceiveTimeout"/></param>
+            /// <returns>Package</returns>
             public Package? Receive(int? timeOut = null)
             {
                 lock (this)
                 {
-                    if (_client == null)
-                        throw new NullReferenceException(nameof(_client));
-
                     Package? package = null;
 
                     Package.IO_Tool iO_Tool = new();
@@ -302,31 +297,32 @@ namespace N2Nmc.UtilsClass
 
                     if (package == null)
                         if (iO_Tool.latestEx != null)
-                            ClientExHandler(iO_Tool.latestEx, DisconnectedGrowlInfo);
+                            ClientExHandler(iO_Tool.latestEx);
                         else
-                            ClientExHandler(new NullReferenceException(), DisconnectedGrowlInfo);
+                            ClientExHandler(new("Unknown"));
 
                     return package;
                 }
             }
 
+            /// <summary>
+            ///  <see cref="System.Net.Sockets.NetworkStream.Flush">Flushes</see> data from the <see cref="System.Net.Sockets.TcpClient.GetStream">stream</see> of <see cref="_client">Connection Client</see>. This method is reserved for future use.
+            /// </summary>
             public void Flush()
             {
-                lock (this)
-                {
-                    if (_client == null)
-                        throw new NullReferenceException(nameof(_client));
-
-                    _client?.GetStream().Flush();
-                }
+                lock (this) _client.GetStream().Flush();
             }
 
+            /// <summary>
+            ///  Peek connection to server.
+            /// </summary>
+            /// <returns>true if successful, otherwise false.</returns>
             public bool Peek()
             {
                 lock (this)
                 {
-                    if (_client == null)
-                        throw new NullReferenceException(nameof(_client));
+                    if (!_client.Connected)
+                        return false;
 
                     try
                     {
@@ -340,26 +336,28 @@ namespace N2Nmc.UtilsClass
                     }
                     catch (Exception ex)
                     {
-                        ClientExHandler(ex, DisconnectedGrowlInfo);
+                        ClientExHandler(ex);
                         return false;
                     }
                 }
             }
 
+            /// <summary>
+            ///  Check that the connection[<see cref="System.Net.Sockets.TcpClient.Connected"/>] to the server is valid.
+            /// </summary>
+            /// <returns>true if valid, otherwise false.</returns>
             public bool IsConnected()
             {
-                lock (this)
-                    return _client == null ? false : _client.Connected;
+                lock (this) return _client.Connected;
             }
 
+            /// <summary>
+            ///  Close and dispose <see cref="_client">Connection Client</see>
+            /// </summary>
             public void Close()
             {
-                if (_client != null)
-                {
-                    _client.Close();
-                    _client.Dispose();
-                    _client = null;
-                }
+                _client.Close();
+                _client.Dispose();
             }
             #endregion
 
@@ -386,11 +384,41 @@ namespace N2Nmc.UtilsClass
                     Value = value;
                     Status = status;
                 }
+                public ProtocolOperationReturnType(ProtocolOperationReturnStatus status)
+                {
+                    Status = status;
+                    Value = default;
+                }
 
                 public static bool operator true(ProtocolOperationReturnType<T> inst) => inst.Status == ProtocolOperationReturnStatus.Success;
                 public static bool operator false(ProtocolOperationReturnType<T> inst) => inst.Status != ProtocolOperationReturnStatus.Success;
             }
             #region Protocol Operations
+            /// <summary>
+            /// Get User Key<br/>
+            /// <see cref="Protocol.BaseHeader._user_key_get"></see>
+            /// </summary>
+            public ProtocolOperationReturnType<string> GetUserKey()
+            {
+                if (!IsConnected())
+                    return new(ProtocolOperationReturnStatus.Fail_NotConnected);
+
+                var rpackage = Receive(6000);
+                if (rpackage == null)
+                    return new(ProtocolOperationReturnStatus.Fail_NullPackage);
+
+                var package = rpackage.Value;
+                if ((BaseHeader)package.Header != BaseHeader.msg_string_long)
+                    return new(ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+                if (package.external_data == null)
+                    return new(ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+
+                return new(Package.MsgExternalData.Decode.MsgStringLong(package.external_data));
+            }
+            /// <summary>
+            /// Pull number of onlines<br/>
+            /// <see cref="Protocol.BaseHeader._pull_online_total"></see>
+            /// </summary>
             public ProtocolOperationReturnType<int> PullTotalOnlines()
             {
                 if (!IsConnected())
@@ -433,13 +461,13 @@ namespace N2Nmc.UtilsClass
 
                     if (value)
                     {
-                        ((MainView)App.Current.MainWindow).LabelTitle.Content = "N2N 已连接至 " + CurrentRoomCode + " - " + GetRoomNameByCode(CurrentRoomCode) + " (N2Nmc)";
-                        ((MainView)App.Current.MainWindow).LabelTitle.Style = (Style)Application.Current.FindResource("ConnectedTitleStyle");
+                        GetMainView.LabelTitle.Content = "N2N 已连接至 " + CurrentRoomCode + " - " + GetRoomNameByCode(CurrentRoomCode) + " (N2Nmc)";
+                        GetMainView.LabelTitle.Style = (Style)Application.Current.FindResource("ConnectedTitleStyle");
                     }
                     else
                     {
-                        ((MainView)App.Current.MainWindow).LabelTitle.Content = "N2N GO";
-                        ((MainView)App.Current.MainWindow).LabelTitle.Style = (Style)Application.Current.FindResource("TitleStyle");
+                        GetMainView.LabelTitle.Content = "N2N GO";
+                        GetMainView.LabelTitle.Style = (Style)Application.Current.FindResource("TitleStyle");
                     }
                 }
             }
@@ -729,7 +757,7 @@ namespace N2Nmc.UtilsClass
             }
         }
 
-        public static async void DownloadN2NGOUpdateAsync(Dispatcher dispatcher)
+        public static async void DownloadN2NGOUpdateAsync()
         {
             try
             {
@@ -757,19 +785,19 @@ namespace N2Nmc.UtilsClass
             }
             catch (Exception ex)
             {
-                dispatcher.Invoke(() => GetMainView.DoMessageDialog($"从服务器下载更新包时失败：{ex.Message}", "更新N2N GO"));
+                GetMainView.DispatcherDoMessageDialog($"从服务器下载更新包时失败：{ex.Message}", "更新N2N GO");
             }
 
             SharedData.ConfigFile.Set("NeedUpdate", "1");
-            dispatcher.Invoke(() => GetMainView.DoMessageDialog("N2N GO 更新包 已下载，将在N2N GO 关闭后升级。", "更新N2N GO"));
+            GetMainView.DispatcherDoMessageDialog("N2N GO 更新包 已下载，将在N2N GO 关闭后升级。", "更新N2N GO");
         }
 
         /// <summary>
-        /// * Coding Example: <br/>
-        /// *  Task.Run(() => SharedData.CheckN2NGOClientUpdate());
+        /// Check update for N2N GO client asynchronous
+        /// Coding Example: <br/>
+        /// <code>Task.Run(() => SharedData.CheckN2NGOClientUpdate());</code>
         /// </summary>
-        /// <param name="dispatcher">Dispatcher for invoking MainView Message Dialogs</param>
-        public static void CheckN2NGOClientUpdate(Dispatcher dispatcher)
+        public static void CheckN2NGOClientUpdate()
         {
             lock (NM_Connection)
                 if (Peek())
@@ -784,7 +812,7 @@ namespace N2Nmc.UtilsClass
                             _pkg_get = NM_Connection.Receive();
                             if (_pkg_get == null || (BaseHeader)_pkg_get.Value.Header != BaseHeader.msg_string || _pkg_get.Value.external_data == null)
                             {
-                                dispatcher.Invoke(() => GetMainView.DoMessageDialog("无法从服务器获取更新：错误的服务器配置", "更新N2N GO"));
+                                MainViewDispatcher.Invoke(() => GetMainView.DispatcherDoMessageDialog("无法从服务器获取更新：错误的服务器配置", "更新N2N GO"));
                                 return;
                             }
                         }
@@ -800,77 +828,60 @@ namespace N2Nmc.UtilsClass
                             strNewVersionMsg.AppendLine($"{SharedData.VersionString} -> {serverVersionGet.ToString()}");
                             strNewVersionMsg.AppendLine("是否要更新？");
 
-                            dispatcher.Invoke(() => GetMainView.DoMessageYesNoDialog(strNewVersionMsg.ToString(), "发现新版本",
-                                new() {
-                                    (_dialogMessage) =>
-                                    {
-                                        var dialogMessage = _dialogMessage as DialogMessage;
-                                        if (dialogMessage == null)
-                                            throw new NullReferenceException(nameof(dialogMessage));
-                                        var rr = dialogMessage.MessageContent as DialogYesNo;
-                                        if ( rr == null || rr.YesNo != DialogYesNo.YesNoE.Yes)
-                                            return;
+                            MainViewDispatcher.Invoke(() => GetMainView.DispatcherDoMessageYesNoDialog(strNewVersionMsg.ToString(), "发现新版本",
+                                     new() {
+                                        (_dialogMessage) =>
+                                        {
+                                            var dialogMessage = _dialogMessage as DialogMessage;
+                                            if (dialogMessage == null)
+                                                throw new NullReferenceException(nameof(dialogMessage));
+                                            var rr = dialogMessage.MessageContent as DialogYesNo;
+                                            if ( rr == null || rr.YesNo != DialogYesNo.YesNoE.Yes)
+                                                return;
 
-                                        DownloadN2NGOUpdateAsync(dispatcher);
-                                    }
-                                }
-                                )
+                                            DownloadN2NGOUpdateAsync();
+                                        }
+                                     }
+                                 )
                             );
                         }
                         else
-                            dispatcher.Invoke(() => GetMainView.DoMessageDialog("N2N GO 已是最新版", "更新"));
+                            MainViewDispatcher.Invoke(() => GetMainView.DispatcherDoMessageDialog("N2N GO 已是最新版", "更新"));
                     }
                     catch (Exception ex)
                     {
-                        dispatcher.Invoke(() => GetMainView.DoMessageDialog($"无法从服务器获取更新：{ex.Message}"));
+                        MainViewDispatcher.Invoke(() => GetMainView.DispatcherDoMessageDialog($"无法从服务器获取更新：{ex.Message}"));
                         return;
                     }
                 }
                 else
                 {
-                    N2NmcServerConnection.ClientExHandler(new Exception("检测更新时发生错误：未连接至N2Nmc服务器"), NM_Connection.DisconnectedGrowlInfo);
+                    NM_Connection.ClientExHandler(new Exception("检测更新时发生错误：未连接至N2Nmc服务器"));
                 }
         }
 
-        public static void ConnectAndPeek()
+        public static void ConnectAndPeek(bool successEcho = false)
         {
             lock (NM_Connection)
             {
                 if (NM_Connection.Connect())
                 {
-                    HandyControl.Controls.Growl.Success("成功连接到 N2Nmc 服务器");
+                    if (successEcho)
+                        MainViewDispatcher.Invoke(()=>GetMainView.DoMessageDialog("成功连接到 N2N GO 服务器", "连接"));
                     Peek();
-                }
-                else
-                {
-                    HandyControl.Controls.Growl.Error("无法连接至 N2Nmc 服务器");
-                    NM_Connection.DisconnectedGrowlInfo.Message = "是否要尝试重新连接？";
-                    HandyControl.Controls.Growl.Ask(NM_Connection.DisconnectedGrowlInfo);
                 }
             }
         }
 
-        public static void ResetConnection()
+        public static void ResetConnection(bool echo = false, string? serverIp = null, int? serverPort=null)
         {
             SharedData.NM_Connection.Close();
             SharedData.NM_Connection = new();
-            SharedData.ConnectAndPeek();
-        }
-
-        public static string? GetUserKey()
-        {
-            lock (NM_Connection)
-            {
-                var rpackage = NM_Connection.Receive(6000);
-                if (rpackage == null)
-                    return null;
-
-                var package = rpackage.Value;
-                if ((BaseHeader)package.Header != BaseHeader.msg_string_long || package.external_data == null)
-                    return null;
-
-                return Package.MsgExternalData.Decode.MsgStringLong(package.external_data);
-            }
+            if (serverIp != null)
+                SharedData.NM_Connection.ServerIP = serverIp;
+            if (serverPort != null)
+                SharedData.NM_Connection.ServerPort = serverPort.Value;
+            SharedData.ConnectAndPeek(echo);
         }
 
         public static string GetRoomCode(string input)

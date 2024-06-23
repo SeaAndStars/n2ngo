@@ -62,8 +62,6 @@ namespace N2Nmc.Views
         DoubleAnimation blurInFast = new DoubleAnimation { To = 8, Duration = TimeSpan.FromSeconds(0.25) };
         DoubleAnimation blurOutFast = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.20) };
 
-        DispatcherTimer n2nmc_server_reconnect_timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(15) };
-
         public bool isInitialized { get; private set; } = false;
         bool _canClose = false;
 
@@ -85,6 +83,8 @@ namespace N2Nmc.Views
             Stopwatch swbm = Stopwatch.StartNew();
 
             InitializeComponent();
+
+            SharedData.MainViewDispatcher = this.Dispatcher;
 
             // 初始化页面实例
             pageRooms = new();
@@ -153,51 +153,6 @@ namespace N2Nmc.Views
 #endif
             }
 
-            n2nmc_server_reconnect_timer.Tick += (_, __) =>
-            {
-                if (_ == null)
-                    throw new ArgumentNullException(nameof(n2nmc_server_reconnect_timer), "n2nmc_server_reconnect_timer.Tick Arg object is null.");
-
-                lock (SharedData.NM_Connection)
-                {
-                    if (SharedData.NM_Connection.IsConnected())
-                    {
-                        SharedData.NM_Connection.LockingVars.INC();
-                        ((DispatcherTimer)_).Stop();
-                        return;
-                    }
-
-
-                    SharedData.NM_Connection.DisconnectedGrowlInfo.Message = "是否要尝试重新连接？";
-                    HandyControl.Controls.Growl.Ask(SharedData.NM_Connection.DisconnectedGrowlInfo);
-                    SharedData.NM_Connection.LockingVars.DEC();
-                }
-
-                ((DispatcherTimer)_).Stop();
-                return;
-            };
-
-            lock (SharedData.NM_Connection)
-            {
-                SharedData.NM_Connection.DisconnectedGrowlInfo.ActionBeforeClose = (bool b) =>
-                {
-                    lock (SharedData.NM_Connection.LockingVars)
-                    {
-                        if (SharedData.NM_Connection.LockingVars.DisconnectedGrowlInfoAction > 0)
-                            return true;
-
-                        SharedData.NM_Connection.LockingVars.INC();
-                    }
-                    if (b)
-                        Task.Run(() => SharedData.ConnectAndPeek());
-                    else
-                    {
-                        n2nmc_server_reconnect_timer.Start();
-                    }
-
-                    return true;
-                };
-            }
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
             isInitialized = true;
@@ -328,6 +283,7 @@ namespace N2Nmc.Views
 
             MessageDialogs.Children.Add(m);
         }
+        public void DispatcherDoMessageInputDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null) => this.Dispatcher.Invoke(() => DoMessageInputDialog(MessageText, MessageTitle, ActsRet, ActPreRun));
         public void DoMessageYesNoDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null)
         {
             Frame? m = null;
@@ -352,6 +308,7 @@ namespace N2Nmc.Views
 
             MessageDialogs.Children.Add(m);
         }
+        public void DispatcherDoMessageYesNoDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null) => this.Dispatcher.Invoke(() => DoMessageYesNoDialog(MessageText, MessageTitle, ActsRet, ActPreRun));
         public void DoMessageDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null)
         {
             Frame? m = null;
@@ -376,7 +333,7 @@ namespace N2Nmc.Views
 
             MessageDialogs.Children.Add(m);
         }
-
+        public void DispatcherDoMessageDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null) => this.Dispatcher.Invoke(() => DoMessageDialog(MessageText, MessageTitle, ActsRet, ActPreRun));
 
         public void NavigatePage(Page? page)
         {
@@ -725,8 +682,8 @@ namespace N2Nmc.Views
                     throw new NullReferenceException(nameof(pageRooms));
                 if (pageSettings == null)
                     throw new NullReferenceException(nameof(pageSettings));
-                SharedData.ConnectAndPeek();
-                //Dispatcher.Invoke(() => pageRooms.Refresh());
+
+                pageSettings.Dispatcher.Invoke(() => pageSettings.UpdateColorPaletteSelectionItems());
 
                 if (SharedData.ConfigFile.Get("FirstRun", "1") == "1")
                 {
@@ -735,17 +692,18 @@ namespace N2Nmc.Views
                     SharedData.ConfigFile.Set("FirstRun", "0");
                 }
 
+                SharedData.ResetConnection();
+
                 if (SharedData.ConfigFile.Get("NeedUpdate", "0") == "1")
                 {
-                    DoMessageDialog("N2Nmc 上一次更新未成功，将会在本次关闭后重新尝试。");
+                    DoMessageDialog("N2N GO 上一次更新未成功，将会在本次关闭后重新尝试。");
                 }
                 else
-                    SharedData.CheckN2NGOClientUpdate(this.Dispatcher);
+                    SharedData.CheckN2NGOClientUpdate();
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     Run("Data/BinRef/Windows/WinIPBroadcast/WinIPBroadcast.exe run", true); // 运行WinIPBroadcast（数据转发到虚拟网卡）
 
-                pageSettings.Dispatcher.Invoke(() => pageSettings.UpdateColorPaletteSelectionItems());
             });
             
             swbm.Stop();

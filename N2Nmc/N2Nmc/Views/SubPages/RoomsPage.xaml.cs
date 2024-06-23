@@ -290,9 +290,8 @@ namespace N2Nmc.Views.SubPages
             if (refreshThread != null && refreshThread.IsAlive)
                 return;
 
-            Dispatcher dispatcher = ((MainView)App.Current.MainWindow).Dispatcher;
             bool? isRefreshing = null;
-            dispatcher.Invoke(() => isRefreshing = IsRefreshing);
+            Dispatcher.Invoke(() => isRefreshing = IsRefreshing);
             if (isRefreshing == true)
                 return;
 
@@ -308,20 +307,20 @@ namespace N2Nmc.Views.SubPages
             {
                 animationCompletedTask.SetResult(0);
             };
-            dispatcher.InvokeAsync(() => DialogLoadingRooms.BeginAnimation(OpacityProperty, _loadingDialogFadeIn));
+            Dispatcher.InvokeAsync(() => DialogLoadingRooms.BeginAnimation(OpacityProperty, _loadingDialogFadeIn));
 
             await Task.Run(() =>
             {
                 // 等待动画完成
                 animationCompletedTask.Task.Wait();
 
-                dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     if (_FakeServer)
                     {
                         refreshThread = new Thread(() =>
                         {
-                            dispatcher.Invoke(() => IsRefreshing = true);
+                            Dispatcher.Invoke(() => IsRefreshing = true);
 
                             int i = 5; // Cards to make
                             while (i-- > 0)
@@ -345,7 +344,7 @@ namespace N2Nmc.Views.SubPages
                             Filter_Sort(default);
 
 
-                            LoadingDialogOut(dispatcher);
+                            LoadingDialogOut(Dispatcher);
 
                             IsRefreshing = false;
                             return;
@@ -357,7 +356,7 @@ namespace N2Nmc.Views.SubPages
                     Random random = new Random(DateTime.Now.Millisecond);
                     refreshThread = new Thread(() =>
                     {
-                        dispatcher.Invoke(() =>
+                        Dispatcher.Invoke(() =>
                         {
                             IsRefreshing = true;
                             // Cards.Items.Add(new Card { Title = "点我刷新", IsFunctionButton = true, Text = "刷新" });
@@ -370,21 +369,7 @@ namespace N2Nmc.Views.SubPages
                         lock (NM_Connection)
                             try
                             {
-                                if (!NM_Connection.IsConnected())
-                                {
-                                    for (int i = 0; i < 5; i++)
-                                    {
-                                        Thread.Sleep(1000);
-                                        if (NM_Connection.IsConnected())
-                                            break;
-                                    }
-                                    if (!NM_Connection.IsConnected())
-                                    {
-                                        Growl.Error("N2Nmc服务器未连接！", GrowlToken);
-                                        LoadingDialogOut(dispatcher);
-                                        return;
-                                    }
-                                }
+                                NM_Connection.Peek();
 
                                 if (page_index == null)
                                 {
@@ -490,24 +475,24 @@ namespace N2Nmc.Views.SubPages
                                 }
                             invalid:
                                 Growl.Error("无效 N2Nmc 服务器协议");
-                                LoadingDialogOut(dispatcher);
+                                LoadingDialogOut(Dispatcher);
                                 return;
                             }
                             catch (Exception ex)
                             {
                                 Growl.Error("Exception On Refreshing True Server:\n" + ex.ToString(), GrowlToken);
-                                LoadingDialogOut(dispatcher);
+                                LoadingDialogOut(Dispatcher);
                                 return;
                             }
                         done:
-                        dispatcher.InvokeAsync(() =>
+                        Dispatcher.InvokeAsync(() =>
                         {
                             if (!string.IsNullOrEmpty(RoomsFiltering.Text))
                                 Filter_Sort(RoomsFiltering.Text);
                             else
                                 Filter_Sort(default);
 
-                            LoadingDialogOut(dispatcher);
+                            LoadingDialogOut(Dispatcher);
                         });
                     });
 

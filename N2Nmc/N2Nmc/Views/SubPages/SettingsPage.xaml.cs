@@ -36,7 +36,7 @@ namespace N2Nmc.Views.SubPages
 
             ColorPaletteSeletion.Items.Clear();
             ColorPaletteSeletion.SelectedIndex = -1;
-            foreach ( var item in builtinColorPaletteNames )
+            foreach (var item in builtinColorPaletteNames)
             {
                 ColorPaletteSeletion.Items.Add(item);
             }
@@ -118,12 +118,12 @@ namespace N2Nmc.Views.SubPages
 
             var selectedItem = e.AddedItems[0] as string;
             if (selectedItem != null)
-                SharedData.GetMainView.UpdateColorPalette(selectedItem);
+                SharedData.GetMainView.Dispatcher.InvokeAsync(() => SharedData.GetMainView.UpdateColorPalette(selectedItem));
         }
 
         private void SwitchLogButtonButton_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.GetMainView.LogButtonVisibility = SharedData.GetMainView.LogButtonVisibility == Visibility.Visible? Visibility.Collapsed: Visibility.Visible;
+            SharedData.GetMainView.LogButtonVisibility = SharedData.GetMainView.LogButtonVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void LocaleSeletion_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -377,6 +377,6 @@ namespace N2Nmc.Views.SubPages
 
         public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
     }
-    
+
 }
 
