@@ -37,6 +37,7 @@
                 </ItemsControl.ItemTemplate>
 
                 <local1:Indexer nagivKey="goback"  IndexerTitle="@LOCALE_Index-GoBack_Title" IndexerDescription="@LOCALE_Index-GoBack_Description"/>
+                <local1:Indexer nagivKey="QuickJoin"  IndexerTitle="@LOCALE_Index_ClientingPage-QuickJoin_Title" IndexerDescription="@LOCALE_Index_ClientingPage-QuickJoin_Description"/>
             </ItemsControl>
         </hc:ScrollViewer>
     </Grid>

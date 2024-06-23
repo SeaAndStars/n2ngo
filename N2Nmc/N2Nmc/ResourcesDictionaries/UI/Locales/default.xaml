@@ -29,6 +29,9 @@
     <system:String x:Key="LOCALE_Index_AdvancedPage-Settings_Description">N2N GO Application Settings</system:String>
     <system:String x:Key="LOCALE_Index_AdvancedPage-CheckUpdate_Title">Update</system:String>
     <system:String x:Key="LOCALE_Index_AdvancedPage-CheckUpdate_Description" xml:space="preserve">Check for updates&#13;&#13;Updates to the following applications:&#13;N2N GO&#13;n2n</system:String>
+
+    <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Title">Join</system:String>
+    <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Description">Manually join a room</system:String>
     
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Title">View Rooms</system:String>
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Description">Check public rooms here</system:String>

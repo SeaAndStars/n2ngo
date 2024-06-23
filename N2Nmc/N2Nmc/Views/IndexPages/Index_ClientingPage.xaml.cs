@@ -40,6 +40,12 @@ namespace N2Nmc.Views.SubPages
                         NavigateIndexPage(null);
                         break;
                     }
+
+                case "QuickJoin":
+                    {
+                        NavigatePage(SharedData.GetMainView.pageQuickJoin);
+                        break;
+                    }
             }
         }
     }

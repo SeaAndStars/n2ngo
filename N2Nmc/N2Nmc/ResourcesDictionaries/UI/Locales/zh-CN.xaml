@@ -27,6 +27,9 @@
     <system:String x:Key="LOCALE_Index_AdvancedPage-Settings_Description">N2N GO 的应用设定</system:String>
     <system:String x:Key="LOCALE_Index_AdvancedPage-CheckUpdate_Title">检查更新</system:String>
     <system:String x:Key="LOCALE_Index_AdvancedPage-CheckUpdate_Description" xml:space="preserve">检查应用更新&#13;&#13;对下列应用进行更新:&#13;N2N GO&#13;n2n</system:String>
+
+    <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Title">快速加入</system:String>
+    <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Description">手动加入指定房间</system:String>
     
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Title">查看</system:String>
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Description">在这里查看公开的房间</system:String>
