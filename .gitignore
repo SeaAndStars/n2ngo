@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # N2Nmc Build Folders
 /N2NmcClientUpdate/Build
+/N2Nmc/N2Nmc/Data/BinRef/Windows/N2NmcClientUpdate.exe
