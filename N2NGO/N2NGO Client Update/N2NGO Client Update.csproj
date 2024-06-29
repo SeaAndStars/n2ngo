@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Authors>LGF-Studio</Authors>
+    <Title>$(AssemblyName)</Title>
+    <Description>N2N GO Client Updater</Description>
+    <Copyright>Copyright © 2024 LGF-Studio. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://gitee.com/xue-jiangbin/n2nmc</PackageProjectUrl>
+    <RepositoryUrl>https://gitee.com/xue-jiangbin/n2nmc</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>p2p;n2n;c#;n2nmc;n2ngo;client;installer;lgf-sutdio</PackageTags>
+    <PackageReleaseNotes>N2N GO Client Updater</PackageReleaseNotes>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Build\**" />
+    <EmbeddedResource Remove="Build\**" />
+    <None Remove="Build\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\N2NGO Core\N2NGO Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,37 @@
+﻿<Page x:Class="N2NGO.Views.SubPages.Dialogs.DialogMessage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:N2NGO.Views.SubPages.Dialogs"
+      xmlns:walterlv="clr-namespace:Walterlv.Windows.Effects;assembly=Walterlv.Themes.FluentDesign"
+      mc:Ignorable="d" 
+      TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
+      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
+      Title="DialogMessage" Loaded="Page_Loaded" Foreground="{DynamicResource MainColorSolidFontBrush}">
+    <Grid Background="#3F000000">
+        <Border x:Name="ContentBackground" Width="400" Height="250" Background="{DynamicResource MainColorSolidAlphaBrush}" />
+        <Grid x:Name="ContentGrid" Width="404" Height="254" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <ScaleTransform ScaleX="1.3" ScaleY="1.3"/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <Border Grid.Row="0" BorderThickness="2" Background="{DynamicResource Palette_700}">
+                <Border.BorderBrush>
+                    <walterlv:RevealBorderBrush/>
+                </Border.BorderBrush>
+                <Label x:Name="MessageTitle" Height="38" Foreground="{DynamicResource MainColorSolidForeBrush}" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Background="{x:Null}"/>
+            </Border>
+
+            <Frame x:Name="ContentPresenter" Grid.Row="1" BorderThickness="1,0,1,1">
+                <Frame.BorderBrush>
+                    <walterlv:RevealBorderBrush/>
+                </Frame.BorderBrush>
+            </Frame>
+        </Grid>
+    </Grid>
+</Page>

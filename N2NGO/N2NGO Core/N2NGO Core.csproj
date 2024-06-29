@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Title>$(AssemblyName)</Title>
+    <Authors>LGF-Studio</Authors>
+    <Description>N2N GO Core</Description>
+    <Copyright>Copyright © 2024 LGF-Studio. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://gitee.com/xue-jiangbin/n2nmc</PackageProjectUrl>
+    <RepositoryUrl>https://gitee.com/xue-jiangbin/n2nmc</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>p2p;n2n;c#;n2nmc;n2ngo;core;lgf-sutdio</PackageTags>
+    <PackageReleaseNotes>N2N GO Core</PackageReleaseNotes>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
+  </PropertyGroup>
+</Project>

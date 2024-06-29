@@ -1,5 +1,5 @@
-# N2N GO ÎÄµµ 
+# N2N GO ï¿½Äµï¿½ 
 
-## Ë÷Òý
+## ï¿½ï¿½ï¿½ï¿½
 
-[N2N GO](N2Nmc/index.md)
+[N2N GO](N2NGO/index.md)

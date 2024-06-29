@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
+    <Authors>LGF-Studio</Authors>
+    <Title>$(AssemblyName)</Title>
+    <Description>N2N GO Server</Description>
+    <Copyright>Copyright © 2024 LGF-Studio. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://gitee.com/xue-jiangbin/n2nmc</PackageProjectUrl>
+    <RepositoryUrl>https://gitee.com/xue-jiangbin/n2nmc</RepositoryUrl>
+    <PackageIcon></PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>p2p;n2n;c#;n2nmc;n2ngo;server;lgf-sutdio</PackageTags>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageReleaseNotes>N2N GO Server</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <None Remove="Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Qoollo.Turbo" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\N2NGO Core\N2NGO Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ClientLatestVersion.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="N2N GO Server Console Doc.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,127 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=netstandard">
+    <system:String x:Key="LHEAD_Name">en-US</system:String>
+    <system:String x:Key="LHEAD_Language">English (United States)</system:String>
+    <system:String x:Key="LHEAD_ISOLanguageCode">en</system:String>
+    <system:String x:Key="LHEAD_RegionCode">US</system:String>
+
+    <system:String x:Key="LOCALE_Index-GoBack_Title">Back</system:String>
+    <system:String x:Key="LOCALE_Index-GoBack_Description">Go Back to the Previous Index</system:String>
+    
+    <system:String x:Key="LOCALE_Index-Community_Title">Community</system:String>
+    <system:String x:Key="LOCALE_Index-Community_Description">View all visible public rooms in the community here</system:String>
+    <system:String x:Key="LOCALE_Index-Hosting_Title">Hosting</system:String>
+    <system:String x:Key="LOCALE_Index-Hosting_Description">Host your own room</system:String>
+    <system:String x:Key="LOCALE_Index-Clienting_Title">Join</system:String>
+    <system:String x:Key="LOCALE_Index-Clienting_Description">Join the room using the clue you've uncovered</system:String>
+    <system:String x:Key="LOCALE_Index-Advanced_Title">Advanced</system:String>
+    <system:String x:Key="LOCALE_Index-Advanced_Description">Advanced Content</system:String>
+    <system:String x:Key="LOCALE_Index-About_Title">About</system:String>
+    <system:String x:Key="LOCALE_Index-About_Description">Information About Us</system:String>
+
+    <system:String x:Key="LOCALE_Index_AboutPage-AboutUs_Title">About Us</system:String>
+    <system:String x:Key="LOCALE_Index_AboutPage-AboutUs_Description" xml:space="preserve">Founder 未来之乡&#13;Developers&#13;未来之乡 LDX LGF </system:String>
+
+    <system:String x:Key="LOCALE_Index_AdvancedPage-Settings_Title">Setting</system:String>
+    <system:String x:Key="LOCALE_Index_AdvancedPage-Settings_Description">N2N GO Application Settings</system:String>
+    <system:String x:Key="LOCALE_Index_AdvancedPage-Storage_Title">App Storage</system:String>
+    <system:String x:Key="LOCALE_Index_AdvancedPage-Storage_Description">View storage space usage of all components</system:String>
+    <system:String x:Key="LOCALE_Index_AdvancedPage-CheckUpdate_Title">Update</system:String>
+    <system:String x:Key="LOCALE_Index_AdvancedPage-CheckUpdate_Description" xml:space="preserve">Check for updates&#13;&#13;Updates to the following applications:&#13;N2N GO&#13;n2n</system:String>
+
+    <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Title">Join</system:String>
+    <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Description">Manually join a room</system:String>
+    
+    <system:String x:Key="LOCALE_Index_CommunityPage-View_Title">View</system:String>
+    <system:String x:Key="LOCALE_Index_CommunityPage-View_Description">Check public rooms here</system:String>
+
+    <system:String x:Key="LOCALE_Index_HostingPage-Create_Title">Create</system:String>
+    <system:String x:Key="LOCALE_Index_HostingPage-Create_Description">Build your new room here</system:String>
+
+    <system:String x:Key="LOCALE_Dialog_OKButton">Okay</system:String>
+    <system:String x:Key="LOCALE_Dialog_YesButton">Yes</system:String>
+    <system:String x:Key="LOCALE_Dialog_NoButton">No</system:String>
+    <system:String x:Key="LOCALE_Dialog_InputOKButton">Confirm</system:String>
+
+    <system:String x:Key="LOCALE_DialogConnectionSuccessful_Title">Success</system:String>
+    <system:String x:Key="LOCALE_DialogConnectionSuccessful_Content">Successfully connected to the N2N GO server.</system:String>
+
+    <system:String x:Key="LOCALE_DialogUpdate_Title">Update</system:String>
+    <system:String x:Key="LOCALE_DialogUpdate_Fail_InvalidServer_Content">Unable to get update from server: invalid server</system:String>
+    <system:String x:Key="LOCALE_DialogUpdate_UpToDate_Content">N2N GO is now up-to-date.</system:String>
+    <system:String x:Key="LOCALE_DialogUpdate_NewVersion_Title">New Version Available</system:String>
+
+    <system:String x:Key="LOCALE_DialogResetConnectionDialog_Title">Reset Connection</system:String>
+    <system:String x:Key="LOCALE_DialogResetConnectionDialog_Content">It looks like you are having problems with your connection, do you need to reset it?</system:String>
+
+    <system:String x:Key="LOCALE_DialogEditNickname_Title">Edit Nickname</system:String>
+    <system:String x:Key="LOCALE_DialogEditNickname_Content">New Nickname:</system:String>
+
+    <system:String x:Key="LOCALE_DialogEnterRoom_Title">Entering Room</system:String>
+    <system:String x:Key="LOCALE_DialogEnterRoom_Fail_Not_Connected_Content">You have not joined any room.</system:String>
+
+    <system:String x:Key="LOCALE_DialogCreateRoom_Title">Creating Room</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoom_Fail_Invalid_String_Array_Content">An exception occurs when creating a room.</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Title">Security</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Content">Currently your connection to our servers is not securely encrypted and the servers will also store data in plaintext.&#13;
+This means that our connection can be monitored and stolen by third parties and that the server administrators will also be able to see our data in plaintext.&#13;
+Therefore, please do not give us your important personal data!</system:String>
+
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Title">Clipboard</system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Content">IP Address is copied to clipborad.</system:String>
+
+    <system:String x:Key="LOCALE_DialogViewUserKey_Title">Viewing User Key</system:String>
+    <system:String x:Key="LOCALE_DialogViewUserKey_Description_Content">The User Key is the unique identifier of your current session with the server, it is unique and you will get a new User Key every time you reset the connection, please do not disclose it.&#13;&#13;Press 'Yes' to Continue</system:String>
+    
+    <system:String x:Key="LOCALE_PageRooms-SearchPlaceholder_Content">Space Separation Room Code or Name</system:String>
+
+    
+    <system:String x:Key="LOCALE_Tooltip-ClicktoSet">Click to set</system:String>
+    
+    <system:String x:Key="LOCALE_ShowConsole">Open Debug Console</system:String>
+    <system:String x:Key="LOCALE_ToggleLogButton">Toggle Log Button</system:String>
+    <system:String x:Key="LOCALE_InstallTap">Install Tap</system:String>
+    <system:String x:Key="LOCALE_ClearShaderCache">Clear Shader Cache</system:String>
+    <system:String x:Key="LOCALE_BackgroundOpacity">Background Opacity</system:String>
+    <system:String x:Key="LOCALE_ResetSettings">Reset to Defaults</system:String>
+    <system:String x:Key="LOCALE_CurrentServer">Current Server</system:String>
+    <system:String x:Key="LOCALE_Status_Connected">Connected</system:String>
+    <system:String x:Key="LOCALE_Status_Disconnected">Disconnected</system:String>
+    <system:String x:Key="LOCALE_Onlines">Onlines</system:String>
+    <system:String x:Key="LOCALE_Global">Global</system:String>
+    <system:String x:Key="LOCALE_Supernode">Supernode</system:String>
+    <system:String x:Key="LOCALE_CurrentRoom">Current Room</system:String>
+    <system:String x:Key="LOCALE_CurrentRoom_None">None</system:String>
+    <system:String x:Key="LOCALE_CurrentRoomName">Name</system:String>
+    <system:String x:Key="LOCALE_CurrentRoomCode">Code</system:String>
+    <system:String x:Key="LOCALE_CurrentRoomVisibility">Visibility</system:String>
+    <system:String x:Key="LOCALE_CurrentRoomVisibility_Visible">Visible</system:String>
+    <system:String x:Key="LOCALE_CurrentRoomVisibility_Invisible">Invisible</system:String>
+    <system:String x:Key="LOCALE_CurrentRoomPasswordNeeded">Password-Needed</system:String>
+    <system:String x:Key="LOCALE_CurrentRoomPasswordNeeded_Yes">Yes</system:String>
+    <system:String x:Key="LOCALE_CurrentRoomPasswordNeeded_No">No</system:String>
+    <system:String x:Key="LOCALE_CreateRoomMyIP">Me:</system:String>
+    <system:String x:Key="LOCALE_Search">Search</system:String>
+    <system:String x:Key="LOCALE_Refresh">Refresh</system:String>
+    <system:String x:Key="LOCALE_CurrentUser">User</system:String>
+    <system:String x:Key="LOCALE_CurrentUserNickname">Nickname</system:String>
+    <system:String x:Key="LOCALE_AppGlobalStorageUsage">Total</system:String>
+    <system:String x:Key="LOCALE_AppProgramFilesStorageUsage">Program Files</system:String>
+    <system:String x:Key="LOCALE_AppDataFilesStorageUsage">Data Files</system:String>
+    <system:String x:Key="LOCALE_AppOtherDataFilesStorageUsage">Other Data Files(except N2N GO)</system:String>
+    <system:String x:Key="LOCALE_ViewUserKey">View Key</system:String>
+    <system:String x:Key="LOCALE_Unknown">Unknown</system:String>
+    <system:String x:Key="LOCALE_CreateRoomCreate">Create!</system:String>
+    <system:String x:Key="LOCALE_CreateRoomRoomName">Name</system:String>
+    <system:String x:Key="LOCALE_CreateRoomRoomPassword">Password</system:String>
+    <system:String x:Key="LOCALE_CreateRoomSetMain">Main Color</system:String>
+    <system:String x:Key="LOCALE_CreateRoomSetMinor">Minor Color</system:String>
+    <system:String x:Key="LOCALE_CreateRoomPreview">Preview</system:String>
+    <system:String x:Key="LOCALE_CreateRoomNeedPassword">Authentication</system:String>
+    <system:String x:Key="LOCALE_CreateRoomInvisible">Invisible</system:String>
+    <system:String x:Key="LOCALE_RoomExitRoomButton">Leave Room</system:String>
+    <system:String x:Key="LOCALE_CardRoomInfo_Password">Password</system:String>
+    <system:String x:Key="LOCALE_CardRoomInfo_CancelButton">Cancel</system:String>
+    <system:String x:Key="LOCALE_CardRoomInfo_ConnectButton">Connect</system:String>
+</ResourceDictionary>

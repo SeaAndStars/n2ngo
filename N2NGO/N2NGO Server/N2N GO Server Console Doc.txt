@@ -1,0 +1,47 @@
+﻿N2N GO 服务器 控制台版本 文档
+By LGF
+
+概念：
+  什么是N2N GO 服务器？它和N2N服务器有什么区别？N2N API服务器又是什么？
+
+  N2N GO 服务器是N2N GO 软件的主服务器，N2N服务器是组建连接节点的服务器，N2N API是提供访问N2N服务器节点的房间用户列表的API服务器。
+  这三个服务器以这样的依赖存在着：(N2N API(N2N GO, N2N))
+
+N2N GO 服务器启动参数
+    [config-file = "config.ini"]
+        N2N GO 服务器将会加载参数指定路径的配置文件
+        示例：./N2N\ GO\ Server MyConfig.ini
+
+N2N GO 服务器命令：
+    clrscr (void)
+      清空控制台输出
+
+    stop (void)
+      结束并退出N2N GO 服务器
+
+    list (string room_code[] = null)
+      如果 参数1 room_code 未提供 将会输出 所有房间 及距离控制块上一次Access的时间
+       否则 输出 指定的房间及其详细信息
+    
+    list_tcp ()
+      将会输出 所有TCP客户端及详细信息
+
+    close (string room_code[])
+      如果 参数1 room_code 未提供 则会返回
+       否则 关闭 指定的房间
+
+    close_all (void)
+      关闭所有房间（危险！）
+
+    create (string room_code, string room_name, int IRI = 0, int IRP = 0, string room_passwd = "null", uint32 MainColor = 0x00000000, uint32 MinorColor = 0x00000000)
+      注：IRI -- 为房间是否隐藏
+      注：IRP -- 房间是否需要密码
+      注：room_passwd默认为"null"而非null
+      如果 参数1, 参数2 未提供 则会返回
+       否则 创建房间 参数： 房间代码(room_code) 创建名称(room_name) 房间是否隐藏(IRI) 房间是否需要密码(IRP) 房间密码(room_passwd)
+
+    save_rooms (void)
+      保存当前房间列表及信息
+
+    load_rooms (void)
+      加载上次保存的房间列表

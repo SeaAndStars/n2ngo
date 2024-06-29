@@ -1,9 +1,0 @@
-# BuildingRule.txt
-
-凡是文件名带有 '_' 前缀的，不可与项目编译或打包
-----------------------
-Any file name with '_' Prefixed, won't be compiled or packaged with the project
-
-Resources文件夹及其子文件夹内的文件都为 '.resx' 管理和打包
-----------------------
-Files in the Resources folder and its subfolders are managed and packaged as'. resx '
