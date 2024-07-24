@@ -57,7 +57,6 @@ cmd, arg1, arg2,
   > 会向 `N2NGOServer` 的 `ConsoleBuffer` 发送 `ConsoleBuffer.ControlSymbols.ClearScreen` 控制符。
   >
 
-<br>
 
 * #### `stop`
 
@@ -65,7 +64,6 @@ cmd, arg1, arg2,
 
   *参数:* 空
 
-<br>
 
 * #### `list`
 
@@ -82,6 +80,7 @@ cmd, arg1, arg2,
 
     *释义:* 指定一个或多个将要列出房间详细信息的房间号。
 
+
 * #### `list_tcp`
 
   *释义:* 列出所有已建立连接的TCP客户端及详细信息。
@@ -95,6 +94,7 @@ cmd, arg1, arg2,
   > <br>
   > 目前可以使用 [*disconnect*](#disconnect) 命令来手动结束您觉得可疑的连接。
   >
+
 
 * #### `close`
 
@@ -115,6 +115,7 @@ cmd, arg1, arg2,
   *释义:* 关闭 **N2N GO Server** 中的所有房间。
 
   *参数:* 空
+
 
 * #### `create`
 
@@ -185,7 +186,6 @@ cmd, arg1, arg2,
     *默认值:* `0x00000000`
 
     *释义:* 指定房间次要颜色。
-
 
 
 * #### `save_rooms`
