@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using static N2NGO_Server.N2NGOServer.Base.N2NGOServer;
+using System.Collections.ObjectModel;
 
 namespace N2NGO_Server.N2NGOServer
 {
@@ -45,7 +46,7 @@ namespace N2NGO_Server.N2NGOServer
             _isRunning = true;
 
             Server.ProcessV4TaskAsync();
-            if (ServerConfig.Get("EnableIPv6", "1") == "1")
+            if (ServerConfig.Get("EnableIPv6", "1") != "0")
                 Server.ProcessV6TaskAsync();
 
             while (true)
@@ -335,13 +336,15 @@ namespace N2NGO_Server.N2NGOServer
                         {
                             if (cmd_Args.Count >= 2)
                             {
+                                var args = cmd_Args;
+
                                 bool ask = true;
-                                if (cmd_Args.Count > 2)
+                                if (args.Count > 2)
                                 {
-                                    foreach (var arg in cmd_Args)
+                                    foreach (var arg in args)
                                     {
-                                        cmd_Args.Remove(arg);
-                                        if (arg == "-y")
+                                        args.Remove(arg);
+                                        if (arg == "-y" || arg == "--no-ask")
                                         {
                                             ask = false;
                                             break;
@@ -350,12 +353,12 @@ namespace N2NGO_Server.N2NGOServer
                                 }
 
                                 List<ClientControlBlock> targetClients = new();
-                                for (int i = 1; i < cmd_Args.Count; i++)
+                                for (int i = 1; i < args.Count; i++)
                                 {
                                     long index = 0;
                                     foreach (var client in Server.ConnectionTcpClients)
                                     {
-                                        if (index == int.Parse(cmd_Args[i]))
+                                        if (index == int.Parse(args[i]))
                                         {
                                             targetClients.Add(client);
                                             break;
@@ -470,7 +473,7 @@ namespace N2NGO_Server.N2NGOServer
             IPAddress ipAddrV4 = IPAddress.Parse(ServerConfig.Get("IPv4", "0.0.0.0"));
             int portV4 = int.Parse(ServerConfig.Get("PortV4", "7476"));
 
-            if (ServerConfig.Get("EnableIPv6", "1") == "1")
+            if (ServerConfig.Get("EnableIPv6", "1") != "0")
             {
                 IPAddress ipAddrV6 = IPAddress.Parse(ServerConfig.Get("IPv6", "::"));
                 int portV6 = int.Parse(ServerConfig.Get("PortV6", "7476"));
