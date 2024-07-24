@@ -1,4 +1,4 @@
-# N2N GO Document
+# N2N GO Documentation
 
 ## Index
 
