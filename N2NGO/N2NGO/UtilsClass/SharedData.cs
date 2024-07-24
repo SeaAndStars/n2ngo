@@ -42,8 +42,8 @@ namespace N2NGO.UtilsClass
         public class N2NGOServerConnection
         {
             public string ServerIP = CurrentApp.Config.Get("IpGlobalServer", "43.143.37.61");
-            public int ServerPort = int.Parse(CurrentApp.Config.Get("PortGlobalServer", "7476"));
-            public int ServerSupernodePort = int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7478"));
+            public int ServerPort = int.Parse(CurrentApp.Config.Get("PortGlobalServer", "7476"));               // 7477 for alpha
+            public int ServerSupernodePort = int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7478"));   // 7479 for alpha
 
             private TcpClient _client = new();
 
