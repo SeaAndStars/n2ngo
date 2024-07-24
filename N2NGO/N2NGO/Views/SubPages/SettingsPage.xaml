@@ -17,6 +17,8 @@
         <local:LocaleSelectionFlagIconConverter x:Key="LocaleFlagIconConverter"/>
     </Page.Resources>
     <Grid>
+        <svgc:SvgViewbox x:Name="svgtest" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Height="50"/>
+
         <hc:ComboBox x:Name="ColorPaletteSeletion" HorizontalAlignment="Center" VerticalAlignment="Top" Height="43" Width="326" Margin="0,134,0,0" SelectedIndex="0" SelectionChanged="ColorPaletteSeletion_SelectionChanged">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
@@ -34,11 +36,11 @@
             <System:String>Green</System:String>
             <System:String>Blue</System:String>
         </hc:ComboBox>
-        <hc:ComboBox x:Name="LocaleSeletion" HorizontalAlignment="Center" VerticalAlignment="Top" Height="43" Width="326" Margin="0,86,0,0" SelectedIndex="0" SelectionChanged="LocaleSeletion_SelectionChanged">
+        <hc:ComboBox x:Name="LocaleSeletion" HorizontalAlignment="Center" VerticalAlignment="Top" Height="43" Width="326" SelectedIndex="0" SelectionChanged="LocaleSeletion_SelectionChanged" Margin="0,86,0,0">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock FontSize="16">
-                        <svgc:SvgViewbox Source="{Binding Converter={StaticResource LocaleFlagIconConverter}, Mode=OneWay}" Width="25" Height="25">
+                        <svgc:SvgViewbox Source="{Binding Converter={StaticResource LocaleFlagIconConverter}, Mode=OneWay}" SourceUpdated="SvgViewbox_SourceUpdated" Width="25" Height="25">
                             <svgc:SvgViewbox.BitmapEffect>
                                 <DropShadowBitmapEffect Direction="270" Opacity="0.7" ShadowDepth="4" Softness="0.6"/>
                             </svgc:SvgViewbox.BitmapEffect>
@@ -52,7 +54,8 @@
             <System:String>en-US</System:String>
         </hc:ComboBox>
         <!--Button x:Name="SelectBackgroundImageButton" FontSize="14" Background="{StaticResource MainColorSolidBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,19,0,0" Height="40" Width="125" Content="选取背景图片" Foreground="White" Click="SelectBackgroundImageButton_Click" /-->
-        <Button x:Name="InstallTapButton" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,182,0,0" Height="43" Width="326" Content="{DynamicResource LOCALE_InstallTap}" Click="InstallTapButton_Click" />
+        <Button x:Name="InstallTapButton" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,225,0,0" Height="43" Width="326" Content="{DynamicResource LOCALE_InstallTap}" Click="InstallTapButton_Click" />
+        <Button x:Name="EditServerSelection" Content="{DynamicResource LOCALE_EditServerSelection}" HorizontalAlignment="Center" Click="EditServerSelection_Click" VerticalAlignment="Top" Height="43" Width="326" Margin="0,182,0,0"/>
         <Label Background="{DynamicResource Palette_500}" Margin="0,318,0,0" VerticalAlignment="Top" Width="326" FontSize="16" Height="35" HorizontalContentAlignment="Center">
             <StackPanel Orientation="Horizontal">
                 <Slider x:Name="BackgroundOSlider" Value="50" Minimum="0" Maximum="255" Background="{DynamicResource MainColorBrush}" ValueChanged="BackgroundOSlider_ValueChanged" HorizontalAlignment="Center" Width="149" VerticalAlignment="Center"/>
@@ -65,7 +68,8 @@
         <!--<Slider x:Name="BackgroundOSlider" Value="50" Minimum="0" Maximum="255" Background="{DynamicResource MainColorBrush}" ValueChanged="BackgroundOSlider_ValueChanged" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,326,145,0" Width="149"/>-->
 
         <Button x:Name="ResetConfigButton" Content="{DynamicResource LOCALE_ResetSettings}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,375,0,0" Width="284" Height="36" Click="ResetConfigButton_Click"/>
-        <Button x:Name="SwitchLogButtonButton" Content="{DynamicResource LOCALE_ToggleLogButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="43" Width="150" Margin="0,0,10,58" Click="SwitchLogButtonButton_Click"/>
+
         <Button x:Name="ShowConsoleButton" Content="{DynamicResource LOCALE_ShowConsole}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="43" Width="150" Click="ShowConsoleButton_Click" Margin="0,0,10,10"/>
+        <Button x:Name="SwitchLogButtonButton" Content="{DynamicResource LOCALE_ToggleLogButton}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="43" Width="150" Margin="0,0,10,53" Click="SwitchLogButtonButton_Click"/>
     </Grid>
 </Page>

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -41,11 +42,18 @@ namespace N2NGO.UtilsClass
 
         public class N2NGOServerConnection
         {
-            public string ServerIP = CurrentApp.Config.Get("IpGlobalServer", "43.143.37.61");
-            public int ServerPort = int.Parse(CurrentApp.Config.Get("PortGlobalServer", "7476"));               // 7477 for alpha
-            public int ServerSupernodePort = int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7478"));   // 7479 for alpha
+            public IPEndPoint ServerIPEndPoint { get; set; }
+            public int ServerSupernodePort { get; set; }
+
+            public N2NGOServerConnection(IPEndPoint serverIPEndPoint, int serverSupernodePort)
+            {
+                ServerIPEndPoint = serverIPEndPoint;
+                ServerSupernodePort = serverSupernodePort;
+            }
 
             private TcpClient _client = new();
+
+            public TcpClient Client => _client;
 
             public virtual void ClientExHandler(Exception? ex = null)
             {
@@ -78,7 +86,7 @@ namespace N2NGO.UtilsClass
 
                     try
                     {
-                        _client.Connect(ServerIP, ServerPort);
+                        _client.Connect(ServerIPEndPoint);
                         if (_client.Connected) return true;
                     }
                     catch (Exception ex)
@@ -955,7 +963,9 @@ namespace N2NGO.UtilsClass
             public static MainView MainView { get => (MainView)App.Current.MainWindow; }
             public static EasyConfig Config { get; } = new(Path.Combine(N2NGO_Core.UserDef.N2NGO_N2NGO_AppData_Path, "UserData/config.ini"));
 
-            public static N2NGOServerConnection N2NGOServerConnection { get; set; } = new();
+            // 7476 & 7478 for release
+            // 7477 & 7479 for alpha
+            public static N2NGOServerConnection N2NGOServerConnection { get; set; } = new(new(IPAddress.Parse(Config.Get("IpGlobalServer", "43.143.37.61")), int.Parse(Config.Get("PortGlobalServer", "7477"))), int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7479")));
             public static RoomConnection RoomConnection { get; set; } = new();
 
             public static ExecLog N2NExecLog { get; } = new();
@@ -1065,13 +1075,13 @@ namespace N2NGO.UtilsClass
                 LeaveRoom();
 
                 N2NGOServerConnection.Close();
-                N2NGOServerConnection = new();
+                N2NGOServerConnection = new(new(IPAddress.Parse(Config.Get("IpGlobalServer", "43.143.37.61")), int.Parse(Config.Get("PortGlobalServer", "7477"))), int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7479")));
                 if (serverIp != null)
-                    N2NGOServerConnection.ServerIP = serverIp;
+                    N2NGOServerConnection.ServerIPEndPoint.Address = IPAddress.Parse(serverIp);
                 if (serverPort != null)
-                    N2NGOServerConnection.ServerPort = serverPort.Value;
+                    N2NGOServerConnection.ServerIPEndPoint.Port = serverPort.Value;
                 if (supernodeServerPort != null)
-                    N2NGOServerConnection.ServerPort = supernodeServerPort.Value;
+                    N2NGOServerConnection.ServerSupernodePort = supernodeServerPort.Value;
                 ConnectAndPeek(echo);
             }
 
@@ -1081,7 +1091,7 @@ namespace N2NGO.UtilsClass
                 {
                     using HttpClient client = new();
                     using HttpResponseMessage response = await
-                        client.GetAsync($"http://{Config.Get("IpGlobalServer")}:{N2NGO_Core.UserDef.ExtendServerOptions.N2NGO_File_Server_Port}/{N2NGO_Core.UserDef.N2NGOUpdateInstallerFileName}");
+                        client.GetAsync($"http://{(N2NGOServerConnection.Client.Client.RemoteEndPoint as IPEndPoint) ?? throw new NullReferenceException(nameof(N2NGOServerConnection.Client.Client.RemoteEndPoint))}:{N2NGO_Core.UserDef.ExtendServerOptions.N2NGO_File_Server_Port}/{N2NGO_Core.UserDef.N2NGOUpdateInstallerFileName}");
                     try
                     {
                         response.EnsureSuccessStatusCode();

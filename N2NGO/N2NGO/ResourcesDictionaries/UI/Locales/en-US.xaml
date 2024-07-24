@@ -74,6 +74,9 @@ Therefore, please do not give us your important personal data!</system:String>
     <system:String x:Key="LOCALE_DialogViewUserKey_Title">Viewing User Key</system:String>
     <system:String x:Key="LOCALE_DialogViewUserKey_Description_Content">The User Key is the unique identifier of your current session with the server, it is unique and you will get a new User Key every time you reset the connection, please do not disclose it.&#13;&#13;Press 'Yes' to Continue</system:String>
     
+    <system:String x:Key="LOCALE_DialogCustomServer_Title">Custom Server</system:String>
+    <system:String x:Key="LOCALE_DialogCustomServer_Description_Content">Including server address and port</system:String>
+    
     <system:String x:Key="LOCALE_PageRooms-SearchPlaceholder_Content">Space Separation Room Code or Name</system:String>
 
     
@@ -124,4 +127,12 @@ Therefore, please do not give us your important personal data!</system:String>
     <system:String x:Key="LOCALE_CardRoomInfo_Password">Password</system:String>
     <system:String x:Key="LOCALE_CardRoomInfo_CancelButton">Cancel</system:String>
     <system:String x:Key="LOCALE_CardRoomInfo_ConnectButton">Connect</system:String>
+    <system:String x:Key="LOCALE_QuickJoinRoomJoin">Connect!</system:String>
+    <system:String x:Key="LOCALE_QuickJoinRoomRoomCode">Code</system:String>
+    <system:String x:Key="LOCALE_QuickJoinRoomRoomPassword">Password</system:String>
+    <system:String x:Key="LOCALE_QuickJoinRoomRoomNeedPassword">Authentication</system:String>
+    <system:String x:Key="LOCALE_ServerSelectionItemOfficial">Official</system:String>
+    <system:String x:Key="LOCALE_ServerSelectionItemCustom">Custom</system:String>
+    <system:String x:Key="LOCALE_Apply">Apply</system:String>
+    <system:String x:Key="LOCALE_EditServerSelection">Change Server</system:String>
 </ResourceDictionary>

@@ -3,6 +3,7 @@ using N2NGO.Views.SubPages.Dialogs;
 using N2NGO.Views.SubPages.Dialogs.MessageDialogs;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -51,9 +52,9 @@ namespace N2NGO.Views.SubPages
 
         private void DispatcherTimerCurrentServerIndexerUpdater_Tick(object? sender, EventArgs e)
         {
-
-            CurrentServerGlobalAddress.Text = $"{SharedData.CurrentApp.N2NGOServerConnection.ServerIP}:{SharedData.CurrentApp.N2NGOServerConnection.ServerPort}";
-            CurrentServerSupernodeAddress.Text = $"{SharedData.CurrentApp.N2NGOServerConnection.ServerIP}:{SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort}";
+            try { CurrentServerGlobalAddress.Text = $"{(SharedData.CurrentApp.N2NGOServerConnection.Client.Client.RemoteEndPoint ?? throw new NullReferenceException(nameof(SharedData.CurrentApp.N2NGOServerConnection.Client.Client.RemoteEndPoint))) as IPEndPoint}"; }
+            catch (Exception) { }
+            CurrentServerSupernodeAddress.Text = $"{SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Address}:{SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort}";
             Task.Run(() =>
             {
                 var connected = SharedData.CurrentApp.N2NGOServerConnection.IsConnected();

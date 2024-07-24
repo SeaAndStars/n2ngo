@@ -1,12 +1,19 @@
 ﻿using N2NGO.UtilsClass;
+using N2NGO.Views.SubPages.Dialogs.MessageDialogs;
+using N2NGO.Views.SubPages.Dialogs;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading;
+using HandyControl.Controls;
+using SharpVectors.Dom;
+using SharpVectors.Converters;
 
 namespace N2NGO.Views.SubPages
 {
@@ -20,6 +27,9 @@ namespace N2NGO.Views.SubPages
             InitializeComponent();
 
             UpdateColorPaletteSelectionItems();
+
+            // Load SVG Async
+            new SvgViewbox().Load("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"1235\" height=\"650\" viewBox=\"0 0 7410 3900\"><path fill=\"#b22234\" d=\"M0 0h7410v3900H0z\"/><path d=\"M0 450h7410m0 600H0m0 600h7410m0 600H0m0 600h7410m0 600H0\" stroke=\"#fff\" stroke-width=\"300\"/><path fill=\"#3c3b6e\" d=\"M0 0h2964v2100H0z\"/><g fill=\"#fff\"><g id=\"d\"><g id=\"c\"><g id=\"e\"><g id=\"b\"><path id=\"a\" d=\"m247 90 70.534 217.082-184.66-134.164h228.253L176.466 307.082z\"/><use xlink:href=\"#a\" y=\"420\"/><use xlink:href=\"#a\" y=\"840\"/><use xlink:href=\"#a\" y=\"1260\"/></g><use xlink:href=\"#a\" y=\"1680\"/></g><use xlink:href=\"#b\" x=\"247\" y=\"210\"/></g><use xlink:href=\"#c\" x=\"494\"/></g><use xlink:href=\"#d\" x=\"988\"/><use xlink:href=\"#c\" x=\"1976\"/><use xlink:href=\"#e\" x=\"2470\"/></g></svg>", true);
         }
 
         public void UpdateColorPaletteSelectionItems()
@@ -126,6 +136,44 @@ namespace N2NGO.Views.SubPages
         private void ShowConsoleButton_Click(object sender, RoutedEventArgs e)
         {
             SharedData.CurrentApp.MainView.DebugTerminalWindow.Show();
+        }
+
+        private void EditServerSelection_Click(object sender, RoutedEventArgs e)
+        {
+            SharedData.CurrentApp.MainView.DoMessageInputDialog("@LOCALE_DialogCustomServer_Description_Content", "@LOCALE_DialogCustomServer_Title"
+                , new List<Action<object>> {
+                    (_)=> {
+                        if (_ is not DialogMessage dialogMessage)
+                            throw new ArgumentException("Argument is not DialogMessage", nameof(_));
+
+                        if (dialogMessage.MessageContent is not DialogInput dialogInput)
+                            throw new Exception("dialogMessage.MessageContent is not DialogInput");
+
+                        SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint = IPEndPoint.Parse(dialogInput.InputBox.Text);
+                        SharedData.CurrentApp.Config.Set("IpGlobalServer",SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Address.ToString());
+                        SharedData.CurrentApp.Config.Set("PortGlobalServer",SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Port.ToString());
+                        SharedData.CurrentApp.Config.Set("PortSupernodeServer",SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort.ToString());
+                    } },
+
+                (_) =>
+                {
+                    if (_ is not DialogMessage dialogMessage)
+                        throw new ArgumentException("Argument is not DialogMessage", nameof(_));
+
+                    if (dialogMessage.MessageContent is not DialogInput dialogInput)
+                        throw new Exception("dialogMessage.MessageContent is not DialogInput");
+
+                    dialogInput.InputBox.Text = SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.ToString();
+                    dialogInput.InputBox.SelectAll();
+                });
+        }
+
+        private void SvgViewbox_SourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            if (sender is SvgViewbox svgViewbox)
+            {
+                svgViewbox.Source = (Uri)e.OriginalSource;
+            }
         }
 
         /*
@@ -361,6 +409,5 @@ namespace N2NGO.Views.SubPages
 
         public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => null;
     }
-
 }
 

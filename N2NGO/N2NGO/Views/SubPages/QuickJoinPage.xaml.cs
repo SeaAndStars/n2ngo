@@ -67,7 +67,7 @@ namespace N2NGO.Views.SubPages
 
             timer.Start();
 
-            string cmd = SharedData.EdgePath + " -c " + roomCode + " -k " + roomPassword + " -l " + $"{SharedData.CurrentApp.N2NGOServerConnection.ServerIP}:{SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort}";
+            string cmd = SharedData.EdgePath + " -c " + roomCode + " -k " + roomPassword + " -l " + $"{SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Address}:{SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort}";
 
             //EdgeInvoker edgeInvoker = new();
             //edgeInvoker.PushArgs(" -c " + roomCode + " -k " + (needPassword ? roomPassword : SharedData.DefaultRoomPassword) + " -l " + SharedData.n2nServerIPP);

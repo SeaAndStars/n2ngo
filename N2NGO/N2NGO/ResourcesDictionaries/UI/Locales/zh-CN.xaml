@@ -74,6 +74,9 @@
     <system:String x:Key="LOCALE_DialogViewUserKey_Title">查看用户密钥</system:String>
     <system:String x:Key="LOCALE_DialogViewUserKey_Description_Content">User Key 是您当前与服务器连接Session 的唯一标识，它是独一无二的，并且每次重置连接后您都会获得新的User Key，请不要泄露它。&#13;&#13;点击'是'来查看您的密钥</system:String>
     
+    <system:String x:Key="LOCALE_DialogCustomServer_Title">自定义服务器</system:String>
+    <system:String x:Key="LOCALE_DialogCustomServer_Description_Content">请输入IP地址以及端口号</system:String>
+    
     <system:String x:Key="LOCALE_PageRooms-SearchPlaceholder_Content">空格分隔房间代码或房间名</system:String>
 
 
@@ -124,4 +127,12 @@
     <system:String x:Key="LOCALE_CardRoomInfo_Password">密码</system:String>
     <system:String x:Key="LOCALE_CardRoomInfo_CancelButton">取消</system:String>
     <system:String x:Key="LOCALE_CardRoomInfo_ConnectButton">加入</system:String>
+    <system:String x:Key="LOCALE_QuickJoinRoomJoin">加入！</system:String>
+    <system:String x:Key="LOCALE_QuickJoinRoomRoomCode">代码</system:String>
+    <system:String x:Key="LOCALE_QuickJoinRoomRoomPassword">密码</system:String>
+    <system:String x:Key="LOCALE_QuickJoinRoomRoomNeedPassword">需要密码</system:String>
+    <system:String x:Key="LOCALE_ServerSelectionItemOfficial">官方</system:String>
+    <system:String x:Key="LOCALE_ServerSelectionItemCustom">自定义</system:String>
+    <system:String x:Key="LOCALE_Apply">应用</system:String>
+    <system:String x:Key="LOCALE_EditServerSelection">更换服务器</system:String>
 </ResourceDictionary>

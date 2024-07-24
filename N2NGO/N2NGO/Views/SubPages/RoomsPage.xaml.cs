@@ -623,7 +623,7 @@ namespace N2NGO.Views.SubPages
                     return;
                 }
 
-                string cmd = SharedData.EdgePath + " -c " + roomCode + " -k " + roomPassword + " -l " + $"{SharedData.CurrentApp.N2NGOServerConnection.ServerIP}:{SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort}";
+                string cmd = SharedData.EdgePath + " -c " + roomCode + " -k " + roomPassword + " -l " + $"{SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Address}:{SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort}";
 
                 timer.Stop();
                 timer = new();
