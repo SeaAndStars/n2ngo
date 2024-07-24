@@ -1,6 +1,7 @@
 ﻿using MineMP;
 using N2NGO.UtilsClass;
 using N2NGO_Core.Objects;
+using N2NGO_Core.Models;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
@@ -109,220 +110,330 @@ namespace N2NGO_Server.N2NGOServer
 
                     stopwatch = Stopwatch.StartNew();
                     string userInputLineFormatted = userInputLine.Trim();
-                    string[] cmd_Args = userInputLine.Split(' ');
+                    List<string> cmd_Args = new(userInputLine.Split(' '));
                     string cmd = cmd_Args[0];
                     string cmdLower = cmd.ToLower();
 
                     if (string.IsNullOrWhiteSpace(userInputLineFormatted))
                         goto loop;
 
-                    if (cmdLower == "clrscr")
+                    // Commands
                     {
-                        Server.ConsoleBuffer.MakeControl(ConsoleBuffer.ControlSymbols.ClearScreen);
-
-                        goto loop;
-                    }
-
-                    if (cmdLower == "stop")
-                    {
-                        Server.Stop();
-                        _isTerminating = true;
-
-                        goto loop;
-                    }
-
-                    if (cmdLower == "list")
-                    {
-                        DateTime now = DateTime.Now;
-                        if (cmd_Args.Length <= 1)
+                        if (cmdLower == "clrscr")
                         {
-                            for (int j = 0; j < Server.Rooms.Count; j++)
-                            {
-                                var room = Server.Rooms[j];
-                                var code = room.RoomCode ?? throw new($"RoomCode of '{room.RoomCode}' is null");
-                                var name = room.RoomName ?? throw new($"RoomName of '{room.RoomCode}' is null");
-
-                                Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n{0}[{1}] ToLastAccess: {2}\n",
-                                    name, code, now - room.CB.lastReqTime);
-                            }
+                            Server.ConsoleBuffer.MakeControl(ConsoleBuffer.ControlSymbols.ClearScreen);
 
                             goto loop;
                         }
-                        for (int i = 1; i < cmd_Args.Length; i++)
-                            for (int j = 0; j < Server.Rooms.Count; j++)
-                            {
-                                var room = Server.Rooms[j];
-                                if (room.RoomCode == cmd_Args[i])
-                                {
-                                    var code = room.RoomCode ?? throw new($"RoomCode of '{room.RoomCode}' is null");
-                                    var name = room.RoomName ?? throw new($"RoomName of '{room.RoomCode}' is null");
-                                    var iri = room.IsRoomInvisible ?? throw new($"IsRoomInvisible of '{room.RoomCode}' is null");
-                                    var ipn = room.IsRoomPasswordNeeded ?? throw new($"IsRoomPasswordNeeded of '{room.RoomCode}' is null");
-                                    var pwd = room.RoomPassword ?? throw new($"RoomPassword of '{room.RoomCode}' is null");
-                                    var mainColor = room.MainColor ?? throw new($"MainColor of '{room.RoomCode}' is null");
-                                    var minorColor = room.MinorColor ?? throw new($"MinorColor of '{room.RoomCode}' is null");
 
-                                    StringBuilder stringBuilder = new();
-                                    stringBuilder.AppendFormat(
-                                        "\n" +
-                                        "[{0}] Name: {1}\n" +
-                                        "Invisible: {2}\n" +
-                                        "NeedPassword: {3}\n" +
-                                        "Password: {4}\n" +
-                                        "MainColor: {7} MinorColor: {8}\n" +
-                                        "ToLastAccess: {5}\n" +
-                                        "AdminKey: {6}\n",
-
-                                        code,
-                                        name,
-                                        iri.ToString(),
-                                        ipn.ToString(),
-                                        pwd, now - room.CB.lastReqTime,
-                                        room.CB.AdminKey,
-                                        mainColor.data.ToString("x"), minorColor.data.ToString("x")
-                                        );
-
-                                    Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, stringBuilder.ToString());
-
-                                    break;
-                                }
-                            }
-
-                        goto loop;
-                    }
-
-                    if (cmdLower == "list_tcp")
-                    {
-                        if (Server.ConnectionTcpClients == null)
-                            throw new NullReferenceException(nameof(Server.ConnectionTcpClients));
-
-                        try
+                        if (cmdLower == "stop")
                         {
-                            foreach (var client in Server.ConnectionTcpClients)
-                            {
-                                var c = client.ConnectionClient.Client;
-                                if (c == null)
-                                    throw new NullReferenceException(nameof(c));
-                                var ce = c.RemoteEndPoint;
-                                if (ce == null)
-                                    throw new NullReferenceException(nameof(ce));
-
-                                Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n{0}:{1} ({2})\nUserKey: {3}\n", ((IPEndPoint)ce).Address, ((IPEndPoint)ce).Port, (DateTime.Now - client.AccessTime).ToString("hh\\:mm\\:ss"), client.ClientConnectionData["UserSessionKey"] as string ?? "null");
-                            }
+                            Server.Stop();
+                            _isTerminating = true;
 
                             goto loop;
                         }
-                        catch (Exception ex) { Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Error, "Exception while listing tcp connections: {0}", ex.Message); goto loop; }
 
-                    }
-
-                    if (cmdLower == "close")
-                    {
-                        if (cmd_Args.Length >= 2)
+                        if (cmdLower == "list")
                         {
-                            for (int i = 1; i < cmd_Args.Length; i++)
+                            DateTime now = DateTime.Now;
+                            if (cmd_Args.Count <= 1)
+                            {
                                 for (int j = 0; j < Server.Rooms.Count; j++)
                                 {
-                                    if (Server.Rooms[j].RoomCode == cmd_Args[i])
+                                    var room = Server.Rooms[j];
+                                    var code = room.RoomCode ?? throw new($"RoomCode of '{room.RoomCode}' is null");
+                                    var name = room.RoomName ?? throw new($"RoomName of '{room.RoomCode}' is null");
+
+                                    Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n{0}[{1}] ToLastAccess: {2}\n",
+                                        name, code, now - room.CB.lastReqTime);
+                                }
+
+                                goto loop;
+                            }
+                            for (int i = 1; i < cmd_Args.Count; i++)
+                                for (int j = 0; j < Server.Rooms.Count; j++)
+                                {
+                                    var room = Server.Rooms[j];
+                                    if (room.RoomCode == cmd_Args[i])
                                     {
-                                        Server.Rooms.RemoveAt(j);
+                                        var code = room.RoomCode ?? throw new($"RoomCode of '{room.RoomCode}' is null");
+                                        var name = room.RoomName ?? throw new($"RoomName of '{room.RoomCode}' is null");
+                                        var iri = room.IsRoomInvisible ?? throw new($"IsRoomInvisible of '{room.RoomCode}' is null");
+                                        var ipn = room.IsRoomPasswordNeeded ?? throw new($"IsRoomPasswordNeeded of '{room.RoomCode}' is null");
+                                        var pwd = room.RoomPassword ?? throw new($"RoomPassword of '{room.RoomCode}' is null");
+                                        var mainColor = room.MainColor ?? throw new($"MainColor of '{room.RoomCode}' is null");
+                                        var minorColor = room.MinorColor ?? throw new($"MinorColor of '{room.RoomCode}' is null");
+
+                                        StringBuilder stringBuilder = new();
+                                        stringBuilder.AppendFormat(
+                                            "\n" +
+                                            "[{0}] Name: {1}\n" +
+                                            "Invisible: {2}\n" +
+                                            "NeedPassword: {3}\n" +
+                                            "Password: {4}\n" +
+                                            "MainColor: {7} MinorColor: {8}\n" +
+                                            "ToLastAccess: {5}\n" +
+                                            "AdminKey: {6}\n",
+
+                                            code,
+                                            name,
+                                            iri.ToString(),
+                                            ipn.ToString(),
+                                            pwd, now - room.CB.lastReqTime,
+                                            room.CB.AdminKey,
+                                            mainColor.data.ToString("x"), minorColor.data.ToString("x")
+                                            );
+
+                                        Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, stringBuilder.ToString());
+
                                         break;
                                     }
                                 }
+
+                            goto loop;
                         }
-                        else
-                            Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, "Need room code!\n");
 
-                        goto loop;
-                    }
-
-                    if (cmdLower == "close_all")
-                    {
-                        Server.Rooms.Clear();
-
-                        goto loop;
-                    }
-
-                    if (cmdLower == "create")
-                    {
-                        if (cmd_Args.Length >= 3)
+                        if (cmdLower == "list_tcp")
                         {
-                            Room room = new() { RoomCode = cmd_Args[1], RoomName = cmd_Args[2], IsRoomInvisible = false, IsRoomPasswordNeeded = false, MainColor = new(), MinorColor = new() };
-                            if (cmd_Args.Length >= 4)
-                                room.IsRoomInvisible = cmd_Args[3] != "0";
-                            if (cmd_Args.Length >= 5)
-                                room.IsRoomPasswordNeeded = cmd_Args[4] != "0";
-                            if (cmd_Args.Length >= 6)
-                                room.RoomPassword = cmd_Args[5];
-                            if (cmd_Args.Length >= 7)
-                            {
-                                if (UInt32.TryParse(cmd_Args[6], System.Globalization.NumberStyles.HexNumber, null, out var color))
-                                    room.MainColor = new RoomColor(color);
-                            }
-                            if (cmd_Args.Length >= 8)
-                            {
-                                if (UInt32.TryParse(cmd_Args[7], System.Globalization.NumberStyles.HexNumber, null, out var color))
-                                    room.MinorColor = new RoomColor(color);
-                            }
-                            room.InitControlBlock();
-                            Server.Rooms.Add(room);
-                        }
-                        else
-                            Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, "Need room code && room name at least!\n format: create [code] [name] [IRI] [IRP] [PWD] [MainColor] [MinorColor] \n example: Create 10cfd RoomABC 0 0 null ffffff a0efc0");
+                            if (Server.ConnectionTcpClients == null)
+                                throw new NullReferenceException(nameof(Server.ConnectionTcpClients));
 
-                        goto loop;
-                    }
-
-                    if (cmdLower == "save_rooms")
-                    {
-                        StringBuilder sb = new();
-                        for (int i = 0; i < Server.Rooms.Count; i++)
-                        {
                             try
                             {
-                                var code = Server.Rooms[i].RoomCode ?? throw new($"RoomCode of '{Server.Rooms[i].RoomCode}' is null");
-                                var name = Server.Rooms[i].RoomName ?? throw new($"RoomName of '{Server.Rooms[i].RoomCode}' is null");
-                                var ipn = Server.Rooms[i].IsRoomPasswordNeeded ?? throw new($"IsRoomPasswordNeeded of '{Server.Rooms[i].RoomCode}' is null");
-                                var iri = Server.Rooms[i].IsRoomInvisible ?? throw new($"IsRoomInvisible of '{Server.Rooms[i].RoomCode}' is null");
-                                var pwd = Server.Rooms[i].RoomPassword ?? throw new($"RoomPassword of '{Server.Rooms[i].RoomCode}' is null");
-                                var mainColor = Server.Rooms[i].MainColor ?? throw new($"MainColor of '{Server.Rooms[i].RoomCode}' is null");
-                                var minorColor = Server.Rooms[i].MinorColor ?? throw new($"MinorColor of '{Server.Rooms[i].RoomCode}' is null");
+                                long index = 0;
+                                foreach (var client in Server.ConnectionTcpClients)
+                                {
+                                    var c = client.ConnectionClient.Client;
+                                    if (c == null)
+                                        throw new NullReferenceException(nameof(c));
+                                    var ce = c.RemoteEndPoint;
+                                    if (ce == null)
+                                        throw new NullReferenceException(nameof(ce));
 
-                                sb.AppendFormat("{0}|{1}|{2}|{3}|{4}|{5}|{6}", code, name, iri ? '1' : '0', ipn ? '1' : '0', pwd, mainColor.data, minorColor.data);
-                                sb.AppendLine();
+                                    Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n[{4}] {0}:{1} ({2})\nUserKey: {3}\n", ((IPEndPoint)ce).Address, ((IPEndPoint)ce).Port, (DateTime.Now - client.AccessTime).ToString("hh\\:mm\\:ss"), client.ClientConnectionData["UserSessionKey"] as string ?? "null", index);
+
+                                    index++;
+                                }
+
+                                goto loop;
                             }
-                            catch (Exception ex)
-                            {
-                                Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, $"Cannot save room '{Server.Rooms[i].RoomCode ?? Server.Rooms[i].RoomName ?? string.Empty}': {ex}");
-                            }
+                            catch (Exception ex) { Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Error, "Exception while listing tcp connections: {0}", ex.Message); goto loop; }
+
                         }
-                        File.WriteAllText("Rooms", sb.ToString());
 
-                        goto loop;
-                    }
-
-                    if (cmdLower == "load_rooms")
-                    {
-                        string[] lines = File.ReadAllLines("Rooms");
-                        long _lineIndex = 0;
-                        foreach (string s in lines)
+                        if (cmdLower == "close")
                         {
-                            string[] infos = s.Split('|');
-                            if (infos.Length == 7)
+                            if (cmd_Args.Count >= 2)
                             {
-                                Room room = new() { RoomCode = infos[0], RoomName = infos[1], IsRoomInvisible = infos[2] != "0", IsRoomPasswordNeeded = infos[3] != "0", RoomPassword = infos[4], MainColor = new RoomColor(UInt32.Parse(infos[5])), MinorColor = new RoomColor(UInt32.Parse(infos[6])) };
+                                for (int i = 1; i < cmd_Args.Count; i++)
+                                    for (int j = 0; j < Server.Rooms.Count; j++)
+                                    {
+                                        if (Server.Rooms[j].RoomCode == cmd_Args[i])
+                                        {
+                                            Server.Rooms.RemoveAt(j);
+                                            break;
+                                        }
+                                    }
+                            }
+                            else
+                                Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, "Need room code!\n");
+
+                            goto loop;
+                        }
+
+                        if (cmdLower == "close_all")
+                        {
+                            Server.Rooms.Clear();
+
+                            goto loop;
+                        }
+
+                        if (cmdLower == "create")
+                        {
+                            if (cmd_Args.Count >= 3)
+                            {
+                                Room room = new() { RoomCode = cmd_Args[1], RoomName = cmd_Args[2], IsRoomInvisible = false, IsRoomPasswordNeeded = false, MainColor = new(), MinorColor = new() };
+                                if (cmd_Args.Count >= 4)
+                                    room.IsRoomInvisible = cmd_Args[3] != "0";
+                                if (cmd_Args.Count >= 5)
+                                    room.IsRoomPasswordNeeded = cmd_Args[4] != "0";
+                                if (cmd_Args.Count >= 6)
+                                    room.RoomPassword = cmd_Args[5];
+                                if (cmd_Args.Count >= 7)
+                                {
+                                    if (UInt32.TryParse(cmd_Args[6], System.Globalization.NumberStyles.HexNumber, null, out var color))
+                                        room.MainColor = new RoomColor(color);
+                                }
+                                if (cmd_Args.Count >= 8)
+                                {
+                                    if (UInt32.TryParse(cmd_Args[7], System.Globalization.NumberStyles.HexNumber, null, out var color))
+                                        room.MinorColor = new RoomColor(color);
+                                }
                                 room.InitControlBlock();
                                 Server.Rooms.Add(room);
                             }
                             else
-                            {
-                                Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, $"Cannot load room on line {_lineIndex}:\"{s}\"");
-                            }
+                                Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, "Need room code && room name at least!\n format: create [code] [name] [IRI] [IRP] [PWD] [MainColor] [MinorColor] \n example: Create 10cfd RoomABC 0 0 null ffffff a0efc0");
 
-                            _lineIndex++;
+                            goto loop;
                         }
 
-                        goto loop;
+                        if (cmdLower == "save_rooms")
+                        {
+                            StringBuilder sb = new();
+                            for (int i = 0; i < Server.Rooms.Count; i++)
+                            {
+                                try
+                                {
+                                    var code = Server.Rooms[i].RoomCode ?? throw new($"RoomCode of '{Server.Rooms[i].RoomCode}' is null");
+                                    var name = Server.Rooms[i].RoomName ?? throw new($"RoomName of '{Server.Rooms[i].RoomCode}' is null");
+                                    var ipn = Server.Rooms[i].IsRoomPasswordNeeded ?? throw new($"IsRoomPasswordNeeded of '{Server.Rooms[i].RoomCode}' is null");
+                                    var iri = Server.Rooms[i].IsRoomInvisible ?? throw new($"IsRoomInvisible of '{Server.Rooms[i].RoomCode}' is null");
+                                    var pwd = Server.Rooms[i].RoomPassword ?? throw new($"RoomPassword of '{Server.Rooms[i].RoomCode}' is null");
+                                    var mainColor = Server.Rooms[i].MainColor ?? throw new($"MainColor of '{Server.Rooms[i].RoomCode}' is null");
+                                    var minorColor = Server.Rooms[i].MinorColor ?? throw new($"MinorColor of '{Server.Rooms[i].RoomCode}' is null");
+
+                                    sb.AppendFormat("{0}|{1}|{2}|{3}|{4}|{5}|{6}", code, name, iri ? '1' : '0', ipn ? '1' : '0', pwd, mainColor.data, minorColor.data);
+                                    sb.AppendLine();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, $"Cannot save room '{Server.Rooms[i].RoomCode ?? Server.Rooms[i].RoomName ?? string.Empty}': {ex}");
+                                }
+                            }
+                            File.WriteAllText("Rooms", sb.ToString());
+
+                            goto loop;
+                        }
+
+                        if (cmdLower == "load_rooms")
+                        {
+                            string[] lines = File.ReadAllLines("Rooms");
+                            long _lineIndex = 0;
+                            foreach (string s in lines)
+                            {
+                                string[] infos = s.Split('|');
+                                if (infos.Length == 7)
+                                {
+                                    Room room = new() { RoomCode = infos[0], RoomName = infos[1], IsRoomInvisible = infos[2] != "0", IsRoomPasswordNeeded = infos[3] != "0", RoomPassword = infos[4], MainColor = new RoomColor(UInt32.Parse(infos[5])), MinorColor = new RoomColor(UInt32.Parse(infos[6])) };
+                                    room.InitControlBlock();
+                                    Server.Rooms.Add(room);
+                                }
+                                else
+                                {
+                                    Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, $"Cannot load room on line {_lineIndex}:\"{s}\"");
+                                }
+
+                                _lineIndex++;
+                            }
+
+                            goto loop;
+                        }
+
+                        if (cmdLower == "disconnect")
+                        {
+                            if (cmd_Args.Count >= 2)
+                            {
+                                bool ask = true;
+                                if (cmd_Args.Count > 2)
+                                {
+                                    foreach (var arg in cmd_Args)
+                                    {
+                                        cmd_Args.Remove(arg);
+                                        if (arg == "-y")
+                                        {
+                                            ask = false;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                List<ClientControlBlock> targetClients = new();
+                                for (int i = 1; i < cmd_Args.Count; i++)
+                                {
+                                    long index = 0;
+                                    foreach (var client in Server.ConnectionTcpClients)
+                                    {
+                                        if (index == int.Parse(cmd_Args[i]))
+                                        {
+                                            targetClients.Add(client);
+                                            break;
+                                        }
+
+                                        index++;
+                                    }
+                                }
+
+                                foreach (var client in targetClients)
+                                {
+                                    if (ask)
+                                    {
+                                        var c = client.ConnectionClient.Client;
+                                        if (c == null)
+                                            throw new NullReferenceException(nameof(c));
+                                        var ce = c.RemoteEndPoint;
+                                        if (ce == null)
+                                            throw new NullReferenceException(nameof(ce));
+                                        Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\nClose client? [y/N] (Y)Yes (N)No\n{0}:{1} ({2})\nUserKey: {3}\n", ((IPEndPoint)ce).Address, ((IPEndPoint)ce).Port, (DateTime.Now - client.AccessTime).ToString("hh\\:mm\\:ss"), client.ClientConnectionData["UserSessionKey"] as string ?? "null");
+                                   
+                                        var nextCommand = Server.ConsoleBuffer.ReadLine(emptyBuffer: true);
+                                        switch (nextCommand.ToLower())
+                                        {
+                                            default: break;
+
+                                            case "y":
+                                                {
+                                                    (client.ClientConnectionData["_ThreadCancellationTokenSource"] as CancellationTokenSource ?? throw new("client.ClientConnectionData[\"_ThreadCancellationTokenSource\"]")).Cancel(false);
+                                                    break;
+                                                }
+
+                                            case "n":
+                                                {
+                                                    break;
+                                                }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        (client.ClientConnectionData["_ThreadCancellationTokenSource"] as CancellationTokenSource ?? throw new("client.ClientConnectionData[\"_ThreadCancellationTokenSource\"]")).Cancel(false);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Warn, "Close all client connections? [y/N] (Y)Yes (N)No\n");
+                                var nextCommand = Server.ConsoleBuffer.ReadLine(emptyBuffer: true);
+                                switch (nextCommand.ToLower())
+                                {
+                                    default: break;
+
+                                    case "y":
+                                        {
+                                            List<ClientControlBlock> aliveClients = new();
+                                            if (Server.ConnectionTcpClients.Count > 0)
+                                            {
+                                                foreach (var clientControlBlock in Server.ConnectionTcpClients)
+                                                {
+                                                    if (clientControlBlock.ClientHandlerThread.IsAlive)
+                                                        aliveClients.Add(clientControlBlock);
+                                                }
+                                            }
+
+                                            foreach (var client in aliveClients)
+                                                (client.ClientConnectionData["_ThreadCancellationTokenSource"] as CancellationTokenSource ?? throw new("client.ClientConnectionData[\"_ThreadCancellationTokenSource\"]")).Cancel(false);
+
+                                            break;
+                                        }
+
+                                    case "n":
+                                        {
+                                            break;
+                                        }
+                                }
+                            }
+
+                        }
                     }
 
                     void UndefinedCommandHandler()
@@ -378,7 +489,11 @@ namespace N2NGO_Server.N2NGOServer
 
         }
 
-        public bool Init()
+        /// <summary>
+        /// Initialize Server & Console components
+        /// </summary>
+        /// <returns>true if successful</returns>
+        public bool Initialize()
         {
             InitConsole();
 
@@ -392,11 +507,17 @@ namespace N2NGO_Server.N2NGOServer
             return true;
         }
 
+        /// <summary>
+        /// Start running server on current thread
+        /// </summary>
         public void RunSync()
         {
             Run();
         }
 
+        /// <summary>
+        /// Start running server asynchronously
+        /// </summary>
         public async void RunAsync()
         {
             await Task.Run(() => Run());

@@ -429,9 +429,9 @@ namespace N2NGO.UtilsClass
             /// </summary>
             /// <param name="roomCode">Room code</param>
             /// <param name="exHandle">If true and an exception occurs, <see cref="ClientExHandler"/> will be called.</param>
-            public ProtocolOperationReturnType<N2NGO_Core.Objects.Room> GetRoomByCode(string roomCode, bool exHandle = true)
+            public ProtocolOperationReturnType<N2NGO_Core.Models.Room> GetRoomByCode(string roomCode, bool exHandle = true)
             {
-                N2NGO_Core.Objects.Room room = new();
+                N2NGO_Core.Models.Room room = new();
 
                 var roomExists = CheckRoomExists(roomCode, exHandle);
                 if ((roomExists.Status != ProtocolOperationReturnStatus.Success) || !roomExists.Value)
@@ -490,7 +490,7 @@ namespace N2NGO.UtilsClass
                         byte[]? edata = roomPackage[5].external_data;
                         if ((N2NGO_Core.Protocol.BaseHeader)roomPackage[5].Header != N2NGO_Core.Protocol.BaseHeader.msg_ulong || edata == null)
                             goto invalid;
-                        room.Members.AddRange(new N2NGO_Core.Objects.Room.Member[N2NGO_Core.Package.MsgExternalData.Decode.MsgULong(edata)]);
+                        room.Members.AddRange(new N2NGO_Core.Models.Room.Member[N2NGO_Core.Package.MsgExternalData.Decode.MsgULong(edata)]);
                     }
                 }
 
@@ -646,7 +646,7 @@ namespace N2NGO.UtilsClass
                             return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
                         }
                         var rrr = N2NGO_Core.Package.MsgExternalData.Decode.MsgLong(rrpackagev.external_data);
-                        if (exHandle) ClientExHandler(new($"Cannot join room: Others: {rrr}"));   /// <see cref="N2NGO_Core.Objects.Room.MemberJoin"/>
+                        if (exHandle) ClientExHandler(new($"Cannot join room: Others: {rrr}"));   /// <see cref="N2NGO_Core.Models.Room.MemberJoin"/>
                     }
                     if ((N2NGO_Core.Protocol.BaseHeader)rpackagev.Header != N2NGO_Core.Protocol.BaseHeader.msg_string)
                     {
@@ -747,7 +747,7 @@ namespace N2NGO.UtilsClass
             /// <see cref="N2NGO_Core.Protocol.BaseHeader._room_client_pull"/>
             /// </summary>
             /// <param name="exHandle">If true and an exception occurs, <see cref="ClientExHandler"/> will be called.</param>
-            public ProtocolOperationReturnType<IReadOnlyList<N2NGO_Core.Objects.Room.Member>> MemberPull(bool exHandle = true)
+            public ProtocolOperationReturnType<IReadOnlyList<N2NGO_Core.Models.Room.Member>> MemberPull(bool exHandle = true)
             {
                 lock (this)
                 {
@@ -788,7 +788,7 @@ namespace N2NGO.UtilsClass
                     }
 
                     var membersCount = N2NGO_Core.Package.MsgExternalData.Decode.MsgULong(packageMembersCount.Value.external_data);
-                    var result = new List<N2NGO_Core.Objects.Room.Member>();
+                    var result = new List<N2NGO_Core.Models.Room.Member>();
 
                     for (ulong i = 0; i < membersCount; i++)
                     {

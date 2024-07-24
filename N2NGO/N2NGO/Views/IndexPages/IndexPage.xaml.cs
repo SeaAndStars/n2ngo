@@ -72,7 +72,7 @@ namespace N2NGO.Views.SubPages
         private async void DispatcherTimerCurrentRoomIndexerUpdater_Tick(object? sender, EventArgs e)
         {
             var isConnectedToRoom = SharedData.CurrentApp.RoomConnection.IsConnected;
-            N2NGO_Core.Objects.Room room = new() { RoomCode = null, RoomName = null, IsRoomInvisible = null, IsRoomPasswordNeeded = null, MainColor = null, MinorColor = null };
+            N2NGO_Core.Models.Room room = new() { RoomCode = null, RoomName = null, IsRoomInvisible = null, IsRoomPasswordNeeded = null, MainColor = null, MinorColor = null };
 
             var _currentCode = SharedData.CurrentApp.RoomConnection.CurrentRoomCode;
             if (_currentCode != string.Empty)
