@@ -10,4 +10,4 @@ N2N GO 官方文档
 
 [N2N GO Server](<N2NGO Server/index.md>)
 
-[N2N GO Protocol](<N2NGO Core/index.md>)
+[N2N GO Core](<N2NGO Core/index.md>)
