@@ -30,7 +30,7 @@ bool OnCommandExectued(object? sender = null, ReadOnlyCollection<string> args)
 }
 
 // *Start executing command
-var invokingResult = ExecutCommandExectued(args: args);
+var invokingResult = OnCommandExectued(args: args);
 
 // --- Log Output ---
 cmd, arg1, arg2, 
