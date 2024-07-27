@@ -343,10 +343,10 @@ namespace N2NGO_Server.N2NGOServer
                                 {
                                     foreach (var arg in args)
                                     {
-                                        args.Remove(arg);
                                         if (arg == "-y" || arg == "--no-ask")
                                         {
                                             ask = false;
+                                            args.Remove(arg);
                                             break;
                                         }
                                     }
@@ -436,6 +436,7 @@ namespace N2NGO_Server.N2NGOServer
                                 }
                             }
 
+                            goto loop;
                         }
                     }
 

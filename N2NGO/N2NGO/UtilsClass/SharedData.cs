@@ -441,11 +441,11 @@ namespace N2NGO.UtilsClass
             {
                 N2NGO_Core.Models.Room room = new();
 
-                var roomExists = CheckRoomExists(roomCode, exHandle);
-                if ((roomExists.Status != ProtocolOperationReturnStatus.Success) || !roomExists.Value)
+                var roomExists = CheckRoomExists(roomCode, !exHandle);
+                if ((!roomExists.IsSuccessfulStatusCode) || !roomExists.Value)
                 {
                     if (exHandle)
-                        ClientExHandler(new("GetRoomByCode Fail: Cannot get room by code due to room not exists."));
+                        ClientExHandler(new($"GetRoomByCode Fail: Cannot get room by code due to room not exists.(CheckRoomExists Status Code: {roomExists.Status.ToString()})"));
                     return new(null, ProtocolOperationReturnStatus.Fail_Others);
                 }
 
