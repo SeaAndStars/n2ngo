@@ -1175,6 +1175,16 @@ namespace N2NGO.UtilsClass
                         N2NGOServerConnection.ClientExHandler(new Exception("检测更新时发生错误：未连接至N2N GO 服务器"));
                     }
             }
+
+            public static void PrintMemSet(string? tag = null)
+            {
+                Process currentProcess = Process.GetCurrentProcess();
+
+                long memoryUsage = currentProcess.WorkingSet64;
+                double memoryUsageInMB = memoryUsage / (1024 * 1024);
+
+                Console.WriteLine($"({tag ?? "App"}) Memory usage: {memoryUsageInMB} MBytes");
+            }
         }
 
         public static class UIAnimation

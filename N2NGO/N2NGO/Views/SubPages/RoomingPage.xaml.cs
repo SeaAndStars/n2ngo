@@ -10,25 +10,17 @@ using System.Windows.Threading;
 
 namespace N2NGO.Views.SubPages
 {
-    /// <summary>
-    /// RoomingPage.xaml 的交互逻辑
-    /// </summary>
     public partial class RoomingPage : Page
     {
-        private readonly DispatcherTimer timer;
-
         public RoomingPage()
         {
             InitializeComponent();
 
             CheckIsRoomPasswordNeeded_Click(null, null);
-
-            timer = new() { Interval = TimeSpan.FromSeconds(1) };
         }
 
         ~RoomingPage()
         {
-            timer.Stop();
         }
 
         private void ButtonCreateRoom_Click(object sender, RoutedEventArgs e)

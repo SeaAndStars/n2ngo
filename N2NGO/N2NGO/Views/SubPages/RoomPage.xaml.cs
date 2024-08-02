@@ -125,8 +125,6 @@ namespace N2NGO.Views.SubPages
         {
             await Task.Run(()=> SharedData.CurrentApp.LeaveRoom());
             SharedData.CurrentApp.MainView.NavigatePage(null);
-
-            EndRefresh();
         }
 
         private void MemberCard_MouseEnter(object sender, MouseEventArgs e)

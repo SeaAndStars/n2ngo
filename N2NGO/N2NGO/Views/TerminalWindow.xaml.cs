@@ -1,15 +1,18 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace N2NGO.Views
 {
     /// <summary>
     /// TerminalWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class TerminalWindow :Window
+    public partial class TerminalWindow : Window
     {
         private bool _canClose = false;
 
@@ -36,12 +39,31 @@ namespace N2NGO.Views
             base.Close();
         }
 
-        private void WindowTerminal_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void WindowTerminal_Closing(object sender, CancelEventArgs e)
         {
             if (!_canClose)
             {
                 e.Cancel = true;
                 Hide();
+            }
+        }
+
+        private void WindowTerminal_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // Terminal Font Size Scaler
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                if (e.Delta > 0)
+                {
+                    this.TerminalView.FontSize++;
+                }
+
+                if (e.Delta < 0)
+                {
+                    this.TerminalView.FontSize--;
+                }
+
+                e.Handled = true;
             }
         }
     }
@@ -84,7 +106,7 @@ namespace N2NGO.Views
                     break;
             }
 
-            _data.TerminalView.Text = _data.TerminalBufferString;
+            _data.TerminalView.Dispatcher.Invoke(()=> _data.TerminalView.Text = _data.TerminalBufferString);
         }
 
         public override Encoding Encoding => Encoding.UTF8;

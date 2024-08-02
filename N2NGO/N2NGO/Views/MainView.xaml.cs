@@ -57,20 +57,11 @@ namespace N2NGO.Views
 
         public Visibility LogButtonVisibility { get => ButtonLog.Visibility; set => ButtonLog.Visibility = value; }
 
-
-        public static void PrintMemSet(string? Tag = null)
-        {
-            Process currentProcess = Process.GetCurrentProcess();
-
-            long memoryUsage = currentProcess.WorkingSet64;
-            double memoryUsageInMB = memoryUsage / (1024 * 1024);
-
-            Console.WriteLine(string.Format("({1})Memory usage: {0} MBytes", memoryUsageInMB, Tag));
-        }
-
         public MainView()
         {
             Stopwatch swbm = Stopwatch.StartNew();
+
+            SharedData.CurrentApp.PrintMemSet("MainView Initialization Begin");
 
             App.Current.MainWindow = this;
             InitializeComponent();
@@ -83,6 +74,7 @@ namespace N2NGO.Views
             PageRoom = new();
             PageInfo = new();
             PageIndex = new();
+            SharedData.CurrentApp.PrintMemSet("Pages Initialized by MainView");
 
             var r = App.Current.Resources;
             var MainColorBrush = (SolidColorBrush)r["MainColorSolidBrush"];
@@ -130,6 +122,7 @@ namespace N2NGO.Views
             SetWindowMaxNormalButtonImage();
             PageSettings.BackgroundOSlider.Value = alpha;
 
+            Console.WriteLine("Console output will be redirected to Terminal Window!");
             DebugTerminalWindow = new()
             {
                 Title = $"N2N GO({SharedData.VersionString}) Debug Console",
@@ -155,7 +148,8 @@ namespace N2NGO.Views
             isInitialized = true;
 
             swbm.Stop();
-            Console.WriteLine($"AppMainView initialization finished({swbm.Elapsed})");
+            Console.WriteLine($"MainView initialization finished({swbm.Elapsed})");
+            SharedData.CurrentApp.PrintMemSet("MainView Initialization End");
         }
 
         ulong __frameCounter = 0;
@@ -320,7 +314,7 @@ namespace N2NGO.Views
             page.BeginAnimation(OpacityProperty, _fadeInAnimation);
         }
 
-        static string Run(string command, bool noWindow = false)
+        static async Task<string> Run(string command, bool noWindow = false)
         {
             Process process = new();
 
@@ -335,13 +329,8 @@ namespace N2NGO.Views
 
             process.StartInfo = startInfo;
 
-            // 启动进程
             process.Start();
-
-            // 等待进程结束
-            process.WaitForExit();
-
-            // 读取并返回输出结果
+            await process.WaitForExitAsync();
             return process.StandardOutput.ReadToEnd();
         }
 
@@ -526,6 +515,7 @@ namespace N2NGO.Views
         {
             Stopwatch swbm = Stopwatch.StartNew();
 
+            SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading Begin");
             PageRooms.Refresh();
 
             var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
@@ -540,13 +530,12 @@ namespace N2NGO.Views
 
             RefreshUIAnimations();
 
-            //DoMessageDialog("Hi！这里是N2N GO！", "欢迎！", new List<Action<object>>() { (_) => DoMessageDialog("当您看见这个，代表您正使用Dev开发版本。\n我们推荐您使用正式版本，您可以选择手动下载并切换，或者使用检测更新功能。", "欢迎！") });
-
             await Task.Run(() =>
             {
                 if (SharedData.CurrentApp.Config == null)
                     throw new NullReferenceException(nameof(SharedData.CurrentApp.Config));
 
+                SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading SubBegin");
                 PageSettings.Dispatcher.Invoke(() => PageSettings.UpdateColorPaletteSelectionItems());
 
                 if (SharedData.CurrentApp.Config.Get("FirstRun", "1") == "1")
@@ -583,10 +572,12 @@ namespace N2NGO.Views
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     Run("Data/BinRef/Windows/WinIPBroadcast/WinIPBroadcast.exe run", true); // 运行WinIPBroadcast（数据转发到虚拟网卡）
 
+                SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading Sub Finished");
             });
 
             swbm.Stop();
             Console.WriteLine($"App asynchronous loading finished({swbm.Elapsed})");
+            SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading End");
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

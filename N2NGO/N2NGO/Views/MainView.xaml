@@ -12,7 +12,7 @@
         Title="N2N GO" Height="600" Width="930"
         Activated="Window_Activated" Deactivated="Window_Deactivated"
         TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
-        WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="{DynamicResource MainFont}" StateChanged="Window_StateChanged" Background="{x:Null}" Icon="/Data/image/N2NGO.ico">
+        WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="{DynamicResource MainFont}" StateChanged="Window_StateChanged" Background="{x:Null}" Icon="/Data/image/N2N GO.png">
     <Window.RenderTransform>
         <TransformGroup>
             <ScaleTransform/>
@@ -93,7 +93,7 @@
                             </Image.Effect>
                         </Image>
                     </Button>
-                    <Button x:Name="TestButton" Width="40" Height="40" Margin="100,0,0,0" Click="TestButton_Click" Content="Test" HorizontalAlignment="Left"/>
+                    <Button x:Name="TestButton" Visibility="Collapsed" Width="40" Height="40" Margin="100,0,0,0" Click="TestButton_Click" Content="Test" HorizontalAlignment="Left"/>
                     <Label x:Name="LabelTitle" Content="     N2N GO     " Style="{StaticResource TitleStyle}" FontSize="24" FontWeight="Normal" />
                     <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
                         <StackPanel.Resources>

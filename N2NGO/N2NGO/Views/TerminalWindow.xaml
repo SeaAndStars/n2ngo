@@ -6,8 +6,14 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:local="clr-namespace:N2NGO.Views"
         mc:Ignorable="d"
-        Title="TerminalWindow" Height="350" Width="550" Icon="/Data/image/N2NGO_Terminal.ico" Background="#BF272727" Foreground="#FFE2E2E2" Closing="WindowTerminal_Closing">
+        Title="TerminalWindow" Height="350" Width="550" Icon="/Data/image/N2NGO_Terminal.ico" Background="#BF272727" Foreground="#FFE2E2E2" Closing="WindowTerminal_Closing" FontFamily="{DynamicResource MonoTerminalFont}" MouseWheel="WindowTerminal_MouseWheel">
     <Grid>
-        <TextBox x:Name="TerminalView" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Background="{x:Null}" Foreground="Gainsboro" BorderBrush="{x:Null}" VerticalContentAlignment="Top" Text="Hello, World!" FontFamily="Roboto" FontSize="16" Padding="2,2,2,2"/>
+        <TextBox x:Name="TerminalView" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Background="{x:Null}" Foreground="Gainsboro" BorderBrush="{x:Null}" VerticalContentAlignment="Top" Text="Hello, World!" Padding="2,2,2,2" SelectionBrush="White">
+            <TextBox.Resources>
+                <!-- Brushes for scrollview bar -->
+                <SolidColorBrush x:Key="PrimaryTextBrush" Color="GhostWhite"/>
+                <SolidColorBrush x:Key="SecondaryTextBrush" Color="White"/>
+            </TextBox.Resources>
+        </TextBox>
     </Grid>
 </Window>

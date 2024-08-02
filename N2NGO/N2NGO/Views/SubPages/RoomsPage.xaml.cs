@@ -36,7 +36,7 @@ namespace N2NGO.Views.SubPages
             Handled = 10
         }
 
-        DispatcherTimer timer = new();
+        private DispatcherTimer timer = new();
 
         private readonly DoubleAnimation smallerAnimation = new() { To = 0.97, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
         private readonly DoubleAnimation smallsmallerAnimation = new() { To = 0.92, Duration = TimeSpan.FromSeconds(0.15), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };

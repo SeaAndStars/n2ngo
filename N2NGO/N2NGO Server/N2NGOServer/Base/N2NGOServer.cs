@@ -43,7 +43,7 @@ namespace N2NGO_Server.N2NGOServer.Base
 
         public MineMP.ConsoleBuffer ConsoleBuffer { get; private set; }
 
-        private readonly System.Timers.Timer CCB_GC = new() { Interval = 3000, AutoReset = true };
+        private readonly System.Timers.Timer CCB_GC = new() { Interval = 5000, AutoReset = true };
 
         public enum ServerStatus
         {

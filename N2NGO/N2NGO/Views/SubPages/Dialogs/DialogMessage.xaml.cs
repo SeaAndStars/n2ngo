@@ -11,15 +11,15 @@ namespace N2NGO.Views.SubPages.Dialogs
 {
     public partial class DialogMessage : Page
     {
-        List<Action<object>>? actsRet;
-        DoubleAnimation animOpIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
-        DoubleAnimation animOpInDe = new DoubleAnimation { To = 1, BeginTime = TimeSpan.FromSeconds(0.2), Duration = TimeSpan.FromSeconds(0.4), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
-        DoubleAnimation animOpOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        private readonly List<Action<object>>? actsRet;
+        private static readonly DoubleAnimation animOpIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        private static readonly DoubleAnimation animOpInDe = new DoubleAnimation { To = 1, BeginTime = TimeSpan.FromSeconds(0.2), Duration = TimeSpan.FromSeconds(0.4), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        private static readonly DoubleAnimation animOpOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
 
-        DoubleAnimation animScIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.43), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };   // 1    0.3
-        DoubleAnimation animScOut = new DoubleAnimation { To = 1.6, Duration = TimeSpan.FromSeconds(0.75), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn } }; // 1.4  0.75
+        private static readonly DoubleAnimation animScIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.43), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };   // 1    0.3
+        private static readonly DoubleAnimation animScOut = new DoubleAnimation { To = 1.6, Duration = TimeSpan.FromSeconds(0.75), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn } }; // 1.4  0.75
 
-        Page? messageContent = null;
+        private Page? messageContent = null;
         public Page? MessageContent
         {
             get => messageContent;

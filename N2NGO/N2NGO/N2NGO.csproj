@@ -10,7 +10,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64;x86</Platforms>
-    <ApplicationIcon>Data\image\N2NGO.ico</ApplicationIcon>
+    <ApplicationIcon>Data\image\N2N GO.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -48,6 +48,7 @@
 
   <ItemGroup>
     <None Remove="Data\font\2.ttc" />
+    <None Remove="Data\font\CascadiaMono.ttf" />
     <None Remove="Data\font\f1.ttc" />
     <None Remove="Data\font\G_R1.ttf" />
     <None Remove="Data\font\Roboto-Black.ttf" />
@@ -95,6 +96,11 @@
     <None Remove="Data\image\logo13.ico" />
     <None Remove="Data\image\Member.png" />
     <None Remove="Data\image\Members.png" />
+    <None Remove="Data\image\N2N GO Debug.png" />
+    <None Remove="Data\image\N2N GO Develop.png" />
+    <None Remove="Data\image\N2N GO Organization.png" />
+    <None Remove="Data\image\N2N GO Preview.png" />
+    <None Remove="Data\image\N2N GO.png" />
     <None Remove="Data\image\N2NGO.ico" />
     <None Remove="Data\image\N2NGO_Logo_GO.png" />
     <None Remove="Data\image\N2NGO_Logo_N2N.png" />
@@ -364,6 +370,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Data\image\N2N GO.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Data\font\CascadiaMono.ttf" />
     <Resource Include="Data\image\icon\daynight.png" />
     <Resource Include="Data\image\icon\info.png" />
     <Resource Include="Data\image\icon\join.png" />
@@ -380,6 +391,11 @@
     <Resource Include="Data\image\icon\wnd_btn_normal.png" />
     <Resource Include="Data\image\Member.png" />
     <Resource Include="Data\image\Members.png" />
+    <Resource Include="Data\image\N2N GO Debug.png" />
+    <Resource Include="Data\image\N2N GO Develop.png" />
+    <Resource Include="Data\image\N2N GO Organization.png" />
+    <Resource Include="Data\image\N2N GO Preview.png" />
+    <Resource Include="Data\image\N2N GO.png" />
     <Resource Include="Data\image\N2NGO_Terminal.ico" />
     <Resource Include="Data\image\N2NGO_Terminal.png" />
   </ItemGroup>
@@ -669,10 +685,6 @@
     <Resource Include="Data\image\logo13.ico">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Data\image\N2NGO.ico">
-      <CopyToOutputDirectory></CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\image\N2NGO.png" />
     <Resource Include="Data\image\N2NGO_Logo_GO.png" />
     <Resource Include="Data\image\N2NGO_Logo_N2N.png" />
     <Resource Include="Data\image\N2NGO_Logo_N2N_Border.png" />
