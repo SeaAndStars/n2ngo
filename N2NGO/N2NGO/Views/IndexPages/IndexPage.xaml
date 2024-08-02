@@ -55,7 +55,7 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                             <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
                                 <Run Text="{DynamicResource LOCALE_CurrentUser}" FontWeight="Bold" FontSize="34"/>
                                 <LineBreak/>
-                                <!--<hc:Gravatar x:Name="CurrentUserAvatar" Source="/Data/image/Release.jpg" Height="80" Width="80"></hc:Gravatar>-->
+                                <!--<hc:Gravatar x:Name="CurrentUserAvatar" Source="/Data/Images/Release.jpg" Height="80" Width="80"></hc:Gravatar>-->
                                 <Run x:Name="CurrentUserNickname" Text="NewToGO" FontSize="16" Foreground="{DynamicResource Palette_50}"/>
                                 <LineBreak/>
                                 <Button Content="{DynamicResource LOCALE_ViewUserKey}" Click="ButtonViewKey_Click" Height="30" Width="98"/>
@@ -129,11 +129,11 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                         </Grid>
                     </Border>
                 </Grid>
-                <local1:Indexer NagivKey="Community"  IndexerTitle="@LOCALE_Index-Community_Title" IndexerDescription="@LOCALE_Index-Community_Description" IndexerCBI="/Data/image/Community.png"/>
-                <local1:Indexer NagivKey="Hosting" IndexerTitle="@LOCALE_Index-Hosting_Title" IndexerDescription="@LOCALE_Index-Hosting_Description" IndexerCBI="/Data/image/Hosting.png"/>
-                <local1:Indexer NagivKey="Clienting" IndexerTitle="@LOCALE_Index-Clienting_Title" IndexerDescription="@LOCALE_Index-Clienting_Description" IndexerCBI="/Data/image/Clienting.png"/>
-                <local1:Indexer NagivKey="Advanced" IndexerTitle="@LOCALE_Index-Advanced_Title" IndexerDescription="@LOCALE_Index-Advanced_Description" IndexerCBI="/Data/image/Advanced.png"/>
-                <local1:Indexer NagivKey="About" IndexerTitle="@LOCALE_Index-About_Title" IndexerDescription="@LOCALE_Index-About_Description" IndexerCBI="/Data/image/About.png"/>
+                <local1:Indexer NagivKey="Community"  IndexerTitle="@LOCALE_Index-Community_Title" IndexerDescription="@LOCALE_Index-Community_Description" IndexerCBI="/Data/Images/Community.png"/>
+                <local1:Indexer NagivKey="Hosting" IndexerTitle="@LOCALE_Index-Hosting_Title" IndexerDescription="@LOCALE_Index-Hosting_Description" IndexerCBI="/Data/Images/Hosting.png"/>
+                <local1:Indexer NagivKey="Clienting" IndexerTitle="@LOCALE_Index-Clienting_Title" IndexerDescription="@LOCALE_Index-Clienting_Description" IndexerCBI="/Data/Images/Clienting.png"/>
+                <local1:Indexer NagivKey="Advanced" IndexerTitle="@LOCALE_Index-Advanced_Title" IndexerDescription="@LOCALE_Index-Advanced_Description" IndexerCBI="/Data/Images/Advanced.png"/>
+                <local1:Indexer NagivKey="About" IndexerTitle="@LOCALE_Index-About_Title" IndexerDescription="@LOCALE_Index-About_Description" IndexerCBI="/Data/Images/About.png"/>
             </ItemsControl>
         </hc:ScrollViewer>
     </Grid>

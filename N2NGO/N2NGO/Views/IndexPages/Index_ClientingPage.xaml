@@ -13,7 +13,7 @@
       Title="Index_ClientingPage" Loaded="Page_Loaded">
 
     <Grid>
-        <Image Source="/Data/image/Clienting.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
+        <Image Source="/Data/Images/Clienting.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
 
         <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
             <ItemsControl x:Name="Indexers" Margin="8,15,8,15">

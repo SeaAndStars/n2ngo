@@ -13,7 +13,7 @@
       Title="Index_CommunityPage" Loaded="Page_Loaded">
 
     <Grid>
-        <Image Source="/Data/image/Community.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
+        <Image Source="/Data/Images/Community.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
 
         <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
             <ItemsControl x:Name="Indexers" Margin="8,15,8,15">
@@ -42,7 +42,7 @@
                 </ItemsControl.ItemTemplate>
 
                 <local1:Indexer NagivKey="goback"  IndexerTitle="@LOCALE_Index-GoBack_Title" IndexerDescription="@LOCALE_Index-GoBack_Description"/>
-                <local1:Indexer NagivKey="Rooms"  IndexerTitle="@LOCALE_Index_CommunityPage-View_Title" IndexerDescription="@LOCALE_Index_CommunityPage-View_Description" IndexerCBI="/Data/image/Community.png"/>
+                <local1:Indexer NagivKey="Rooms"  IndexerTitle="@LOCALE_Index_CommunityPage-View_Title" IndexerDescription="@LOCALE_Index_CommunityPage-View_Description" IndexerCBI="/Data/Images/Community.png"/>
             </ItemsControl>
         </hc:ScrollViewer>
     </Grid>

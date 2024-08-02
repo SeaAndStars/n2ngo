@@ -10,16 +10,16 @@
       Title="InfoPage">
     <Grid>
         <Canvas x:Name="N2NGO_Warpper_C">
-            <Image x:Name="N2NGO_Warpper" Source="/Data/image/N2NGO_Logo_Warpper.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="865"/>
+            <Image x:Name="N2NGO_Warpper" Source="/Data/Images/N2NGO_Logo_Warpper.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="865"/>
         </Canvas>
         <Canvas x:Name="N2NGO_N2N_Border_C">
-            <Image x:Name="N2NGO_N2N_Border" Source="/Data/image/N2NGO_Logo_N2N_Border.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="865"/>
+            <Image x:Name="N2NGO_N2N_Border" Source="/Data/Images/N2NGO_Logo_N2N_Border.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="865"/>
         </Canvas>
         <Canvas x:Name="N2NGO_N2N_C" >
-            <Image x:Name="N2NGO_N2N" Source="/Data/image/N2NGO_Logo_N2N.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="865"/>
+            <Image x:Name="N2NGO_N2N" Source="/Data/Images/N2NGO_Logo_N2N.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="865"/>
         </Canvas>
         <Canvas x:Name="N2NGO_GO_C" >
-            <Image x:Name="N2NGO_GO" Source="/Data/image/N2NGO_Logo_GO.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="865"/>
+            <Image x:Name="N2NGO_GO" Source="/Data/Images/N2NGO_Logo_GO.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="865"/>
         </Canvas>
 
         <TextBlock x:Name="N2NGO_base" Margin="0,10,0,0" VerticalAlignment="Top" Height="92" Width="844">
@@ -44,7 +44,7 @@
                 </LinearGradientBrush>
             </TextBlock.Foreground>
             <Run>GPL3.0</Run> 
-            <Image Source="/Data/image/logo13.ico" Width="15"/> <Run Style="{DynamicResource RunLink}" MouseUp="Run_N2NGO_gitee" Text="https://gitee.com/xue-jiangbin/n2nmc"/>
+            <Image Source="/Data/Images/logo13.ico" Width="15"/> <Run Style="{DynamicResource RunLink}" MouseUp="Run_N2NGO_gitee" Text="https://gitee.com/xue-jiangbin/n2nmc"/>
             <LineBreak/>
         </TextBlock>
 

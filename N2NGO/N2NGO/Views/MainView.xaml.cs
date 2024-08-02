@@ -383,7 +383,7 @@ namespace N2NGO.Views
 
         private void SetWindowMaxNormalButtonImage()
         {
-            LBImage_Wnd_Btn_MaxNormal.Source = new BitmapImage(new Uri(String.Format("/Data/image/icon/wnd_btn_{0}.png", (WindowState == WindowState.Maximized ? "normal" : "max")), UriKind.Relative));
+            LBImage_Wnd_Btn_MaxNormal.Source = new BitmapImage(new Uri(String.Format("/Data/Images/icon/wnd_btn_{0}.png", (WindowState == WindowState.Maximized ? "normal" : "max")), UriKind.Relative));
         }
         public void SetBackColor(byte? a = null, byte? r = null, byte? g = null, byte? b = null)
         {

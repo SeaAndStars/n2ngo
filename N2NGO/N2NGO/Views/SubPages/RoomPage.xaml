@@ -41,7 +41,7 @@
                                         <walterlv:RevealBorderBrush/>
                                     </Border.BorderBrush>
                                     <Grid x:Name="MemberRootGrid">
-                                        <Image Height="18" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Center" Source="/Data/image/Member.png"/>
+                                        <Image Height="18" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Center" Source="/Data/Images/Member.png"/>
                                         <Grid x:Name="MemberSubGrid" Margin="20,0,0,0">
                                             <Button x:Name="IpAddressButton" Content="{Binding IpAddress}" Cursor="Hand" Click="IpAddressButton_Click" MinWidth="{Binding Width, ElementName=NicknameLabel}" Initialized="Button_Initialized"/>
                                             <Label x:Name="NicknameLabel" Content="{Binding Nickname}" IsHitTestVisible="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>

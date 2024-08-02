@@ -22,7 +22,7 @@
             <StackPanel x:Name="RoomInfos" Grid.Row="0" Background="{DynamicResource Palette_500}" Margin="8,8,8,5">
                 <Label HorizontalAlignment="Left" Margin="2">
                     <TextBlock>
-                        <Image Height="20" Source="/Data/image/Members.png"/>
+                        <Image Height="20" Source="/Data/Images/Members.png"/>
                         <Run Text="{Binding MembersCount}"/>
                     </TextBlock>
                 </Label>

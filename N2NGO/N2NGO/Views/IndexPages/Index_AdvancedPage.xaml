@@ -14,7 +14,7 @@
       Title="Index_AdvancedPage" Loaded="Page_Loaded">
 
     <Grid>
-        <Image Source="/Data/image/Advanced.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
+        <Image Source="/Data/Images/Advanced.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
 
         <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
             <ItemsControl x:Name="Indexers" Margin="8,15,8,15">
@@ -44,9 +44,9 @@
 
                 
                 <local1:Indexer NagivKey="goback"  IndexerTitle="@LOCALE_Index-GoBack_Title" IndexerDescription="@LOCALE_Index-GoBack_Description"/>
-                <local1:Indexer NagivKey="Settings"  IndexerTitle="@LOCALE_Index_AdvancedPage-Settings_Title" IndexerDescription="@LOCALE_Index_AdvancedPage-Settings_Description" IndexerCBI="/Data/image/Advanced.png"/>
-                <local1:Indexer NagivKey="Storage"  IndexerTitle="@LOCALE_Index_AdvancedPage-Storage_Title" IndexerDescription="@LOCALE_Index_AdvancedPage-Storage_Description" IndexerCBI="/Data/image/Storage.png"/>
-                <local1:Indexer NagivKey="CheckUpdate"  IndexerTitle="@LOCALE_Index_AdvancedPage-CheckUpdate_Title" IndexerDescription="@LOCALE_Index_AdvancedPage-CheckUpdate_Description" IndexerCBI="/Data/image/CheckUpdate.png"/>
+                <local1:Indexer NagivKey="Settings"  IndexerTitle="@LOCALE_Index_AdvancedPage-Settings_Title" IndexerDescription="@LOCALE_Index_AdvancedPage-Settings_Description" IndexerCBI="/Data/Images/Advanced.png"/>
+                <local1:Indexer NagivKey="Storage"  IndexerTitle="@LOCALE_Index_AdvancedPage-Storage_Title" IndexerDescription="@LOCALE_Index_AdvancedPage-Storage_Description" IndexerCBI="/Data/Images/Storage.png"/>
+                <local1:Indexer NagivKey="CheckUpdate"  IndexerTitle="@LOCALE_Index_AdvancedPage-CheckUpdate_Title" IndexerDescription="@LOCALE_Index_AdvancedPage-CheckUpdate_Description" IndexerCBI="/Data/Images/CheckUpdate.png"/>
             </ItemsControl>
         </hc:ScrollViewer>
     </Grid>

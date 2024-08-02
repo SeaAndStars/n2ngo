@@ -13,7 +13,7 @@
       Title="Index_HostingPage" Loaded="Page_Loaded">
 
     <Grid>
-        <Image Source="/Data/image/Hosting.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
+        <Image Source="/Data/Images/Hosting.png" Style="{DynamicResource IndexPageBackgroundImage}"/>
 
         <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Horizontal" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
             <ItemsControl x:Name="Indexers" Margin="8,15,8,15">
@@ -42,7 +42,7 @@
                 </ItemsControl.ItemTemplate>
 
                 <local1:Indexer NagivKey="goback"  IndexerTitle="@LOCALE_Index-GoBack_Title" IndexerDescription="@LOCALE_Index-GoBack_Description"/>
-                <local1:Indexer NagivKey="Rooming"  IndexerTitle="@LOCALE_Index_HostingPage-Create_Title" IndexerDescription="@LOCALE_Index_HostingPage-Create_Description" IndexerCBI="/Data/image/Hosting.png"/>
+                <local1:Indexer NagivKey="Rooming"  IndexerTitle="@LOCALE_Index_HostingPage-Create_Title" IndexerDescription="@LOCALE_Index_HostingPage-Create_Description" IndexerCBI="/Data/Images/Hosting.png"/>
             </ItemsControl>
         </hc:ScrollViewer>
     </Grid>

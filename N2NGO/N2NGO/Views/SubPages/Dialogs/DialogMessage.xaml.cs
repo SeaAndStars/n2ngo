@@ -12,12 +12,12 @@ namespace N2NGO.Views.SubPages.Dialogs
     public partial class DialogMessage : Page
     {
         private readonly List<Action<object>>? actsRet;
-        private static readonly DoubleAnimation animOpIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
-        private static readonly DoubleAnimation animOpInDe = new DoubleAnimation { To = 1, BeginTime = TimeSpan.FromSeconds(0.2), Duration = TimeSpan.FromSeconds(0.4), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
-        private static readonly DoubleAnimation animOpOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        private readonly DoubleAnimation animOpIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        private readonly DoubleAnimation animOpInDe = new DoubleAnimation { To = 1, BeginTime = TimeSpan.FromSeconds(0.2), Duration = TimeSpan.FromSeconds(0.4), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
+        private readonly DoubleAnimation animOpOut = new DoubleAnimation { To = 0, Duration = TimeSpan.FromSeconds(0.3), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };
 
-        private static readonly DoubleAnimation animScIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.43), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };   // 1    0.3
-        private static readonly DoubleAnimation animScOut = new DoubleAnimation { To = 1.6, Duration = TimeSpan.FromSeconds(0.75), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn } }; // 1.4  0.75
+        private readonly DoubleAnimation animScIn = new DoubleAnimation { To = 1, Duration = TimeSpan.FromSeconds(0.43), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } };   // 1    0.3
+        private readonly DoubleAnimation animScOut = new DoubleAnimation { To = 1.6, Duration = TimeSpan.FromSeconds(0.75), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn } }; // 1.4  0.75
 
         private Page? messageContent = null;
         public Page? MessageContent
@@ -48,7 +48,7 @@ namespace N2NGO.Views.SubPages.Dialogs
             ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleXProperty, animScOut);
             ((ScaleTransform)ContentGrid.RenderTransform).BeginAnimation(ScaleTransform.ScaleYProperty, animScOut);
 
-            TaskCompletionSource<object> animationCompletedTask = new ();
+            TaskCompletionSource<object> animationCompletedTask = new();
             animOpOut.Completed += (s, _) =>
             {
                 animationCompletedTask.SetResult(0);

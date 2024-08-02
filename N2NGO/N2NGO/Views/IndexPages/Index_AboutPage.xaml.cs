@@ -31,7 +31,7 @@ namespace N2NGO.Views.SubPages
                 RuntimeEnvironment.GetRuntimeDirectory()
                 ),
                 NagivKey = "N2NGO",
-                IndexerCBI = new BitmapImage(new("/Data/image/N2N GO Preview.png", UriKind.Relative))
+                IndexerCBI = new BitmapImage(new("/Data/Images/N2N GO Preview.png", UriKind.Relative))
             });
 
             Indexers.Items.Add(new Indexer

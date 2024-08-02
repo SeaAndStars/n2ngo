@@ -45,7 +45,7 @@
 
                                 <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="{DynamicResource Palette_300}" Margin="0,35,5,0">
                                     <Run FontSize="16" Text="{Binding MembersCount}"/>
-                                    <Image Height="12" Source="/Data/image/Members.png"/>
+                                    <Image Height="12" Source="/Data/Images/Members.png"/>
                                 </TextBlock>
 
                                 <Label Content="{Binding RoomName}" Background="{Binding ThemeBrushMain}" FontSize="20" BorderBrush="{x:Null}" Foreground="{DynamicResource Palette_50}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="0,0,0,0"/>

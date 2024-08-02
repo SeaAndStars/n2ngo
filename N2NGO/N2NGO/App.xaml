@@ -20,8 +20,8 @@
             <CornerRadius x:Key="CornerRadiusCornerRadius">0</CornerRadius>
             <Thickness x:Key="RevealBorderThickness">2</Thickness>
 
-            <FontFamily x:Key="MainFont">/Data/font/#Roboto</FontFamily>
-            <FontFamily x:Key="MonoTerminalFont">/Data/font/#Cascadia Mono</FontFamily>
+            <FontFamily x:Key="MainFont">/Data/Fonts/#Roboto</FontFamily>
+            <FontFamily x:Key="MonoTerminalFont">/Data/Fonts/#Cascadia Mono</FontFamily>
 
             <Style TargetType="{x:Type TextElement}">
                 <Setter Property="FontFamily" Value="{DynamicResource MainFont}"/>
