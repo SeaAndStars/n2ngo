@@ -11,3 +11,5 @@ N2N GO Server 是 N2N GO 的专用服务器
 [控制台命令](ConsoleCommands/index.md)
 
 [配置](ConfigurationItems/index.md)
+
+[插件](Plugins/index.md)
