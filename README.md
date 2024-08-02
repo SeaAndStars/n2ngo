@@ -39,7 +39,7 @@ N2N GO 是N2N的一个图形化界面，可以用于各种局域网联机游戏
 
 |                      QQ交流群 主群                      |                      QQ交流群 分群 ①                      |                      QQ频道                      |
 | :------------------------------------------------------: | :---------------------------------------------------------: | :-----------------------------------------------: |
-| ![QQ交流群 主群](Doc/Resources/README_Data/qq_group_0.JPG) | ![QQ交流群 分群 ①](Doc/Resources/README_Data/qq_group_1.JPG) | ![QQ频道](Doc/Resources/README_Data/qq_channel.JPG) |
+| ![QQ交流群 主群](docs/Resources/README_Data/qq_group_0.JPG) | ![QQ交流群 分群 ①](docs/Resources/README_Data/qq_group_1.JPG) | ![QQ频道](docs/Resources/README_Data/qq_channel.JPG) |
 |                        856112671                        |                          456045451                          |                    8128729wjw                    |
 
 ##### 开发者的联系信息
