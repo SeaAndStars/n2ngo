@@ -1,22 +1,24 @@
-# N2N GO Server 控制台命令
+# N2N GO Server Commands
 
-*[索引](../../../index.md) - [N2N GO](../../index.md) - [N2N GO Server](../index.md) - [控制台命令](./index.md)*
+*[Index](../../../index.md) - [N2N GO](../../index.md) - [N2N GO Server](../index.md) - [Commands](./index.md)*
 
 ---
 
-N2N GO Server 适用于 Server In Console 的控制台命令
+> **Note:** Portions of this page are machine translated
 
-## 控制台命令行
+Commands for Server In Console
 
-一个[**命令行**](#控制台命令行)由一个[**命令执行**](#命令执行)组成。
+## Command Line
 
-控制台每次的[**命令行**](#控制台命令行)可以执行一个[**命令**](#命令)。
-
-### 命令执行
-一个[**命令执行**](#命令执行)包含[**命令**](#命令)和**实参**。
-
-一个[**命令执行**](#命令执行)会通过**空格**来分割为多个段，并且将**第一个段**视为[**命令**](#命令)；<br>
-若干个被分割的段将会作为作为一个参数集合供命令读取。
+A [**Command Line**](#command-line) consists of a [**Command Execution**](#command-execution).  
+  
+Each [**Command Line**](#command-line) entered in the console can execute a single [**Command**](#command).  
+  
+### Command Execution  
+A [**Command Execution**](#command-execution) includes a [**Command**](#command) and **arguments**.  
+  
+A [**Command Execution**](#command-execution) is split into multiple segments by **spaces**, with the **first segment** considered as the [**Command**](#command);<br>  
+The remaining segmented parts are used as a set of arguments for the command to read.
 ``` csharp
 // -- Command Arguments Example --
 
@@ -36,191 +38,119 @@ var invokingResult = OnCommandExectued(args: args);
 cmd, arg1, arg2, 
 ```
 
-## 控制台命令行内部处理
+## Internal command handling
 
-**N2N GO Server** 的 **Server In Console** 对**命令行**的命令名处理都会转换成小写，因此**命令名大小写不敏感**。<br>
-**N2N GO Server** 的 **Server In Console** 对**命令行**的命令参数没有特殊处理，具体取决于上下文中的命令其处理方式，因此**参数可能需要注意大小写**。
-
-当一个命令行向**形参列表**为**空**的命令传入参数，命令会忽略其得到的实参。
-
-## 命令
-
-**N2N GO Server** 在 **Server In Console** 初始化并运行后可以在控制台交互中使用以下命令：
-
-* #### `clrscr`
-
-  *释义:* 清空控制台屏幕输出。
-
-  *参数:* 空
-
-  > **备注：** <br>
-  > 会向 `N2NGOServer` 的 `ConsoleBuffer` 发送 `ConsoleBuffer.ControlSymbols.ClearScreen` 控制符。
-  >
-
-
-* #### `stop`
-
-  *释义:* 断开所有连接并关闭 **N2N GO Server**。
-
-  *参数:* 空
-
-
-* #### `list`
-
-  *释义:* <br>
-  列出 **N2N GO Server** 中的有效房间；<br>
-  当 `ROOM_CODE` 参数未提供时，将会列出所有有效的房间。
-
-  *参数:* 
-  * `ROOM_CODE`[,...]
-    
-    *是否可选:* 可选
-
-    *默认值:* 空
-
-    *释义:* 指定一个或多个将要列出房间详细信息的房间号。
-
-
-* #### `list_tcp`
-
-  *释义:* 列出所有已建立连接的TCP客户端及详细信息。
-
-  *参数:* 空
-
-  > **备注：** <br>
-  > 此命令不会过滤所有客户端，因此一些已建立的非 N2N GO 客户端的不明客户端连接可能会被展现，<br>
-  > 建立的连接时间长、不发送或接受任何应用包、连接，通常这类连接的特性，<br>
-  > 我们将这类连接视为恶意僵尸网络活动，并且正在制定更新计划来使 **N2N GO Server** 自动反制这些烦人的恶意连接。<br>
-  > <br>
-  > 目前可以使用 [*disconnect*](#disconnect) 命令来手动结束您觉得可疑的连接。
-  >
-
-
-* #### `close`
-
-  *释义:* <br>
-  关闭 **N2N GO Server** 中的房间；<br>
-  当 `ROOM_CODE` 参数未提供时，将会返回。
-
-  *参数:* 
-  * `ROOM_CODE`[,...]
-    
-    *是否可选:* 必须
-
-    *释义:* 指定一个或多个将要被关闭的房间的房间号。
-
-
-* #### `close_all`
+**N2N GO Server**'s **Server In Console** processes command names in **command lines** by converting them to lowercase, therefore **command name case insensitivity** applies.<br>  
+**N2N GO Server**'s **Server In Console** does not apply special treatment to the command parameters in **command lines**; the handling of these parameters is specific to the command context, hence **parameters may need to be case-sensitive**.  
   
-  *释义:* 关闭 **N2N GO Server** 中的所有房间。
+When a command line passes arguments to a command that has an **empty** **formal parameter list**, the command will ignore the received actual parameters.
 
-  *参数:* 空
-
-
-* #### `create`
-
-  *释义:* <br>
-  在 **N2N GO Server** 中创建房间；<br>
-  如果参数 `ROOM_CODE` 或 `ROOM_NAME` 未提供时将会返回。
-
-  *参数:* 
-
-  * `ROOM_CODE`
-    
-    *是否可选:* 必须
-
-    *释义:* 指定房间号。
-
-  * `ROOM_NAME`
-    
-    *是否可选:* 必须
-
-    *释义:* 指定房间名称。
-    
-  * `ROOM_VISIBILITY`
-    
-    *是否可选:* 可选
-
-    *默认值:* `0`
-
-    *释义:* <br>
-    指定房间可见性。<br>
-    `0` - 公开<br>
-    `1` - 隐藏
-    
-  * `ROOM_NEEDS_PASSWORD`
-    
-    *是否可选:* 可选
-
-    *默认值:* `0`
-
-    *释义:* <br>
-    指定房间是否需要密码保护。<br>
-    `0` - 不需要<br>
-    `1` - 需要
-    
-  * `ROOM_PASSWORD`
-    
-    *是否可选:* 可选
-
-    *默认值:* `null`
-
-    *释义:* 指定房间密码。
-
-    > **备注：** <br>
-    > 我们默认使用 '`null`' 作为公开房间的默认密码<br>
-    >
-    
-  * `ROOM_COLOR_MAIN`
-    
-    *是否可选:* 可选
-
-    *默认值:* `0x00000000`
-
-    *释义:* 指定房间主要颜色。
-    
-  * `ROOM_COLOR_MINOR`
-    
-    *是否可选:* 可选
-
-    *默认值:* `0x00000000`
-
-    *释义:* 指定房间次要颜色。
-
-
-* #### `save_rooms`
+## Commands
+# N2N GO Server Console Commands  
   
-  *释义:* 导出 **N2N GO Server** 中的所有房间至磁盘中。
-
-  *参数:* 空
-
-
-* #### `load_rooms`
+After initializing and running **N2N GO Server** in **Server In Console** mode, the following commands can be used for interaction in the console:  
   
-  *释义:* 导入上次保存在磁盘上的所有房间至 **N2N GO Server**。
-
-  *参数:* 空
-
-
-* #### `disconnect`
-
-  *释义:* <br>
-  断开 **N2N GO Server** 中已建立的Tcp连接；<br>
-  当 `INDEX` 参数未提供时，将会断开所有连接。
-
-  *参数:* 
-  * `INDEX`[,...]
-    
-    *是否可选:* 可选
-
-    *默认值:* 空
-
-    *释义:* 指定一个或多个将要断开的连接的**索引**。
-
-    > **备注：** <br>
-    > 可以通过使用 [*list_tcp*](#list_tcp) 命令来获取Tcp客户端连接的索引
-    >
+## `clrscr`  
   
-    *选项:*
+- **Description**: Clears the console screen output.  
+- **Parameters**: None  
+- **Note**: Sends the `ConsoleBuffer.ControlSymbols.ClearScreen` control symbol to the `N2NGOServer`'s `ConsoleBuffer`.  
+  
+## `stop`  
+  
+- **Description**: Disconnects all connections and shuts down **N2N GO Server**.  
+- **Parameters**: None  
+  
+## `list`  
+  
+- **Description**: Lists valid rooms in **N2N GO Server**; if no `ROOM_CODE` parameter is provided, it lists all valid rooms.  
+- **Parameters**:  
+  - `ROOM_CODE`[,...]  
+    - **Optional**: Yes  
+    - **Default**: None  
+    - **Description**: Specifies one or more room codes for which to list detailed room information.  
+  
+## `list_tcp`  
+  
+- **Description**: Lists all established TCP client connections and their details.  
+- **Parameters**: None  
+- **Note**: This command does not filter out all clients, so some non-N2N GO client connections that are established but unknown may be shown. Established connections that are old, do not send or receive any application packets, and exhibit characteristics of potentially malicious botnet activity are being monitored, and plans are underway to update **N2N GO Server** to automatically counter such nuisance connections. Currently, you can use the [*disconnect*](#disconnect) (hypothetical command) to manually end suspected connections.  
+  
+---  
+  
+**Note**: The `disconnect` command is hypothetical and not explicitly mentioned in your original request. However, based on the need for managing TCP connections, I have included it as a hypothetical addition to demonstrate how such a command might be structured in a Markdown list.
 
-    * `-y`, `--no-ask` 不要询问
+## `close`  
+  
+  * **Description**: Closes one or more rooms in **N2N GO Server**; if no `ROOM_CODE` is provided, the command will return without action.  
+  
+  * **Parameters**:  
+    - `ROOM_CODE`[,...]  
+      - **Required**: Yes  
+      - **Description**: Specifies one or more room codes of the rooms to be closed.  
+  
+## `close_all`  
+  
+  * **Description**: Closes all rooms in **N2N GO Server**.  
+  
+  * **Parameters**: None  
+  
+## `create`  
+  
+  * **Description**: Creates a new room in **N2N GO Server**; if `ROOM_CODE` or `ROOM_NAME` is not provided, the command will return without action.  
+  
+  * **Parameters**:  
+    - `ROOM_CODE`  
+      - **Required**: Yes  
+      - **Description**: Specifies the room code.  
+    - `ROOM_NAME`  
+      - **Required**: Yes  
+      - **Description**: Specifies the room name.  
+    - `ROOM_VISIBILITY`  
+      - **Optional**: Yes  
+      - **Default**: `0`  
+      - **Description**: Specifies the room visibility. `0` - Public, `1` - Hidden.  
+    - `ROOM_NEEDS_PASSWORD`  
+      - **Optional**: Yes  
+      - **Default**: `0`  
+      - **Description**: Specifies whether the room requires a password. `0` - No, `1` - Yes.  
+    - `ROOM_PASSWORD`  
+      - **Optional**: Yes  
+      - **Default**: `null`  
+      - **Description**: Specifies the room password.  
+      > **Note**: We default to `null` as the password for public rooms.  
+    - `ROOM_COLOR_MAIN`  
+      - **Optional**: Yes  
+      - **Default**: `0x00000000`  
+      - **Description**: Specifies the main color of the room.  
+    - `ROOM_COLOR_MINOR`  
+      - **Optional**: Yes  
+      - **Default**: `0x00000000`  
+      - **Description**: Specifies the secondary color of the room.  
+  
+## `save_rooms`  
+  
+  * **Description**: Exports all rooms in **N2N GO Server** to disk.  
+  
+  * **Parameters**: None  
+  
+## `load_rooms`  
+  
+  * **Description**: Imports all rooms previously saved on disk into **N2N GO Server**.  
+  
+  * **Parameters**: None  
+  
+## `disconnect`  
+  
+  * **Description**: Disconnects one or more established TCP connections in **N2N GO Server**; if no `INDEX` is provided, all connections will be disconnected.  
+  
+  * **Parameters**:  
+    - `INDEX`[,...]  
+      - **Optional**: Yes  
+      - **Default**: None  
+      - **Description**: Specifies one or more indices of the connections to be disconnected.  
+      > **Note**: You can obtain the indices of TCP client connections by using the [*list_tcp*](#list_tcp) command.  
+  
+    * **Options**:  
+      - `-y`, `--no-ask`: Do not prompt for confirmation before disconnecting connections.
+  

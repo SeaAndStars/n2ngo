@@ -50,5 +50,5 @@ Configuration Items for **N2N GO Server**:
 
   *Description:* <br>
   Start **IPv6** server<br><br>
-  `0` - Enable<br>
-  Any Value - Disabled
+  `0` - Disabled<br>
+  Any Value - Enabled

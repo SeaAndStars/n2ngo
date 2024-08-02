@@ -6,4 +6,4 @@
 
 N2N GO Core is a component of N2N GO
 
-Which includes `Objects` `Models` 以及 `Protocols for Application Layer` 
+Which includes `Objects`, `Models` and `Protocols for Application Layer` 

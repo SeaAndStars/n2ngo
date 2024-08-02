@@ -4,7 +4,7 @@
 
 ---
 
-N2N GO Server 适用于 Server In Console 的控制台命令
+适用于 Server In Console 的控制台命令
 
 ## 控制台命令行
 
