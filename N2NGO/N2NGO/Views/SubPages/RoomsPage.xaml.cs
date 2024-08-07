@@ -751,6 +751,8 @@ namespace N2NGO.Views.SubPages
         public bool IsRoomVisible { get; set; } = true;
         public bool IsRoomPasswordNeeded { get; set; } = false;
         public uint MembersCount { get; set; } = 0;
+
+        public string IsRoomPasswordNeededText => (SharedData.CurrentApp.Get.FindResource(IsRoomPasswordNeeded? "LOCALE_RoomNeedPassword" : "LOCALE_RoomDontNeedPassword") as string)?? "null";
     }
 }
 

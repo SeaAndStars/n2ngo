@@ -465,11 +465,16 @@ namespace N2NGO_Server.N2NGOServer.Base
                                 if (pkg_app != null)
                                     if (pkg_app.Value.external_data != null)
                                     {
+                                        var targetRoomCode = MsgExternalData.Decode.MsgString(pkg_app.Value.external_data);
+
                                         bool ex = false;
                                         lock (Rooms)
                                             for (int i = 0; i < Rooms.Count; i++)
                                             {
-                                                if (Rooms[i].RoomCode == MsgExternalData.Decode.MsgString(pkg_app.Value.external_data)) ex = true;
+                                                if (Rooms[i].RoomCode == targetRoomCode)
+                                                {
+                                                    ex = true; break;
+                                                }
                                             }
                                         iO_Tool.Send(client, MakePackage(BaseHeader.msg_byte, MsgExternalData.Encode.MsgByte((byte)(ex ? 1 : 0))));
                                         break;

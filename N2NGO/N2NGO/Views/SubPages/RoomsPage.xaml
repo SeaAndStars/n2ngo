@@ -40,7 +40,7 @@
                                     <Run Text="{DynamicResource LOCALE_CurrentRoomCode}" FontSize="16"/>
                                     <Run Text="{Binding RoomCode}" FontSize="18"/>
                                     <LineBreak/>
-                                    <Run Text="{Binding IsRoomPasswordNeededText, Mode=OneTime}" FontSize="15"/>
+                                    <Run Text="{Binding IsRoomPasswordNeededText, Mode=OneWay}" FontSize="15"/>
                                 </TextBlock>
 
                                 <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="{DynamicResource Palette_300}" Margin="0,35,5,0">

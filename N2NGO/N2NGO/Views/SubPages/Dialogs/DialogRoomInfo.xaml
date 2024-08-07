@@ -37,12 +37,6 @@
                         <Run Text="{Binding IsRoomPasswordNeeded}"/>
                     </TextBlock>
                 </Label>
-                <Label HorizontalAlignment="Left" Margin="0">
-                    <TextBlock>
-                        <Run Text="{DynamicResource LOCALE_CreateRoomInvisible}"/>
-                        <Run Text="{Binding IsRoomVisible}"/>
-                    </TextBlock>
-                </Label>
             </StackPanel>
 
             <Grid Grid.Row="1">

@@ -48,6 +48,8 @@ namespace N2NGO.Views.SubPages
         ~IndexPage()
         {
             dispatcherTimerCurrentServerIndexerUpdater.Stop();
+            dispatcherTimerCurrentRoomIndexerUpdater.Stop();
+            dispatcherTimerCurrentUserIndexerUpdater.Stop();
         }
 
         private void DispatcherTimerCurrentServerIndexerUpdater_Tick(object? sender, EventArgs e)
@@ -98,6 +100,10 @@ namespace N2NGO.Views.SubPages
                         if (roomPull.MinorColor != null)
                             room.MinorColor = roomPull.MinorColor;
                     }
+                }
+                else
+                {
+                    SharedData.CurrentApp.LeaveRoom();
                 }
             }
 

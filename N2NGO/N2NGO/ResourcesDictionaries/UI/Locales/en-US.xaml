@@ -135,4 +135,6 @@ Therefore, please do not give us your important personal data!</system:String>
     <system:String x:Key="LOCALE_ServerSelectionItemCustom">Custom</system:String>
     <system:String x:Key="LOCALE_Apply">Apply</system:String>
     <system:String x:Key="LOCALE_EditServerSelection">Change Server</system:String>
+    <system:String x:Key="LOCALE_RoomNeedPassword">Encrypted</system:String>
+    <system:String x:Key="LOCALE_RoomDontNeedPassword">Public</system:String>
 </ResourceDictionary>

@@ -135,4 +135,6 @@
     <system:String x:Key="LOCALE_ServerSelectionItemCustom">自定义</system:String>
     <system:String x:Key="LOCALE_Apply">应用</system:String>
     <system:String x:Key="LOCALE_EditServerSelection">更换服务器</system:String>
+    <system:String x:Key="LOCALE_RoomNeedPassword">已加密</system:String>
+    <system:String x:Key="LOCALE_RoomDontNeedPassword">公开</system:String>
 </ResourceDictionary>
