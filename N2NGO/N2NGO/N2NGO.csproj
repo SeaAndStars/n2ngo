@@ -36,6 +36,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\Images\AdminMember.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Data\Images\N2N GO.ico" />
   </ItemGroup>
 
@@ -73,6 +77,7 @@
     <Resource Include="Data\Images\icon\wnd_btn_max.png" />
     <Resource Include="Data\Images\icon\wnd_btn_min.png" />
     <Resource Include="Data\Images\icon\wnd_btn_normal.png" />
+    <Resource Include="Data\Images\AdminMember.png" />
     <Resource Include="Data\Images\Member.png" />
     <Resource Include="Data\Images\Members.png" />
     <Resource Include="Data\Images\N2N GO Debug.png" />
@@ -80,8 +85,6 @@
     <Resource Include="Data\Images\N2N GO Organization.png" />
     <Resource Include="Data\Images\N2N GO Preview.png" />
     <Resource Include="Data\Images\N2N GO.png" />
-    <Resource Include="Data\Images\N2NGO_Terminal.ico" />
-    <Resource Include="Data\Images\N2NGO_Terminal.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -365,69 +368,6 @@
     <None Update="Data\Images\N2NGO.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
-    </None>
-    <None Update="Data\TapWindowsInstaller\9.21.2.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\TapWindowsInstaller\openvpn.cer">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\TapWindowsInstaller\x32\OemVista.inf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\TapWindowsInstaller\x32\tap0901.cat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\TapWindowsInstaller\x32\tap0901.sys">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\TapWindowsInstaller\x32\tapinstall.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\TapWindowsInstaller\x64\OemVista.inf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\TapWindowsInstaller\x64\tap0901.cat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\TapWindowsInstaller\x64\tap0901.sys">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\TapWindowsInstaller\x64\tapinstall.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\BinRef\Windows\WinIPBroadcast\WinIPBroadcast.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\9.21.2.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\openvpn.cer">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\x32\OemVista.inf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\x32\tap0901.cat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\x32\tap0901.sys">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\x32\tapinstall.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\x64\OemVista.inf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\x64\tap0901.cat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\x64\tap0901.sys">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TAP-Windows\x64\tapinstall.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

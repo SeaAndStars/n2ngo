@@ -7,13 +7,15 @@
         xmlns:walterlv="clr-namespace:Walterlv.Windows.Effects;assembly=Walterlv.Themes.FluentDesign"
         xmlns:local="clr-namespace:N2NGO.Views.SubPages"
         mc:Ignorable="d"
-      TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
-        d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}"
+        TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
+        d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
         Background="{DynamicResource MainColorSolidAlphaBrush}">
+    <Page.Resources>
+        <local:IsAdminBoolToMemberImageConverter x:Key="IsAdminBoolConverter"/>
+    </Page.Resources>
     <Grid>
-        <Grid Background="{DynamicResource MainColorSolidAlphaBrush}" Height="40" VerticalAlignment="Top">
-            <Label VerticalAlignment="Top" Content="当前房间" HorizontalAlignment="Center" Style="{DynamicResource TitleStyle}" VerticalContentAlignment="Center" FontSize="24"/>
-            <Button x:Name="ButtonExitRoom" Content="{DynamicResource LOCALE_RoomExitRoomButton}" VerticalAlignment="Top" Click="ButtonExitRoom_Click" Height="40" FontSize="20" HorizontalAlignment="Right" Padding="5,1,5,1"/>
+        <Grid Background="{DynamicResource Palette_700}" Height="40" VerticalAlignment="Top">
+            <TextBlock Text="{DynamicResource LOCALE_CurrentRoom}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="24"/>
         </Grid>
         <!--<Button x:Name="ButtonRoomRefresh" Content="刷新" VerticalAlignment="Top" Height="40" Width="60" FontSize="20" HorizontalAlignment="Right" Margin="0,0,130,0" Click="ButtonExitRoomRefresh_Click"/>-->
 
@@ -23,11 +25,185 @@
                 <ColumnDefinition Width="0.5*"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Background="{DynamicResource MainColorSolidAlphaBrush}" Margin="10,10,10,10" Grid.Column="0">
+            <!-- Room Functions -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="1" Margin="8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle Grid.ColumnSpan="2" Fill="{DynamicResource Palette_500}" Effect="{StaticResource EffectShadow3}"/>
+
+                            <Grid Grid.Column="0">
+                                <TextBlock Margin="6,8,6,8" VerticalAlignment="Top">
+                                    <hc:WaveProgressBar x:Name="ProgressBarRoomLifetime" Value="50" Background="{DynamicResource Palette_50}" BorderBrush="{DynamicResource Palette_50}" WaveFill="{DynamicResource Palette_300}" ShowText="False"/>
+                                    <LineBreak/>
+                                    <Run Text="{DynamicResource LOCALE_PageRoom-CurrentRoomLifetime}"/>
+                                    <Run Text=": "/>
+                                    <Run x:Name="LifetimeValueText" Text="30 min."/>
+                                </TextBlock>
+                                <Button x:Name="ButtonSwitchAdminPanel" Content="Admin Panel" Visibility="Visible" HorizontalAlignment="Center" Click="ButtonSwitchAdminPanel_Click" Margin="6,133,6,10"/>
+                            </Grid>
+
+                            <Grid Grid.Column="1">
+                                <TextBlock Padding="5" Background="{DynamicResource Palette_700}" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <Run x:Name="CurrentRoomName" Text="{DynamicResource LOCALE_Unknown}" FontSize="16"/>
+                                    <LineBreak/>
+                                    <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Run Text="{DynamicResource LOCALE_CurrentRoomCode}" Foreground="{DynamicResource Palette_50}" FontWeight="Bold" FontSize="16"/>
+                                        <Run x:Name="CurrentRoomCode" Text="abcdef" FontSize="14"/>
+                                        <LineBreak/>
+                                        <Run Text="{DynamicResource LOCALE_CurrentRoomPasswordNeeded}" Foreground="{DynamicResource Palette_50}" FontWeight="Bold" FontSize="16"/>
+                                        <Run x:Name="CurrentRoomPasswordNeeded" Text="{DynamicResource LOCALE_CurrentRoomPasswordNeeded_No}" FontSize="14"/>
+                                        <LineBreak/>
+                                        <Run Text="{DynamicResource LOCALE_CurrentRoomVisibility}" Foreground="{DynamicResource Palette_50}" FontWeight="Bold" FontSize="16"/>
+                                        <Run x:Name="CurrentRoomVisibility" Text="{DynamicResource LOCALE_CurrentRoomVisibility_Invisible}" FontSize="14"/>
+                                        <LineBreak/>
+                                    </TextBlock>
+                                    <LineBreak/>
+                                    <Run Text="{DynamicResource LOCALE_CreateRoomMyIP}" FontSize="12"/>
+                                    <Run x:Name="CurrentRoomIpAddress" Text="{DynamicResource LOCALE_Unknown}" FontSize="16"/>
+                                    <LineBreak/>
+                                </TextBlock>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                    <Border x:Name="PanelAdminControl" Grid.Column="0" RenderTransformOrigin="0.5,0.5">
+                        <Border.LayoutTransform>
+                            <ScaleTransform ScaleX="1"/>
+                        </Border.LayoutTransform>
+
+                        <!-- Panel Control for Administrators of Current Room -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle Grid.ColumnSpan="3" Fill="{DynamicResource Palette_800}" Effect="{StaticResource EffectShadow3}"/>
+
+                            <Grid Grid.Column="0" Background="{DynamicResource Palette_400}">
+                                <Button x:Name="ButtonAdminActivateRoom" Content="{DynamicResource LOCALE_PageRoom-AdminActivateRoomButton_Content}" Margin="0,28,0,0" Click="ButtonAdminActivateRoom_Click"/>
+                                <Button x:Name="ButtonAdminCloseRoom" Content="{DynamicResource LOCALE_PageRoom-AdminCloseRoomButton_Content}" Click="ButtonAdminCloseRoom_Click"/>
+                            </Grid>
+                            <TabControl Grid.Column="1" Padding="5,2,5,2" HorizontalAlignment="Center" Style="{StaticResource BaseStyle}" Background="{DynamicResource Palette_600}" BorderBrush="{x:Null}">
+                                <TabControl.Resources>
+                                    <SolidColorBrush x:Key="RegionBrush" Color="Transparent"/>
+                                </TabControl.Resources>
+
+                                <TabItem Header="{DynamicResource LOCALE_PageRoom-AdminTabMembersHeader_Content}" ToolTip="{DynamicResource LOCALE_PageRoom-AdminTabMembersHeaderTooltip_Content}">
+                                    <Grid x:Name="AdminPanelMembers">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <ItemsControl x:Name="AdminMembersList" Padding="3" Background="{DynamicResource Palette_400}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock HorizontalAlignment="Stretch" Background="{DynamicResource Palette_500}">
+                                                            <Run Text="["/>
+                                                            <Run Text="{Binding ID}"/>
+                                                            <Run Text="]"/>
+                                                            <Run Text="{Binding Nickname}"/>
+                                                            <Run Text="{Binding IpAddress}"/>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+
+                                                <local:RoomPageMemberModel/>
+                                            </ItemsControl>
+                                        </Grid>
+                                        <StackPanel Background="{DynamicResource Palette_500}" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,0">
+                                            <Button x:Name="ButtonAdminKick" Content="{DynamicResource LOCALE_PageRoom-AdminKickButton_Content}" Click="ButtonAdminKick_Click"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </TabItem>
+
+                                <TabItem Header="{DynamicResource LOCALE_PageRoom-AdminTabRuledMembersHeader_Content}" ToolTip="{DynamicResource LOCALE_PageRoom-AdminTabMembersRuledHeaderTooltip_Content}">
+                                    <Grid x:Name="AdminPanelRuledMembers">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <ItemsControl x:Name="AdminRuledMembersList" Padding="3" Background="{DynamicResource Palette_400}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock HorizontalAlignment="Stretch" Background="{DynamicResource Palette_500}">
+                                                            <Run Text="{Binding ID}"/>
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+
+                                                <local:RoomPageRuledMemberModel/>
+                                            </ItemsControl>
+                                        </Grid>
+                                        
+                                        <StackPanel Background="{DynamicResource Palette_500}" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,0">
+                                            <Button x:Name="ButtonAdminRuleMemberNone" Margin="2" Content="{DynamicResource LOCALE_PageRoom-AdminRuleMemberNoneButton_Content}" Click="ButtonAdminRuleMemberNone_Click"/>
+                                            <Button x:Name="ButtonAdminRuleMemberAllow" Margin="2" Content="{DynamicResource LOCALE_PageRoom-AdminRuleMemberAllowButton_Content}" Click="ButtonAdminRuleMemberAllow_Click"/>
+                                            <Button x:Name="ButtonAdminRuleMemberPrevent" Margin="2" Content="{DynamicResource LOCALE_PageRoom-AdminRuleMemberPreventButton_Content}" Click="ButtonAdminRuleMemberPrevent_Click"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <Grid x:Name="PanelUserSuggestion" Grid.Row="1" Margin="8" Background="{DynamicResource Palette_500}">
+                    <Grid.LayoutTransform>
+                        <ScaleTransform ScaleY="1"/>
+                    </Grid.LayoutTransform>
+
+                    <TextBlock x:Name="UserSuggestionSection1" HorizontalAlignment="Left" Margin="10,10,0,0" Foreground="{DynamicResource Palette_50}" VerticalAlignment="Top">
+                        <Run Text="对我们的界面布局设计感到满意吗？" FontSize="28" FontWeight="Bold"/>
+                        <LineBreak/>
+                        <Run Text="向我们发送匿名提议！" FontSize="16"/>
+                        
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Grid x:Name="UserSuggestionForm">
+                            <TextBox x:Name="UserSuggestions" BorderBrush="{x:Null}" Text="你好，开发组：" FontSize="14" Padding="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" AcceptsReturn="True" Height="105" Width="358" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Top"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,110,0,0">
+                                <Button x:Name="ButtonCloseUserSuggestions" Content="下次再说" Margin="0,0,4,0" Click="ButtonCloseUserSuggestions_Click"/>
+                                <Button x:Name="ButtonCommitUserSuggestions" Content="提交！" Margin="4,0,0,0" Click="ButtonCommitUserSuggestions_Click"/>
+                            </StackPanel>
+                        </Grid>
+                        <LineBreak/>
+                        <Hyperlink Click="AnonymousSuggestionsHyperlink_Click">匿名提议箱</Hyperlink>
+                    </TextBlock>
+
+                    <TextBlock x:Name="UserSuggestionSection2" FontSize="28" FontWeight="Bold" Block.TextAlignment="Center">
+                        <Run>感谢您在社区的贡献！</Run>
+                        <LineBreak/>
+                        <Run FontSize="16" FontWeight="Normal">此面板将会自动关闭</Run>
+                    </TextBlock>
+                </Grid>
             </Grid>
 
-            <Grid Background="{DynamicResource MainColorHighLightSolidAlphaBrush}" Margin="10,10,10,10" Grid.Column="1">
-                <hc:ScrollViewer hc:ScrollViewerAttach.Orientation="Vertical" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid x:Name="RightPanel" Background="{DynamicResource Palette_500}" Margin="10,0,0,0" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Button x:Name="ButtonExitRoom" Grid.Row="0" Content="{DynamicResource LOCALE_RoomExitRoomButton}" VerticalAlignment="Stretch" Click="ButtonExitRoom_Click" Height="40" FontSize="20" HorizontalAlignment="Stretch" Padding="5,1,5,1"/>
+
+                <hc:ScrollViewer Grid.Row="1" hc:ScrollViewerAttach.Orientation="Vertical" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <ItemsControl x:Name="ItemsControl_Members" Padding="5">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -36,32 +212,43 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="{DynamicResource Palette_800}" Width="130" Height="38" Margin="2,2,2,4"  MouseEnter="MemberCard_MouseEnter" MouseLeave="MemberCard_MouseLeave" BorderThickness="2">
+                                <Border Background="{DynamicResource Palette_500}" Width="130" Height="38" Margin="2,2,2,4"  MouseEnter="MemberCard_MouseEnter" MouseLeave="MemberCard_MouseLeave" BorderThickness="2">
                                     <Border.BorderBrush>
                                         <walterlv:RevealBorderBrush/>
                                     </Border.BorderBrush>
                                     <Grid x:Name="MemberRootGrid">
-                                        <Image Height="18" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Center" Source="/Data/Images/Member.png"/>
+                                        <Image Height="18" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Center" Source="{Binding IsAdmin, Converter={StaticResource IsAdminBoolConverter}, Mode=OneWay}"/>
                                         <Grid x:Name="MemberSubGrid" Margin="20,0,0,0">
-                                            <Button x:Name="IpAddressButton" Content="{Binding IpAddress}" Cursor="Hand" Click="IpAddressButton_Click" Initialized="Button_Initialized"/>
-                                            <Label x:Name="NicknameLabel" Content="{Binding Nickname}" IsHitTestVisible="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                            <Button x:Name="IpAddressButton" Content="{Binding IpAddress}" Cursor="Hand" Click="IpAddressButton_Click" Initialized="IpAddressButton_Initialized"/>
+                                            <Grid x:Name="NicknameLabel" IsHitTestVisible="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="106" Background="{DynamicResource Palette_400}">
+                                                <TextBlock Text="{Binding Nickname}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <TextBlock FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                                        <Run Text="{Binding PingLatency}"/>
+                                                        <Run Text="ms"/>
+                                                </TextBlock>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
 
-                        <local:RoomPageMemberModel Nickname="AAA Ab" IpAddress="172.16.0.1"/>
-                        <local:RoomPageMemberModel Nickname="BBB Bc" IpAddress="172.16.0.2"/>
-                        <local:RoomPageMemberModel Nickname="CCC Cd" IpAddress="172.16.0.3"/>
+                        <local:RoomPageMemberModel IsAdmin="False" Nickname="Admin" IpAddress="172.16.0.1" PingLatency="10"/>
+                        <local:RoomPageMemberModel IsAdmin="false" Nickname="Guest1" IpAddress="172.16.0.2" PingLatency="10"/>
+                        <local:RoomPageMemberModel IsAdmin="false" Nickname="Guest2" IpAddress="172.16.0.3" PingLatency="10"/>
                     </ItemsControl>
                 </hc:ScrollViewer>
             </Grid>
 
-            <Border x:Name="tip" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Height="60" CornerRadius="4" Background="{DynamicResource MainColorHighLightSolidAlphaBrush}" Margin="12,0,12,10" Grid.Row="0">
+            <Border x:Name="tip" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Height="60" Margin="12,0,12,10" Grid.Row="0">
                 <Grid>
-                    <TextBlock TextWrapping="Wrap" Padding="3" Text="以您所在的国家地区为准，请勿发布及传播违反当地法律政策的内容" Foreground="{DynamicResource MainColorSolidFontBrush}" FontSize="17"/>
-                    <Button x:Name="ButtonKnown" Content="我已了解" VerticalAlignment="Bottom" Height="31" Width="89" Padding="0,0,0,0" Click="ButtonKnown_Click" HorizontalAlignment="Right"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="97*"/>
+                        <ColumnDefinition Width="122*"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Fill="{DynamicResource MainColorHighLightSolidAlphaBrush}" Effect="{StaticResource EffectShadow3}" Grid.ColumnSpan="2"/>
+                    <TextBlock TextWrapping="Wrap" Padding="4" Text="{DynamicResource LOCALE_Text_Policy}" Foreground="{DynamicResource MainColorSolidFontBrush}" FontSize="17" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2"/>
+                    <Button x:Name="ButtonKnown" Content="{DynamicResource LOCALE_IUndertand}" VerticalAlignment="Bottom" Click="ButtonKnown_Click" HorizontalAlignment="Right" Grid.Column="1"/>
                 </Grid>
             </Border>
         </Grid>

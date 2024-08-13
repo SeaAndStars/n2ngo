@@ -27,7 +27,7 @@ namespace N2NGO.Views.SubPages
             InitializeComponent();
         }
 
-        protected override void TempGrid_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        protected override void Indexer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             // Click
             var indexer = (Indexer)((Border)sender).DataContext;

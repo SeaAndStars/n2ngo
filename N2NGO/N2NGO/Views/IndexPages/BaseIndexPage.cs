@@ -127,7 +127,7 @@ namespace N2NGO.UtilsClass
             }
         }
 
-        protected void TempGrid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        protected void Indexer_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (sender is not Border element)
                 throw new ArgumentException("sender is not Border", nameof(sender));
@@ -151,9 +151,9 @@ namespace N2NGO.UtilsClass
                 }
             }
 
-            element.Background = new SolidColorBrush(Color.FromArgb(0x9F, 0xB3, 0xB3, 0xB3));
+            element.Background = new SolidColorBrush(Color.FromArgb(0x4F, 0xB3, 0xB3, 0xB3));
         }
-        protected void TempGrid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        protected void Indexer_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (sender is not Border element)
                 throw new ArgumentException("sender is not Border", nameof(sender));
@@ -177,9 +177,9 @@ namespace N2NGO.UtilsClass
                 }
             }
 
-            element.Background = new SolidColorBrush(Color.FromArgb(0x5F, 0xB3, 0xB3, 0xB3));
+            element.Background = new SolidColorBrush(Color.FromArgb(0x1F, 0xB3, 0xB3, 0xB3));
         }
-        protected void TempGrid_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        protected void Indexer_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is not Border element)
                 throw new ArgumentException("sender is not Border", nameof(sender));
@@ -203,7 +203,7 @@ namespace N2NGO.UtilsClass
                 }
             }
         }
-        protected void TempGrid_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        protected void Indexer_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is not Border element)
                 throw new ArgumentException("sender is not Border", nameof(sender));
@@ -227,13 +227,13 @@ namespace N2NGO.UtilsClass
                 }
             }
         }
-        protected void TempGrid_Initialized(object sender, EventArgs e)
+        protected void Indexer_Initialized(object sender, EventArgs e)
         {
             InitIndexer(sender);
             _indexers.Add((UIElement)sender);
         }
 
-        protected abstract void TempGrid_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e);
+        protected abstract void Indexer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e);
         
         protected virtual void Page_Navigated() { }
 

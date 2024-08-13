@@ -6,14 +6,28 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:local="clr-namespace:N2NGO.Views"
         mc:Ignorable="d"
-        Title="TerminalWindow" Height="350" Width="550" Icon="/Data/Images/N2NGO_Terminal.ico" Background="#BF272727" Foreground="#FFE2E2E2" Closing="WindowTerminal_Closing" FontFamily="{DynamicResource MonoTerminalFont}" MouseWheel="WindowTerminal_MouseWheel">
+        Title="TerminalWindow" TextOptions.TextFormattingMode="Display" Height="640" Width="960" Icon="/Data/Images/N2N GO Debug.png" Background="#BF272727" Foreground="#FFE2E2E2" Closing="WindowTerminal_Closing" MouseWheel="WindowTerminal_MouseWheel">
     <Grid>
-        <TextBox x:Name="TerminalView" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Background="{x:Null}" Foreground="Gainsboro" BorderBrush="{x:Null}" VerticalContentAlignment="Top" Text="Hello, World!" Padding="2,2,2,2" SelectionBrush="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="TerminalView" Grid.Row="0" FontFamily="{DynamicResource MonoTerminalFont}" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" Background="{x:Null}" Foreground="Gainsboro" BorderBrush="{x:Null}" VerticalContentAlignment="Top" Text="Hello, World!" Padding="2,2,2,2" SelectionBrush="White" FontSize="18">
             <TextBox.Resources>
                 <!-- Brushes for scrollview bar -->
                 <SolidColorBrush x:Key="PrimaryTextBrush" Color="GhostWhite"/>
                 <SolidColorBrush x:Key="SecondaryTextBrush" Color="White"/>
             </TextBox.Resources>
         </TextBox>
+        <Grid Grid.Row="1" Background="#FF312D31">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="ButtonClearBuffer" Padding="5" Content="Clear Buffer" Background="#FF464242" Foreground="WhiteSmoke" Click="ButtonClearBuffer_Click" FontSize="14"/>
+
+                <CheckBox x:Name="CheckBoxScrollToEnd" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="WhiteSmoke" IsChecked="True" FontSize="14">
+                    Scroll-To-End
+                </CheckBox>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

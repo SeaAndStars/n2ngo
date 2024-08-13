@@ -10,9 +10,9 @@
         xmlns:walterlv="clr-namespace:Walterlv.Windows.Effects;assembly=Walterlv.Themes.FluentDesign"
         mc:Ignorable="d"
         Title="N2N GO" Height="600" Width="930"
-        Activated="Window_Activated" Deactivated="Window_Deactivated"
+        Activated="Window_Activated" Deactivated="Window_Deactivated" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged" PreviewKeyDown="Window_PreviewKeyDown"
         TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
-        WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Loaded="Window_Loaded" Closing="Window_Closing" FontFamily="{DynamicResource MainFont}" StateChanged="Window_StateChanged" Background="{x:Null}" Icon="/Data/Images/N2N GO.png">
+        FontFamily="{DynamicResource MainFont}" Background="{x:Null}" Icon="/Data/Images/N2N GO.png">
     <Window.RenderTransform>
         <TransformGroup>
             <ScaleTransform/>
@@ -86,14 +86,14 @@
                     <walterlv:RevealBorderBrush/>
                 </Border.BorderBrush>
                 <Grid x:Name="grid" Height="40" VerticalAlignment="Top">
-                    <Button Width="90" Height="40" Margin="0" Click="ButtonBack_Click" HorizontalAlignment="Left">
+                    <Button Width="90" Height="40" Margin="0" Click="ButtonBack_Click" HorizontalAlignment="Left" VerticalAlignment="Stretch">
                         <Image x:Name="LBImage_Wnd_Btn_Back" Width="35" Height="35" Stretch="Fill" Source="/Data/Images/icon/wnd_btn_back.png">
                             <Image.Effect>
                                 <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
                             </Image.Effect>
                         </Image>
                     </Button>
-                    <Button x:Name="TestButton" Visibility="Collapsed" Width="40" Height="40" Margin="100,0,0,0" Click="TestButton_Click" Content="Test" HorizontalAlignment="Left"/>
+                    <Button x:Name="TestButton" Margin="100,0,0,0" Click="TestButton_Click" Content="Test" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <Label x:Name="LabelTitle" Content="     N2N GO     " Style="{StaticResource TitleStyle}" FontSize="24" FontWeight="Normal" />
                     <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
                         <StackPanel.Resources>
@@ -104,49 +104,32 @@
                                 <Setter Property="FlowDirection" Value="LeftToRight"/>
                             </Style>
                         </StackPanel.Resources>
-                        <Button x:Name="ButtonClose" Width="55" Click="ButtonClose_Click">
+                        <Button x:Name="ButtonClose" Width="55" Click="ButtonClose_Click" VerticalAlignment="Stretch">
                             <Image x:Name="LBImage_Wnd_Btn_Close" Source="/Data/Images/icon/wnd_btn_close.png" Width="25">
                                 <Image.Effect>
                                     <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
                                 </Image.Effect>
                             </Image>
                         </Button>
-                        <Button x:Name="ButtonWindowMaxNormal" Width="55" Click="ButtonWindowMaxNormal_Click">
+                        <Button x:Name="ButtonWindowMaxNormal" Width="55" Click="ButtonWindowMaxNormal_Click" VerticalAlignment="Stretch">
                             <Image x:Name="LBImage_Wnd_Btn_MaxNormal" Source="/Data/Images/icon/wnd_btn_normal.png" Width="25">
                                 <Image.Effect>
                                     <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
                                 </Image.Effect>
                             </Image>
                         </Button>
-                        <Button x:Name="ButtonWindowMin" Width="55" Click="ButtonWindowMin_Click">
+                        <Button x:Name="ButtonWindowMin" Width="55" Click="ButtonWindowMin_Click" VerticalAlignment="Stretch">
                             <Image x:Name="LBImage_Wnd_Btn_Min" Source="/Data/Images/icon/wnd_btn_min.png" Width="25">
                                 <Image.Effect>
                                     <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
                                 </Image.Effect>
                             </Image>
                         </Button>
-
-                        <hc:ComboBox x:Name="LocaleSeletion" Visibility="Collapsed" Height="39" Width="160" SelectedIndex="0" SelectionChanged="LocaleSeletion_SelectionChanged">
-                            <ComboBox.Resources>
-                                <local1:LocaleSelectionConverter x:Key="LocaleConverter"/>
-                            </ComboBox.Resources>
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Converter={StaticResource LocaleConverter}, Mode=OneWay}" FontSize="16" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                            <system:String>default</system:String>
-                            <system:String>zh-CN</system:String>
-                            <system:String>en-US</system:String>
-                        </hc:ComboBox>
-                        <!--<Button x:Name="ButtonLog" Margin="0,0,155,0" Click="ButtonLog_Click" Width="35">
-                        <Image x:Name="LBImage_Log" Source="/Data/Images/icon/log.png" Height="20" Width="20"/>
-                    </Button>-->
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <Button x:Name="ButtonLog" Height="55" Width="55" VerticalAlignment="Bottom" HorizontalAlignment="Left"  Style="{DynamicResource CylindricalButtonStyle}" ToolTip="日志" Padding="0" Click="TitleIconButton_Click" Margin="40,0,0,55" Grid.Row="1">
+            <Button x:Name="ButtonLog" Height="55" Width="55" VerticalAlignment="Bottom" HorizontalAlignment="Left"  Style="{DynamicResource CylindricalButtonStyle}" ToolTip="日志" Click="TitleIconButton_Click" Margin="40,0,0,55" Grid.Row="1">
                 <Image x:Name="LBImage_Wnd_Btn_Log" Width="30" Height="30" Stretch="Fill" Source="/Data/Images/icon/log.png">
                     <Image.Effect>
                         <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>

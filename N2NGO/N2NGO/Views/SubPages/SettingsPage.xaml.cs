@@ -63,27 +63,13 @@ namespace N2NGO.Views.SubPages
         //    ((MainView)App.Current.MainWindow).ImageBackgroundImage.Source = tempImage;
         //}
 
-        public async void InstallTapButton_Click(object? sender = null, RoutedEventArgs? e = null)
-        {
-            try
-            {
-                await Process.Start("Data/TapWindowsInstaller/9.21.2.exe", "/S /X").WaitForExitAsync();
-            }
-            catch (Exception ex)
-            {
-                Dispatcher.Invoke(() => SharedData.CurrentApp.MainView.DoMessageDialog("在尝试安装Tap驱动时发生异常：" + ex.Message + "\n请尝试以管理员身份运行N2N GO或\n手动安装该文件：Data/TapWindowsInstaller/9.21.2.exe", "Tap驱动安装"));
-                return;
-            }
-            Dispatcher.Invoke(() => SharedData.CurrentApp.MainView.DoMessageDialog("Tap驱动已完成安装", "Tap驱动安装"));
-        }
-
         int i = 0;
-        private void BackgroundOSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void BackgroundOpacitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var slider = (Slider)sender;
 
-            if (OSliderInd != null)
-                OSliderInd.Text = string.Format("{0:0.0}%", (e.NewValue / (slider.Maximum - slider.Minimum) * 100));
+            if (OpacitySliderLabel != null)
+                OpacitySliderLabel.Text = string.Format("{0:0.0}%", (e.NewValue / (slider.Maximum - slider.Minimum) * 100));
 
             if (i > 1)
             {

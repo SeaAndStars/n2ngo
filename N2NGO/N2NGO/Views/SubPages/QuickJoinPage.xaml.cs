@@ -32,37 +32,40 @@ namespace N2NGO.Views.SubPages
 
             if (string.IsNullOrEmpty(roomCode))
             {
-                SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Fail_Code_Empty_Content", "@LOCALE_DialogJoinRoom_Title");
+                SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title");
                 return;
             }
 
             if (needPassword == true && string.IsNullOrEmpty(roomPassword.Trim()))
             {
-                SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Fail_Passowrd_Empty_Content", "@LOCALE_DialogJoinRoom_Title");
+                SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomPassEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title");
                 return;
             }
 
             DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1) };
             timer.Tick += async (_, __) =>
             {
-                if (SharedData.N2NEdgeLogHelper.IsEdgeConnectedToSupernode(SharedData.CurrentApp.N2NExecLog.LogOut))
-                {
-                    timer.Stop();
+                if (!SharedData.N2NEdgeLogHelper.IsEdgeConnectedToSupernode(SharedData.CurrentApp.N2NExecLog.LogOut))
+                    return;
 
-                    if (string.IsNullOrEmpty(roomCode))
-                    {
-                        SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("未获取到房间号", "进入房间失败"));
-                        SharedData.CurrentApp.LeaveRoom();
-                    }
-                    else
-                    {
-                        var enterRoomResult = await Task.Run(() => SharedData.CurrentApp.EnterRoom(roomCode, roomPassword));
-                        if (!enterRoomResult)
-                        {
-                            SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("进入房间失败", "进入房间失败"));
-                        }
-                    }
+                timer.Stop();
+
+                if (string.IsNullOrEmpty(roomCode))
+                {
+                    SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Failure_Title"));
+                    SharedData.CurrentApp.LeaveRoom();
+
+                    return;
                 }
+
+                var enterRoomResult = await Task.Run(() => SharedData.CurrentApp.EnterRoom(roomCode, roomPassword));
+                if (!enterRoomResult)
+                {
+                    SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content", "@LOCALE_DialogJoinRoom_Failure_Title"));
+                    return;
+                }
+
+                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Success_Description_Content", "@LOCALE_DialogJoinRoom_Title"));
             };
 
             timer.Start();
@@ -84,19 +87,8 @@ namespace N2NGO.Views.SubPages
 
             if (SharedData.CurrentApp.N2NExecLog.LogOut.Contains("No Windows tap devices found, did you run tapinstall.exe?"))
             {
-                SharedData.CurrentApp.MainView.DoMessageYesNoDialog("我们无法找到可用的Tap设备，请检查并安装Tap虚拟网卡驱动，要现在安装吗？", "进入房间失败",
-                    new()
-                    {
-                        (_) =>
-                        {
-                            if (_ is not DialogMessage dialogMessage || dialogMessage.MessageContent is not DialogYesNo dialogYesNo)
-                                throw new Exception("Cannot get DialogYesNo");
-
-                            if (dialogYesNo.YesNo == DialogYesNo.YesNoE.Yes)
-                                SharedData.CurrentApp.Dispatcher.Invoke(()=>SharedData.CurrentApp.MainView.PageSettings.InstallTapButton_Click(null, null));
-                        }
-                    }
-                    );
+                // No Windows tap
+                SharedData.CurrentApp.MainView.DoMessageDialog("我们无法找到可用的Tap设备，请检查并安装Tap虚拟网卡驱动。您可以在以下地址获取 Tap-Windows：https://mail.bestlgf.pro/N2NGO/Download", "进入房间失败");
                 timer.Stop();
             }
 

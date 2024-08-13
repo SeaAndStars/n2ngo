@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net.Sockets;
 
 namespace N2NGO_Core
 {
@@ -28,8 +22,8 @@ namespace N2NGO_Core
                 public static byte[] MsgUShort(UInt16 data) { return new byte[2] { (byte)(data >> 8), (byte)data }; }
                 public static byte[] MsgLong(Int32 data) { return new byte[4] { (byte)((data >> 24) & 0xFF), (byte)((data >> 16) & 0xFF), (byte)((data >> 8) & 0xFF), (byte)(data & 0xFF) }; }
                 public static byte[] MsgULong(UInt32 data) { return new byte[4] { (byte)((data >> 24) & 0xFF), (byte)((data >> 16) & 0xFF), (byte)((data >> 8) & 0xFF), (byte)(data & 0xFF) }; }
-                public static byte[] MsgLongLong(Int64 data) { throw new NotImplementedException(); }
-                public static byte[] MsgULongLong(UInt64 data) { throw new NotImplementedException(); }
+                public static byte[] MsgLongLong(Int64 data) { return new byte[8] { (byte)((data >> 56) & 0xFF), (byte)((data >> 48) & 0xFF), (byte)((data >> 40) & 0xFF), (byte)((data >> 32) & 0xFF), (byte)((data >> 24) & 0xFF), (byte)((data >> 16) & 0xFF), (byte)((data >> 8) & 0xFF), (byte)(data & 0xFF) }; }
+                public static byte[] MsgULongLong(UInt64 data) { return new byte[8] { (byte)((data >> 56) & 0xFF), (byte)((data >> 48) & 0xFF), (byte)((data >> 40) & 0xFF), (byte)((data >> 32) & 0xFF), (byte)((data >> 24) & 0xFF), (byte)((data >> 16) & 0xFF), (byte)((data >> 8) & 0xFF), (byte)(data & 0xFF) }; }
                 public static byte[] MsgFloat(float data) { throw new NotImplementedException(); }
                 public static byte[] MsgDouble(double data) { throw new NotImplementedException(); }
                 public static byte[] MsgString(string data) { var str_bytes = Protocol.StringEncoding.GetBytes(data); var bytes_list = new List<byte>(); bytes_list.AddRange(MsgUShort((UInt16)str_bytes.LongLength)); bytes_list.AddRange(str_bytes); return bytes_list.ToArray(); }
@@ -46,8 +40,8 @@ namespace N2NGO_Core
                 public static UInt16 MsgUShort(byte[] externalData) { return (UInt16)(externalData[0] << 8 | externalData[1]); }
                 public static Int32 MsgLong(byte[] externalData) { return (Int32)((externalData[0] << 24) | (externalData[1] << 16) | (externalData[2] << 8) | externalData[3]); }
                 public static UInt32 MsgULong(byte[] externalData) { return (UInt32)((externalData[0] << 24) | (externalData[1] << 16) | (externalData[2] << 8) | externalData[3]); }
-                public static Int64 MsgLongLong(byte[] externalData) { throw new NotImplementedException(); }
-                public static UInt64 MsgULongLong(byte[] externalData) { throw new NotImplementedException(); }
+                public static Int64 MsgLongLong(byte[] externalData) { return (Int64)externalData[0] << 56 | (long)externalData[1] << 48 | (long)externalData[2] << 40 | (long)externalData[3] << 32 | (long)externalData[4] << 24 | (long)externalData[5] << 16 | (long)externalData[6] << 8 | externalData[7]; }
+                public static UInt64 MsgULongLong(byte[] externalData) { return (UInt64)externalData[0] << 56 | (ulong)externalData[1] << 48 | (ulong)externalData[2] << 40 | (ulong)externalData[3] << 32 | (ulong)externalData[4] << 24 | (ulong)externalData[5] << 16 | (ulong)externalData[6] << 8 | externalData[7]; }
                 public static float MsgFloat(byte[] externalData) { throw new NotImplementedException(); }
                 public static double MsgDouble(byte[] externalData) { throw new NotImplementedException(); }
                 public static string MsgString(byte[] externalData) { return Protocol.StringEncoding.GetString(externalData.Skip(2).Take(MsgUShort(externalData)).ToArray()); }
@@ -106,18 +100,17 @@ namespace N2NGO_Core
 
             }
 
-            public bool Send(TcpClient Client, Package package, bool timeOut = false)
+            public bool Send(TcpClient client, Package package, bool timeOut = false)
             {
+            //start:
                 latestEx = null;
                 if (timeOut)
-                    Client.SendTimeout = WriteTimeOut;
+                    client.SendTimeout = WriteTimeOut;
 
                 try
                 {
-                    var stream = Client.GetStream();
-                    stream.Flush();
-                    stream.Write(Package.BuildPackage(package));
-                    stream.Flush();
+                    var stream = client.GetStream();
+                    stream.Write(BuildPackage(package));
                 }
                 catch (Exception ex)
                 {
@@ -128,20 +121,20 @@ namespace N2NGO_Core
                 return true;
             }
 
-            public Package? Receive(TcpClient Client, byte? defH = null, bool timeOut = false)
+            public Package? Receive(TcpClient client, byte? defH = null, bool timeOut = false)
             {
+            start:
                 latestEx = null;
                 if (timeOut)
-                    Client.ReceiveTimeout = ReadTimeOut;
+                    client.ReceiveTimeout = ReadTimeOut;
 
                 Package? package = null;
 
                 try
                 {
-                    var stream = Client.GetStream();
-                    stream.Flush();
+                    var stream = client.GetStream();
 
-                    if (!stream.CanRead || !Client.Connected)
+                    if (!stream.CanRead || !client.Connected)
                         return package;
 
                     int h;
@@ -153,6 +146,12 @@ namespace N2NGO_Core
                     }
                     else
                         h = defH.Value;
+
+                    if (h == (int)Protocol.BaseHeader.Keeplive)
+                    {
+                        // Ignore keeplive
+                        goto start;
+                    }
 
                     int data_size = 0;
 
@@ -212,7 +211,7 @@ namespace N2NGO_Core
                             stream.Read(bytes, 0, bytes.Length);
                         }
 
-                        package = Package.MakePackage(header, bytes);
+                        package = MakePackage(header, bytes);
                         return package;
                     }
                 str_resolved:
@@ -227,7 +226,7 @@ namespace N2NGO_Core
                         {
                             case 2:
                                 {
-                                    bytes = new byte[Package.MsgExternalData.Decode.MsgUShort(bytes)];
+                                    bytes = new byte[MsgExternalData.Decode.MsgUShort(bytes)];
                                     if (bytes.Length > 0)
                                     {
                                         stream.Read(bytes, 0, bytes.Length);
@@ -237,7 +236,7 @@ namespace N2NGO_Core
                                 }
                             case 4:
                                 {
-                                    bytes = new byte[Package.MsgExternalData.Decode.MsgULong(bytes)];
+                                    bytes = new byte[MsgExternalData.Decode.MsgULong(bytes)];
                                     if (bytes.Length > 0)
                                     {
                                         stream.Read(bytes, 0, bytes.Length);
@@ -247,7 +246,7 @@ namespace N2NGO_Core
                                 }
                             case 8:
                                 {
-                                    bytes = new byte[Package.MsgExternalData.Decode.MsgULongLong(bytes)];
+                                    bytes = new byte[MsgExternalData.Decode.MsgULongLong(bytes)];
                                     if (bytes.Length > 0)
                                     {
                                         stream.Read(bytes, 0, bytes.Length);
@@ -257,7 +256,7 @@ namespace N2NGO_Core
                                 }
                         }
 
-                        package = Package.MakePackage(header, externalBytes.ToArray());
+                        package = MakePackage(header, externalBytes.ToArray());
                         return package;
                     }
                 }

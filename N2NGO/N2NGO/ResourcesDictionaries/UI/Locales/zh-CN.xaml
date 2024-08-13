@@ -76,8 +76,27 @@
     
     <system:String x:Key="LOCALE_DialogCustomServer_Title">自定义服务器</system:String>
     <system:String x:Key="LOCALE_DialogCustomServer_Description_Content">请输入IP地址以及端口号</system:String>
+
+    <system:String x:Key="LOCALE_DialogJoinRoom_Title">加入房间</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Success_Description_Content">成功，回到主索引以查看房间！</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_Title">加入房间失败</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content">房间代码无效。</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_RoomPassEmptyInput_Description_Content">房间密码无效。</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content">进入房间失败，请继续以查看更多信息。</system:String>
     
     <system:String x:Key="LOCALE_PageRooms-SearchPlaceholder_Content">空格分隔房间代码或房间名</system:String>
+
+    <system:String x:Key="LOCALE_PageRoom-CurrentRoomLifetime">剩余时间</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminCloseRoomButton_Content">关闭房间</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminActivateRoomButton_Content">激活</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminTabMembersHeader_Content">房间内</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminTabMembersHeaderTooltip_Content">实时成员位于房间</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminTabRuledMembersHeader_Content">规则表</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminTabRuledMembersHeaderTooltip_Content">当前房间的成员规则集合</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminKickButton_Content">踢出</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminRuleMemberNoneButton_Content">无</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminRuleMemberPreventButton_Content">阻止</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminRuleMemberAllowButton_Content">允许</system:String>
 
 
     <system:String x:Key="LOCALE_Tooltip-ClicktoSet">点击设置</system:String>
@@ -137,4 +156,7 @@
     <system:String x:Key="LOCALE_EditServerSelection">更换服务器</system:String>
     <system:String x:Key="LOCALE_RoomNeedPassword">已加密</system:String>
     <system:String x:Key="LOCALE_RoomDontNeedPassword">公开</system:String>
+    <system:String x:Key="LOCALE_IUndertand">我已了解</system:String>
+
+    <system:String x:Key="LOCALE_Text_Policy">政策：以您所在的国家地区为准，请勿发布及传播违反当地法律政策的内容</system:String>
 </ResourceDictionary>

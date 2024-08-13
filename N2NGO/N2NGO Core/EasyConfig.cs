@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.ObjectModel;
+using System.Text;
 
 namespace N2NGO.UtilsClass
 {
@@ -6,10 +7,13 @@ namespace N2NGO.UtilsClass
     {
         public string CurrentConfigFile { get; private set; } = string.Empty;
 
-        private Dictionary<string, string> Data = new Dictionary<string, string>();
+        private Dictionary<string, string> _data = new Dictionary<string, string>();
 
-        private bool ResolveConfig(string data)
+        private bool ResolveConfig(string data, bool append = false)
         {
+             if (!append)
+                _data.Clear();
+
             string[] configs = data.Split(Environment.NewLine);
 
             foreach (string cfg in configs)
@@ -35,7 +39,7 @@ namespace N2NGO.UtilsClass
                 if (string.IsNullOrWhiteSpace(value))
                     value = "";
 
-                Data.Add(key, value);
+                _data.Add(key, value);
             }
 
             return true;
@@ -62,7 +66,7 @@ namespace N2NGO.UtilsClass
         public bool SaveConfigDataToFile()
         {
             StringBuilder sb = new();
-            foreach (var cfg in Data)
+            foreach (var cfg in _data)
             {
                 sb.AppendFormat("{0} = {1}", cfg.Key, cfg.Value);
                 sb.AppendLine();
@@ -73,7 +77,7 @@ namespace N2NGO.UtilsClass
         }
 
 
-        public Dictionary<string, string> GetDataList() => new Dictionary<string, string>(Data);
+        public ReadOnlyDictionary<string, string> GetDataList() => new(_data);
 
 
         public EasyConfig() { }
@@ -82,40 +86,40 @@ namespace N2NGO.UtilsClass
 
         public bool KeyExists(string key)
         {
-            return Data.ContainsKey(key);
+            return _data.ContainsKey(key);
         }
 
         public string Get(string key, string default_)
         {
             if (KeyExists(key))
-            { return Data[key]; }
+            { return _data[key]; }
             else
             {
-                Data[key] = default_;
+                _data[key] = default_;
                 return default_;
             }
         }
         public string? Get(string key)
         {
             if (KeyExists(key))
-            { return Data[key]; }
+            { return _data[key]; }
 
             return null;
         }
 
         public void Set(string key, string value)
         {
-            Data[key] = value;
+            _data[key] = value;
         }
 
         public void Del(string key)
         {
-            if (Data.ContainsKey(key)) { Data.Remove(key); }
+            if (_data.ContainsKey(key)) { _data.Remove(key); }
         }
 
         public void Clear()
         {
-            Data.Clear();
+            _data.Clear();
         }
     }
 }

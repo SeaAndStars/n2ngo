@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Text;
 using static N2NGO_Server.N2NGOServer.Base.N2NGOServer;
+using N2NGO_Core.Models.Server;
 
 namespace N2NGO_Server.N2NGOServer
 {
@@ -145,8 +146,8 @@ namespace N2NGO_Server.N2NGOServer
                                     var code = room.RoomCode ?? throw new($"RoomCode of '{room.RoomCode}' is null");
                                     var name = room.RoomName ?? throw new($"RoomName of '{room.RoomCode}' is null");
 
-                                    Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n{0}[{1}] ToLastAccess: {2}\n",
-                                        name, code, now - room.CB.lastReqTime);
+                                    Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, "\n{0}[{1}] ({2}/{3}) ToLastAccess: {4} | ActivatedLifetime: {5}\n",
+                                        name, code, room.Members.Count, room.RuledMembers.Count, now - room.CB.LastActivatedTime, room.CB.ActivatedLifetime);
                                 }
 
                                 goto loop;
@@ -166,23 +167,16 @@ namespace N2NGO_Server.N2NGOServer
                                         var minorColor = room.MinorColor ?? throw new($"MinorColor of '{room.RoomCode}' is null");
 
                                         StringBuilder stringBuilder = new();
-                                        stringBuilder.AppendFormat(
+                                        stringBuilder.Append(
                                             "\n" +
-                                            "[{0}] Name: {1}\n" +
-                                            "Invisible: {2}\n" +
-                                            "NeedPassword: {3}\n" +
-                                            "Password: {4}\n" +
-                                            "MainColor: {7} MinorColor: {8}\n" +
-                                            "ToLastAccess: {5}\n" +
-                                            "AdminKey: {6}\n",
-
-                                            code,
-                                            name,
-                                            iri.ToString(),
-                                            ipn.ToString(),
-                                            pwd, now - room.CB.lastReqTime,
-                                            room.CB.AdminKey,
-                                            mainColor.data.ToString("x"), minorColor.data.ToString("x")
+                                            $"[{code}] ({room.Members.Count}/{room.RuledMembers.Count})  Name: {name}\n" +
+                                            $"Invisible: {iri.ToString()}\n" +
+                                            $"NeedPassword: {ipn.ToString()}\n" +
+                                            $"Password: {pwd}\n" +
+                                            $"MainColor: {mainColor.data.ToString("x")} MinorColor: {minorColor.data.ToString("x")}\n" +
+                                            $"ToLastAccess: {now - room.CB.LastActivatedTime}\n" +
+                                            $"ActivatedLifetime: {room.CB.ActivatedLifetime}\n" +
+                                            $"AdminKeys: \n{()=> { string final = ""; foreach (var key in room.CB.AdminKey) final += $"  {key}"; }}\n"
                                             );
 
                                         Server.ConsoleBuffer.AppendFormatBuffer(ConsoleBuffer.BufferContentType.Info, stringBuilder.ToString());

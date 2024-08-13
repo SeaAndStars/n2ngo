@@ -5,6 +5,8 @@ using static N2NGO_Core.Package;
 using N2NGO_Core;
 using N2NGO_Core.Objects;
 using N2NGO_Core.Models;
+using N2NGO_Core.Models.Server;
+using static N2NGO_Core.Models.Room;
 
 namespace N2NGO_Server.N2NGOServer.Base
 {
@@ -12,7 +14,7 @@ namespace N2NGO_Server.N2NGOServer.Base
     {
         public static readonly string MainName = "N2N GO Server";
 
-        public List<Room> Rooms = new();
+        public List<Room> Rooms { get; set; } = new();
         public static List<Room> FilterRooms(List<Room> rooms, string key)
         {
             List<Room> resultRooms = new();
@@ -43,7 +45,8 @@ namespace N2NGO_Server.N2NGOServer.Base
 
         public MineMP.ConsoleBuffer ConsoleBuffer { get; private set; }
 
-        private readonly System.Timers.Timer CCB_GC = new() { Interval = 5000, AutoReset = true };
+        private readonly System.Timers.Timer CCB_GC = new() { Interval = 5000, AutoReset = true };  // Garbage Collection for Client Control Blocks
+        private readonly System.Timers.Timer RCB_GC = new() { Interval = 10000, AutoReset = true }; // Garbage Collection for Room Control Blocks
 
         public enum ServerStatus
         {
@@ -56,32 +59,6 @@ namespace N2NGO_Server.N2NGOServer.Base
         }
 
         public ServerStatus Status { get; private set; } = ServerStatus.Stopped;
-
-        public struct ClientControlBlock
-        {
-            public DateTime AccessTime { get; private set; }
-
-            public TcpClient ConnectionClient { get; private set; }
-            public Thread ClientHandlerThread { get; private set; }
-
-            public Dictionary<string, object?> ClientConnectionData = new();
-
-            public ClientControlBlock(TcpClient client, Action<object?> handlerFunc, bool startHandler = false)
-            {
-                AccessTime = DateTime.Now;
-
-                this.ConnectionClient = client;
-                ClientHandlerThread = new(new ParameterizedThreadStart(handlerFunc));
-
-                if (startHandler)
-                    ClientHandlerThread.Start(this);
-            }
-
-            public readonly void Start()
-            {
-                ClientHandlerThread.Start(this);
-            }
-        }
 
         public TcpListener? ServerV4 { get; private set; }
         public TcpListener? ServerV6 { get; private set; }
@@ -98,6 +75,8 @@ namespace N2NGO_Server.N2NGOServer.Base
 
             CCB_GC.Elapsed += CCB_GC_Elapsed;
             CCB_GC.Enabled = true;
+            RCB_GC.Elapsed += RCB_GC_Elapsed;
+            RCB_GC.Enabled = true;
         }
         public N2NGOServer(MineMP.ConsoleBuffer consoleBuffer, IPAddress ip, int port, IPAddress ipv6, int portv6) : this(consoleBuffer, ip, port)
         {
@@ -113,6 +92,8 @@ namespace N2NGO_Server.N2NGOServer.Base
 
             CCB_GC.Elapsed += CCB_GC_Elapsed;
             CCB_GC.Enabled = true;
+            RCB_GC.Elapsed += RCB_GC_Elapsed;
+            RCB_GC.Enabled = true;
         }
         public N2NGOServer(MineMP.ConsoleBuffer consoleBuffer, TcpListener tcpListener, TcpListener tcpListenerv6) : this(consoleBuffer, tcpListener)
         {
@@ -123,8 +104,18 @@ namespace N2NGO_Server.N2NGOServer.Base
         {
             lock (ConnectionTcpClients)
                 for (int i = 0; i < ConnectionTcpClients.Count; i++)
-                    if (!ConnectionTcpClients[i].ClientHandlerThread.IsAlive)
+                    if (!ConnectionTcpClients[i].ClientHandlerThread.IsAlive || !ConnectionTcpClients[i].IsClientAlive)
+                    {
                         ConnectionTcpClients.Remove(ConnectionTcpClients[i]);
+                    }
+        }
+
+        private void RCB_GC_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            lock (Rooms)
+                for (int i = 0; i < Rooms.Count; i++)
+                    if (!Rooms[i].CB.IsAlive)
+                        Rooms.Remove(Rooms[i]);
         }
 
         public bool Init()
@@ -159,6 +150,7 @@ namespace N2NGO_Server.N2NGOServer.Base
             ServerV6?.Start();
 
             CCB_GC.Start();
+            RCB_GC.Start();
 
             Status = ServerStatus.Running;
         }
@@ -180,6 +172,8 @@ namespace N2NGO_Server.N2NGOServer.Base
             // Stop GC
             CCB_GC.Enabled = false;
             CCB_GC.Stop();
+            RCB_GC.Enabled = false;
+            RCB_GC.Stop();
 
             Status = ServerStatus.Stopped;
         }
@@ -217,27 +211,30 @@ namespace N2NGO_Server.N2NGOServer.Base
                     {
                         case BaseHeader.undefined:
                             {
+                                // Unknown Client
                                 Package package = MakePackage(BaseHeader.InvalidClient);
                                 stream.Write(BuildPackage(package));
-                                stream.Flush();
-                                client.Close();
-                                break;
+                                goto RemoveClientNoEcho;
                             }
 
                         case BaseHeader.peek:
                             {
-                                Package package = MakePackage(BaseHeader.peek_ok);
-                                stream.Write(BuildPackage(package));
-                                stream.Flush();
+                                IO_Tool iO_Tool = new();
+
+                                if (!iO_Tool.Send(client, MakePackage(BaseHeader.peek_ok)))
+                                    goto RemoveClientNoEcho;
+
                                 break;
                             }
 
                         // TODO: Obsolete Protocol BaseHeader._ver_check
                         case BaseHeader._ver_check:
                             {
-                                Package package = MakePackage(BaseHeader.msg_string, MsgExternalData.Encode.MsgString(SharedData.N2NGOClientLatestVersion.ToString()));
-                                stream.Write(BuildPackage(package));
-                                stream.Flush();
+                                IO_Tool iO_Tool = new();
+
+                                if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, MsgExternalData.Encode.MsgString(SharedData.N2NGOClientLatestVersion.ToString()))))
+                                    goto RemoveClientNoEcho;
+
                                 break;
                             }
                         case BaseHeader._user_key_get:
@@ -245,7 +242,7 @@ namespace N2NGO_Server.N2NGOServer.Base
                                 IO_Tool iO_Tool = new();
 
                                 if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_string_long, MsgExternalData.Encode.MsgStringLong(clientControlBlock.ClientConnectionData["UserSessionKey"] as string ?? throw new("Cannot get userkey from data.")))))
-                                    goto RemoveClient;
+                                    goto RemoveClientNoEcho;
 
                                 break;
                             }
@@ -450,11 +447,11 @@ namespace N2NGO_Server.N2NGOServer.Base
 
                                 var newRoom = new Room { RoomCode = code, RoomName = name, IsRoomInvisible = iri, IsRoomPasswordNeeded = irp, RoomPassword = passwd, MainColor = new RoomColor(mainColor), MinorColor = new RoomColor(minorColor) };
                                 newRoom.InitControlBlock();
-                                newRoom.CB.AdminKey = clientControlBlock.ClientConnectionData["UserSessionKey"] as string ?? throw new("Cannot get userkey from data.");
+                                newRoom.CB.AdminKey.Add(clientControlBlock.ClientConnectionData["UserSessionKey"] as string ?? throw new("Cannot get userkey from data."));
                                 lock (Rooms)
                                     Rooms.Add(newRoom);
 
-                                iO_Tool.Send(client, MakePackage(BaseHeader.msg_string_long, Package.MsgExternalData.Encode.MsgStringLong(newRoom.CB.AdminKey)));
+                                iO_Tool.Send(client, MakePackage(BaseHeader.msg_string_long, Package.MsgExternalData.Encode.MsgStringLong(newRoom.CB.AdminKey[0])));    // Reponse base admin key
                                 iO_Tool.Send(client, MakePackage(BaseHeader.msg_ok));
                                 break;
                             }
@@ -516,6 +513,8 @@ namespace N2NGO_Server.N2NGOServer.Base
                                                         goto RemoveClient;
                                                     if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_ulong, MsgExternalData.Encode.MsgULong((uint)rooms[i].Members.Count))))
                                                         goto RemoveClient;
+                                                    if (!iO_Tool.Send(client, MakePackage(BaseHeader.msg_ulonglong, MsgExternalData.Encode.MsgULongLong((ulong)rooms[i].CB.ActivatedLifetime.TotalMilliseconds))))
+                                                        goto RemoveClient;
                                                 }
                                             }
                                         }
@@ -571,6 +570,7 @@ namespace N2NGO_Server.N2NGOServer.Base
                                             }
 
                                             var rCreateMember = rooms[i].CreateMember(clientControlBlock.ClientConnectionData["UserSessionKey"] as string ?? throw new("Cannot get userkey from data."), "Unknown", "Unknown");
+                                            rCreateMember.Item1.ClientControlBlock = clientControlBlock;
                                             var rJoin = rooms[i].MemberJoin(rCreateMember.Item1);
                                             if (rJoin != 0)
                                             {
@@ -579,7 +579,7 @@ namespace N2NGO_Server.N2NGOServer.Base
                                                 goto room_client_join_fail;
                                             }
 
-                                            iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(clientControlBlock.ClientConnectionData["UserSessionKey"] as string ?? throw new("Cannot get userkey from data."))));
+                                            iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(rCreateMember.Item2.ID)));
 
                                             currentRoom = code;
                                             goto room_client_join_ok;
@@ -660,7 +660,7 @@ namespace N2NGO_Server.N2NGOServer.Base
                             {
                                 IO_Tool iO_Tool = new();
 
-                                IReadOnlyList<Room.Member>? members = null;
+                                Room? room = null;
                                 for (int i = 0; i < Rooms.Count; i++)
                                 {
                                     var code = Rooms[i].RoomCode ?? throw new($"RoomCode of '{Rooms[i].RoomCode}' is null");
@@ -669,23 +669,116 @@ namespace N2NGO_Server.N2NGOServer.Base
                                         if (Rooms[i].GetMember(clientControlBlock.ClientConnectionData["UserSessionKey"] as string ?? throw new("Cannot get userkey from data.")) is null)
                                             continue;
 
-                                        members = Rooms[i].Members.AsReadOnly();
+                                        room = Rooms[i];
                                         break;
                                     }
                                 }
-                                if (members is null)
+                                if (room is null)
                                 {
                                     iO_Tool.Send(client, MakePackage(BaseHeader._room_client_fail_1));
                                     break;
                                 }
 
+                                var members = room.Members.AsReadOnly();
                                 iO_Tool.Send(client, MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong((uint)members.Count)));
                                 foreach(var member in members)
                                 {
+                                    iO_Tool.Send(client, MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)(room.IsMemberAdmin(member) ? 1 : 0))));
+                                    iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(member.ID)));
                                     iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(member.Nickname)));
                                     iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(member.IpAddress)));
                                 }
 
+                                var ruledMembers = room.RuledMembers.AsReadOnly();
+                                iO_Tool.Send(client, MakePackage(BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong((uint)ruledMembers.Count)));
+                                foreach (var ruledMember in ruledMembers)
+                                {
+                                    iO_Tool.Send(client, MakePackage(BaseHeader.msg_byte, Package.MsgExternalData.Encode.MsgByte((byte)ruledMember.Behaviour)));
+                                    iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(ruledMember.ID)));
+                                    iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(ruledMember.Nickname)));
+                                    iO_Tool.Send(client, MakePackage(BaseHeader.msg_string, Package.MsgExternalData.Encode.MsgString(ruledMember.IpAddress)));
+                                }
+
+                                break;
+                            }
+
+                        case BaseHeader._room_client_admin_close_room:
+                            {
+                                IO_Tool iO_Tool = new();
+
+                                var userKey = clientControlBlock.ClientConnectionData["UserSessionKey"] as string ?? throw new("Cannot get userkey from data.");
+
+                                Room? room = null;
+                                for (int i = 0; i < Rooms.Count; i++)
+                                {
+                                    var code = Rooms[i].RoomCode ?? throw new($"RoomCode of '{Rooms[i].RoomCode}' is null");
+                                    if (code == currentRoom)
+                                    {
+                                        if (Rooms[i].GetMember(userKey) is null)
+                                            continue;
+
+                                        room = Rooms[i];
+                                        break;
+                                    }
+                                }
+                                if (room is null)
+                                {
+                                    iO_Tool.Send(client, MakePackage(BaseHeader._room_client_fail_1));
+                                    break;
+                                }
+
+                                if (!room.IsMemberAdmin(new() { UserKey = userKey }))
+                                {
+                                    iO_Tool.Send(client, MakePackage(BaseHeader._room_client_admin_fail_0));
+                                    break;
+                                }
+
+                                room.CB.ActivatedLifetime = TimeSpan.Zero;
+
+                                iO_Tool.Send(client, MakePackage(BaseHeader.msg_ok));
+                                break;
+                            }
+
+                        case BaseHeader._room_client_admin_activate_room:
+                            {
+                                IO_Tool iO_Tool = new();
+
+                                var userKey = clientControlBlock.ClientConnectionData["UserSessionKey"] as string ?? throw new("Cannot get userkey from data.");
+
+                                Room? room = null;
+                                for (int i = 0; i < Rooms.Count; i++)
+                                {
+                                    var code = Rooms[i].RoomCode ?? throw new($"RoomCode of '{Rooms[i].RoomCode}' is null");
+                                    if (code == currentRoom)
+                                    {
+                                        if (Rooms[i].GetMember(userKey) is null)
+                                            continue;
+
+                                        room = Rooms[i];
+                                        break;
+                                    }
+                                }
+                                if (room is null)
+                                {
+                                    iO_Tool.Send(client, MakePackage(BaseHeader._room_client_fail_1));
+                                    break;
+                                }
+
+                                if (!room.IsMemberAdmin(new() { UserKey = userKey }))
+                                {
+                                    iO_Tool.Send(client, MakePackage(BaseHeader._room_client_admin_fail_0));
+                                    break;
+                                }
+
+                                if (room.CB.ActivatedLifetime.TotalHours >= 48)
+                                {
+                                    iO_Tool.Send(client, MakePackage(BaseHeader._room_client_admin_activate_room_fail_0));
+                                    break;
+                                }
+
+                                room.Activate(TimeSpan.FromHours(1));
+
+                                iO_Tool.Send(client, MakePackage(BaseHeader.msg_ok));
                                 break;
                             }
 
@@ -693,7 +786,6 @@ namespace N2NGO_Server.N2NGOServer.Base
                             {
                                 Package package = MakePackage(BaseHeader.NotImplemented);
                                 stream.Write(BuildPackage(package));
-                                stream.Flush();
                                 break;
                             }
 
@@ -701,7 +793,6 @@ namespace N2NGO_Server.N2NGOServer.Base
                             {
                                 Package package = MakePackage(BaseHeader.NotImplemented);
                                 stream.Write(BuildPackage(package));
-                                stream.Flush();
                                 break;
                             }
                     }

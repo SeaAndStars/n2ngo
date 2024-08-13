@@ -99,6 +99,9 @@ namespace N2NGO.Views.SubPages
                             room.MainColor = roomPull.MainColor;
                         if (roomPull.MinorColor != null)
                             room.MinorColor = roomPull.MinorColor;
+
+                        room.CB = roomPull.CB;
+                        room.AccessMode = roomPull.AccessMode;
                     }
                 }
                 else
@@ -123,6 +126,8 @@ namespace N2NGO.Views.SubPages
             {
                 CurrentRoomIpAddress.SetResourceReference(Run.TextProperty, "LOCALE_Unknown");
             }
+
+            SharedData.CurrentApp.MainView.PageRoom.UpdateRoomInfoWithLocal(room);
         }
 
         private void DispatcherTimerCurrentUserIndexerUpdater_Tick(object? sender, EventArgs e)
@@ -131,7 +136,7 @@ namespace N2NGO.Views.SubPages
         }
 
 
-        protected override void TempGrid_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        protected override void Indexer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             // Click
             var indexer = (Indexer)((Border)sender).DataContext;

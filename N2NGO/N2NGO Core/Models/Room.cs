@@ -1,4 +1,6 @@
 ﻿using N2NGO_Core.Objects;
+using System.Diagnostics;
+using static N2NGO_Core.Models.Room;
 
 namespace N2NGO_Core.Models
 {
@@ -19,9 +21,9 @@ namespace N2NGO_Core.Models
         public struct ControlBlock
         {
             public bool IsAlive;
-            public TimeSpan LiveTime;
-            public DateTime lastReqTime;
-            public string AdminKey;
+            public TimeSpan ActivatedLifetime;
+            public DateTime LastActivatedTime;
+            public List<string> AdminKey;
 
             public Thread thRoomHandler;
         }
@@ -32,10 +34,16 @@ namespace N2NGO_Core.Models
             public string Nickname = "Unknown";
             public string IpAddress = "Unknown";
             public string UserKey = "none";
+
+            // Client Properties (null for server)
+            public bool? IsAdmin = null;
+
+            // Server Properties (null for client)
+            public Server.ClientControlBlock? ClientControlBlock = null;
         }
         public class RuledMember : Member
         {
-            public enum MemberBehaviour
+            public enum MemberBehaviour : byte
             {
                 None,
                 PreventJoin,
@@ -64,22 +72,27 @@ namespace N2NGO_Core.Models
         public void InitControlBlock()
         {
             CB.IsAlive = true;
-            CB.LiveTime = new TimeSpan(0, 15, 0);
-            CB.lastReqTime = DateTime.Now;
-            CB.AdminKey = RandomKeyString();
+            CB.ActivatedLifetime = new TimeSpan(0, 10, 0);   // 10 min. for default
+            CB.LastActivatedTime = DateTime.Now;
+            CB.AdminKey = new() { RandomKeyString() };
 
             CB.thRoomHandler = new(() =>
             {
                 while (CB.IsAlive)
                 {
-                    Thread.Sleep(CB.LiveTime);
-                    CB.LiveTime = TimeSpan.Zero;
-                    Thread.Sleep(1000 * 20);    // Wait for 20s
+                    const int milliSecondsDelay = 5000;
 
-                    if (CB.LiveTime.TotalSeconds == 0)
+                    Thread.Sleep(milliSecondsDelay);        // Cycle delay 5s.
+                    CB.ActivatedLifetime -= TimeSpan.FromMilliseconds(milliSecondsDelay);
+
+                    if (CB.ActivatedLifetime.TotalSeconds <= 0)
                     {
-                        CB.IsAlive = false; // Room is destroyable
-                        break;      // User abandons the renewal
+                        /*
+                         * User abandons the renewal(activation)
+                         * Room is destroyable for RGC_Handler
+                        */
+                        CB.IsAlive = false;
+                        break;
                     }
                     else
                         continue;
@@ -98,6 +111,7 @@ namespace N2NGO_Core.Models
 
             return null;
         }
+
         public RuledMember? GetRuledMember(string userKey)
         {
             foreach (RuledMember ruledMember in RuledMembers)
@@ -109,13 +123,29 @@ namespace N2NGO_Core.Models
             return null;
         }
 
-        public bool IsMemberAdmin(Member member) => member.UserKey == CB.AdminKey;
+        public bool IsMemberAdmin(Member member) => CB.AdminKey.Contains(member.UserKey);
 
-
-        public Tuple<Member, RuledMember> CreateMember(string userKey, string nickName, string iP)
+        public void Activate(TimeSpan time)
         {
-            Member member = new() { ID = RandomKeyString(), Nickname = nickName, IpAddress = iP, UserKey = userKey };
-            RuledMember ruledMember = new RuledMember { Behaviour = RuledMember.MemberBehaviour.None, ID = member.ID, IpAddress = member.IpAddress, Nickname = member.Nickname, UserKey = member.UserKey };
+            CB.ActivatedLifetime += time;
+            CB.LastActivatedTime = DateTime.Now;
+        }
+
+        public string GenerateMemberID(int length)
+        {
+            while (true)
+            {
+                var id = RandomKeyString().Substring(0, length);
+
+                if (!RuledMembers.Any(m => m.ID == id))
+                    return id;
+            }
+        }
+
+        public Tuple<Member, RuledMember> CreateMember(string userKey, string nickName, string iP, Server.ClientControlBlock? clientControlBlock = null)
+        {
+            Member member = new() { ID = GenerateMemberID(5), Nickname = nickName, IpAddress = iP, UserKey = userKey, ClientControlBlock = clientControlBlock };
+            RuledMember ruledMember = new RuledMember { Behaviour = RuledMember.MemberBehaviour.None, ID = member.ID, IpAddress = member.IpAddress, Nickname = member.Nickname, UserKey = member.UserKey, ClientControlBlock = member.ClientControlBlock };
 
             Member? memberInRoom = GetMember(userKey);
             if (memberInRoom != null)
@@ -123,6 +153,7 @@ namespace N2NGO_Core.Models
                 memberInRoom.ID = member.ID;
                 memberInRoom.Nickname = member.Nickname;
                 memberInRoom.IpAddress = member.IpAddress;
+                memberInRoom.ClientControlBlock = member.ClientControlBlock;
             }
 
             RuledMember? ruledMemberInRoom = GetRuledMember(userKey);
@@ -130,15 +161,19 @@ namespace N2NGO_Core.Models
             {
                 RuledMembers.Add(ruledMember);
             }
-            else
-            {
-                ruledMemberInRoom.ID = ruledMember.ID;
-                ruledMemberInRoom.Nickname = ruledMember.Nickname;
-                ruledMemberInRoom.IpAddress = ruledMember.IpAddress;
 
-                // follow last recorded policy
-                ruledMember.Behaviour = ruledMemberInRoom.Behaviour;
+            ruledMemberInRoom = GetRuledMember(userKey);
+            if (ruledMemberInRoom == null)
+            {
+                throw new("Cannot create ruled member");
             }
+            ruledMemberInRoom.ID = ruledMember.ID;
+            ruledMemberInRoom.Nickname = ruledMember.Nickname;
+            ruledMemberInRoom.IpAddress = ruledMember.IpAddress;
+            ruledMemberInRoom.ClientControlBlock = ruledMember.ClientControlBlock;
+
+            // follow last recorded policy
+            ruledMember.Behaviour = ruledMemberInRoom.Behaviour;
 
             return new Tuple<Member, RuledMember>(member, ruledMember);
         }
@@ -177,7 +212,7 @@ namespace N2NGO_Core.Models
         public void MemberLeave(Member member)
         {
             if (GetMember(member.UserKey) != null)
-            { Members.Remove(member); }
+                Members.Remove(member);
         }
     }
 }

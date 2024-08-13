@@ -76,10 +76,29 @@ Therefore, please do not give us your important personal data!</system:String>
     
     <system:String x:Key="LOCALE_DialogCustomServer_Title">Custom Server</system:String>
     <system:String x:Key="LOCALE_DialogCustomServer_Description_Content">Including server address and port</system:String>
-    
-    <system:String x:Key="LOCALE_PageRooms-SearchPlaceholder_Content">Space Separation Room Code or Name</system:String>
 
+    <system:String x:Key="LOCALE_DialogJoinRoom_Title">Joining Room</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Success_Description_Content">Success, now Room Page is svailable in Root Page.</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_Title">Failed to Join Room</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content">Invalid Room Code input.</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_RoomPassEmptyInput_Description_Content">Invalid Room Password input.</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content">Failed to enter room, continue for more information.</system:String>
+
+    <system:String x:Key="LOCALE_PageRooms-SearchPlaceholder_Content">Space Separation Room Code or Name</system:String>
     
+    <system:String x:Key="LOCALE_PageRoom-CurrentRoomLifetime">Lifetime</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminCloseRoomButton_Content">Close</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminActivateRoomButton_Content">Activate</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminTabMembersHeader_Content">Live</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminTabMembersHeaderTooltip_Content">Members in current room.</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminTabRuledMembersHeader_Content">Ruled</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminTabRuledMembersHeaderTooltip_Content">Rules for members for this room.</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminKickButton_Content">Kick</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminRuleMemberNoneButton_Content">Default</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminRuleMemberPreventButton_Content">Prevent</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminRuleMemberAllowButton_Content">Allow</system:String>
+
+
     <system:String x:Key="LOCALE_Tooltip-ClicktoSet">Click to set</system:String>
     
     <system:String x:Key="LOCALE_ShowConsole">Open Debug Console</system:String>
@@ -137,4 +156,7 @@ Therefore, please do not give us your important personal data!</system:String>
     <system:String x:Key="LOCALE_EditServerSelection">Change Server</system:String>
     <system:String x:Key="LOCALE_RoomNeedPassword">Encrypted</system:String>
     <system:String x:Key="LOCALE_RoomDontNeedPassword">Public</system:String>
+    <system:String x:Key="LOCALE_IUndertand">Understand</system:String>
+
+    <system:String x:Key="LOCALE_Text_Policy">Policy: Please refer to the laws and regulations in your country or region. Do not post or spread content that violates local laws and policies.</system:String>
 </ResourceDictionary>

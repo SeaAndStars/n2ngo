@@ -26,8 +26,8 @@ namespace N2NGO.UtilsClass
 {
     public static class SharedData
     {
-        public readonly static Version Version = new(4, 0, 0);
-        public readonly static string VersionTag = "Dev";
+        public readonly static Version Version = new(4, 0, 0, 0);
+        public readonly static string VersionTag = "Release";
 
         public readonly static string DefaultRoomPassword = "null";
         public static string VersionString { get { return $"{Version}-{VersionTag}"; } }
@@ -108,15 +108,18 @@ namespace N2NGO.UtilsClass
             /// <returns>true if successful, otherwise false.</returns>
             public bool Send(N2NGO_Core.Package package, int? timeOut = null, bool exHandle = true)
             {
+                var id = $"[{new Random().Next().ToString("x").Substring(0, 5)}] Send '{(N2NGO_Core.Protocol.BaseHeader)package.Header}':";
+
+                //CurrentApp.Dispatcher.InvokeAsync(() => Console.WriteLine($"{id} LOCK"));
+
                 lock (this)
                 {
-                    N2NGO_Core.Package.IO_Tool iO_Tool = new();
-                    if (timeOut != null)
-                    {
-                        iO_Tool.WriteTimeOut = timeOut.Value;
-                    }
+                    //CurrentApp.Dispatcher.InvokeAsync(() => Console.WriteLine($"{id} BEGIN"));
 
-                    if (!iO_Tool.Send(_client, package, timeOut != null))
+                    N2NGO_Core.Package.IO_Tool iO_Tool = new();
+                    iO_Tool.WriteTimeOut = 2000;
+
+                    if (!iO_Tool.Send(_client, package, true))
                     {
                         if (iO_Tool.latestEx != null)
                         {
@@ -129,9 +132,11 @@ namespace N2NGO.UtilsClass
                                 ClientExHandler(new("Unknown"));
                         }
 
+                        //CurrentApp.Dispatcher.InvokeAsync(() => Console.WriteLine($"{id} END (false)"));
                         return false;
                     }
 
+                    //CurrentApp.Dispatcher.InvokeAsync(() => Console.WriteLine($"{id} END (true)"));
                     return true;
                 }
             }
@@ -144,17 +149,20 @@ namespace N2NGO.UtilsClass
             /// <returns>If failed, a null packageMember will be returned.</returns>
             public N2NGO_Core.Package? Receive(int? timeOut = null, bool exHandle = true)
             {
+                var id = $"[{new Random().Next().ToString("x").Substring(0, 5)}] Receive:";
+
+                //CurrentApp.Dispatcher.InvokeAsync(() => Console.WriteLine($"{id} LOCK"));
+
                 lock (this)
                 {
+                    //CurrentApp.Dispatcher.InvokeAsync(() => Console.WriteLine($"{id} BEGIN"));
+
                     N2NGO_Core.Package? package = null;
 
                     N2NGO_Core.Package.IO_Tool iO_Tool = new();
-                    if (timeOut != null)
-                    {
-                        iO_Tool.ReadTimeOut = timeOut.Value;
-                    }
+                    iO_Tool.ReadTimeOut = 2000;
 
-                    package = iO_Tool.Receive(_client, null, timeOut != null);
+                    package = iO_Tool.Receive(_client, null, true);
 
                     if (package == null)
                         if (iO_Tool.latestEx != null)
@@ -168,6 +176,7 @@ namespace N2NGO.UtilsClass
                                 ClientExHandler(new("Unknown"));
                         }
 
+                    //CurrentApp.Dispatcher.InvokeAsync(() => Console.WriteLine($"{id} END"));
                     return package;
                 }
             }
@@ -195,17 +204,22 @@ namespace N2NGO.UtilsClass
                     try
                     {
                         N2NGO_Core.Package pkg = N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.peek);
-                        if (!Send(pkg, null, !exHandle))
+                        if (!Send(pkg, null, exHandle))
                         {
                             if (exHandle)
                                 ClientExHandler(new("Cannot send peek package"));
                             return false;
                         }
 
-                        byte[] bytes = new byte[1];
-                        _client.GetStream().Read(bytes, 0, 1);
-                        N2NGO_Core.Package pkg_get = N2NGO_Core.Package.ResolvePackage(bytes);
-                        return (N2NGO_Core.Protocol.BaseHeader)pkg_get.Header == N2NGO_Core.Protocol.BaseHeader.peek_ok;
+                        var rpackage = Receive(6000, exHandle);
+                        if (rpackage == null)
+                        {
+                            if (exHandle)
+                                ClientExHandler(new("Cannot receive response package for peek"));
+                            return false;
+                        }
+
+                        return (N2NGO_Core.Protocol.BaseHeader)rpackage.Value.Header == N2NGO_Core.Protocol.BaseHeader.peek_ok;
                     }
                     catch (Exception ex)
                     {
@@ -237,7 +251,7 @@ namespace N2NGO.UtilsClass
                     try
                     {
                         N2NGO_Core.Package pkg = N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.peek);
-                        if (!Send(pkg, null, !exHandle))
+                        if (!Send(pkg, null, exHandle))
                         {
                             stopwatch.Stop();
                             peekTimeSpan = stopwatch.Elapsed;
@@ -247,12 +261,17 @@ namespace N2NGO.UtilsClass
                             return false;
                         }
 
-                        byte[] bytes = new byte[1];
-                        _client.GetStream().Read(bytes, 0, 1);
-                        N2NGO_Core.Package pkg_get = N2NGO_Core.Package.ResolvePackage(bytes);
+                        var rpackage = Receive(6000, exHandle);
                         stopwatch.Stop();
                         peekTimeSpan = stopwatch.Elapsed;
-                        return (N2NGO_Core.Protocol.BaseHeader)pkg_get.Header == N2NGO_Core.Protocol.BaseHeader.peek_ok;
+                        if (rpackage == null)
+                        {
+                            if (exHandle)
+                                ClientExHandler(new("Cannot receive response package for peek"));
+                            return false;
+                        }
+
+                        return (N2NGO_Core.Protocol.BaseHeader)rpackage.Value.Header == N2NGO_Core.Protocol.BaseHeader.peek_ok;
                     }
                     catch (Exception ex)
                     {
@@ -329,14 +348,14 @@ namespace N2NGO.UtilsClass
                 if (!IsConnected())
                     return new(ProtocolOperationReturnStatus.Fail_NotConnected);
 
-                if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._user_key_get), null, !exHandle))
+                if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._user_key_get), null, exHandle))
                 {
                     if (exHandle)
                         ClientExHandler(new("GetUserKey send package fail"));
                     return new(ProtocolOperationReturnStatus.Fail_SendFailure);
                 }
 
-                var rpackage = Receive(6000, !exHandle);
+                var rpackage = Receive(6000, exHandle);
                 if (rpackage == null)
                 {
                     if (exHandle)
@@ -366,15 +385,16 @@ namespace N2NGO.UtilsClass
                 N2NGO_Core.Package? p = null;
                 lock (this)
                 {
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._pull_online_total), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._pull_online_total), null, exHandle))
                     {
                         if (exHandle)
                             ClientExHandler(new("PullTotalOnlines send package fail"));
                         return new(-1, ProtocolOperationReturnStatus.Fail_SendFailure);
                     }
 
-                    p = Receive(null, !exHandle);
+                    p = Receive(null, exHandle);
                 }
+
 
                 if (p == null)
                 {
@@ -405,14 +425,14 @@ namespace N2NGO.UtilsClass
                 N2NGO_Core.Package? _pkg_get = null;
                 lock (this)
                 {
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._rooms_is_code_exists, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(roomCode)), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._rooms_is_code_exists, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(roomCode)), null, exHandle))
                     {
                         if (exHandle)
                             ClientExHandler(new("CheckRoomExists send package fail"));
                         return new(false, ProtocolOperationReturnStatus.Fail_NullPackage);
                     }
 
-                    _pkg_get = Receive(null, !exHandle);
+                    _pkg_get = Receive(null, exHandle);
                     if (_pkg_get == null)
                     {
                         if (exHandle)
@@ -441,7 +461,7 @@ namespace N2NGO.UtilsClass
             {
                 N2NGO_Core.Models.Room room = new();
 
-                var roomExists = CheckRoomExists(roomCode, !exHandle);
+                var roomExists = CheckRoomExists(roomCode, exHandle);
                 if ((!roomExists.IsSuccessfulStatusCode) || !roomExists.Value)
                 {
                     if (exHandle)
@@ -451,13 +471,13 @@ namespace N2NGO.UtilsClass
 
                 lock (this)
                 {
-                    Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._rooms_get_room), null, !exHandle);
-                    Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(roomCode)), null, !exHandle);
+                    Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._rooms_get_room), null, exHandle);
+                    Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(roomCode)), null, exHandle);
 
-                    N2NGO_Core.Package[] roomPackage = new N2NGO_Core.Package[6];
+                    N2NGO_Core.Package[] roomPackage = new N2NGO_Core.Package[7];
                     for (int i = 0; i < roomPackage.Length; i++)
                     {
-                        var pkg_get = Receive(null, !exHandle);
+                        var pkg_get = Receive(null, exHandle);
                         if (pkg_get == null || pkg_get.Value.external_data == null)
                             goto invalid;
 
@@ -499,6 +519,12 @@ namespace N2NGO.UtilsClass
                         if ((N2NGO_Core.Protocol.BaseHeader)roomPackage[5].Header != N2NGO_Core.Protocol.BaseHeader.msg_ulong || edata == null)
                             goto invalid;
                         room.Members.AddRange(new N2NGO_Core.Models.Room.Member[N2NGO_Core.Package.MsgExternalData.Decode.MsgULong(edata)]);
+                    }
+                    {
+                        byte[]? edata = roomPackage[6].external_data;
+                        if ((N2NGO_Core.Protocol.BaseHeader)roomPackage[6].Header != N2NGO_Core.Protocol.BaseHeader.msg_ulonglong || edata == null)
+                            goto invalid;
+                        room.CB.ActivatedLifetime = TimeSpan.FromMilliseconds(N2NGO_Core.Package.MsgExternalData.Decode.MsgULongLong(edata));
                     }
                 }
 
@@ -554,7 +580,7 @@ namespace N2NGO.UtilsClass
                     if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_ulong, N2NGO_Core.Package.MsgExternalData.Encode.MsgULong(minorColor)), null, exHandle))
                         goto CreateRoom_Fail_Send;
 
-                    var packageReceive = Receive(6000, !exHandle);
+                    var packageReceive = Receive(6000, exHandle);
                     if (packageReceive is null)
                     {
                         if (exHandle) ClientExHandler(new("Cannot create room: Null Package 0"));
@@ -572,7 +598,7 @@ namespace N2NGO.UtilsClass
                         return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
                     }
 
-                    packageReceive = Receive(6000, !exHandle);
+                    packageReceive = Receive(6000, exHandle);
                     if (packageReceive is null)
                     {
                         if (exHandle) ClientExHandler(new("Cannot create room: Null Package 1"));
@@ -604,14 +630,14 @@ namespace N2NGO.UtilsClass
             {
                 lock (this)
                 {
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_join), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_join), null, exHandle))
                         goto JoinRoom_Fail_Send;
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(roomCode)), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(roomCode)), null, exHandle))
                         goto JoinRoom_Fail_Send;
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(roomPassword)), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(roomPassword)), null, exHandle))
                         goto JoinRoom_Fail_Send;
 
-                    var rpackage = Receive(6000, !exHandle);
+                    var rpackage = Receive(6000, exHandle);
                     if (rpackage is null)
                     {
                         if (exHandle) ClientExHandler(new("Cannot join room: Null Package 0"));
@@ -635,7 +661,7 @@ namespace N2NGO.UtilsClass
                     }
                     if ((N2NGO_Core.Protocol.BaseHeader)rpackagev.Header == N2NGO_Core.Protocol.BaseHeader._room_client_join_fail_00)
                     {
-                        var rrpackage = Receive(6000, !exHandle);
+                        var rrpackage = Receive(6000, exHandle);
                         if (rrpackage is null)
                         {
                             if (exHandle) ClientExHandler(new("Cannot join room: Null Package 1"));
@@ -685,12 +711,12 @@ namespace N2NGO.UtilsClass
             {
                 lock (this)
                 {
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_leave), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_leave), null, exHandle))
                     {
                         if (exHandle) ClientExHandler(new("Cannot leave room: Send Failure"));
                         return;
                     }
-                    var rpackage = Receive(6000, !exHandle);
+                    var rpackage = Receive(6000, exHandle);
                     if (rpackage is null)
                     {
                         if (exHandle) ClientExHandler(new("Cannot leave room: Null Package"));
@@ -717,14 +743,14 @@ namespace N2NGO.UtilsClass
             {
                 lock (this)
                 {
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_push), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_push), null, exHandle))
                         goto Fail_SendFailure;
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(userNickname)), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(userNickname)), null, exHandle))
                         goto Fail_SendFailure;
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(userIpAddress)), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_string, N2NGO_Core.Package.MsgExternalData.Encode.MsgString(userIpAddress)), null, exHandle))
                         goto Fail_SendFailure;
 
-                    var rpackage = Receive(6000, !exHandle);
+                    var rpackage = Receive(6000, exHandle);
                     if (rpackage is null)
                     {
                         if (exHandle) ClientExHandler(new("Cannot push the Member to room: Null Package"));
@@ -755,103 +781,353 @@ namespace N2NGO.UtilsClass
             /// <see cref="N2NGO_Core.Protocol.BaseHeader._room_client_pull"/>
             /// </summary>
             /// <param name="exHandle">If true and an exception occurs, <see cref="ClientExHandler"/> will be called.</param>
-            public ProtocolOperationReturnType<IReadOnlyList<N2NGO_Core.Models.Room.Member>> MemberPull(bool exHandle = true)
+            public ProtocolOperationReturnType<Tuple<IReadOnlyList<N2NGO_Core.Models.Room.Member>, IReadOnlyList<N2NGO_Core.Models.Room.RuledMember>>> MemberPull(bool exHandle = true)
             {
                 lock (this)
                 {
-                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_pull), null, !exHandle))
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_pull), null, exHandle))
                     {
                         if (exHandle) ClientExHandler(new("Cannot pull member of room: Send Failure"));
                         return new(null, ProtocolOperationReturnStatus.Fail_SendFailure);
                     }
 
-                    var packageMembersCount = Receive(6000, !exHandle);
-                    if (packageMembersCount is null)
+                    var resultMembers = new List<N2NGO_Core.Models.Room.Member>();
                     {
-                        if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package0"));
-                        return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
-                    }
-                    if ((N2NGO_Core.Protocol.BaseHeader)packageMembersCount.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_ulong)
-                    {
-                        switch ((N2NGO_Core.Protocol.BaseHeader)packageMembersCount.Value.Header)
+                        var packageMembersCount = Receive(6000, exHandle);
+                        if (packageMembersCount is null)
                         {
-                            default:
-                                {
-                                    if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header0"));
-                                    break;
-                                }
-
-                            case N2NGO_Core.Protocol.BaseHeader._room_client_fail_1:
-                                {
-                                    if (exHandle) ClientExHandler(new("Cannot pull member of room: Member not exists in room"));
-                                    break;
-                                }
-                        }
-                        return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
-                    }
-                    if (packageMembersCount.Value.external_data is null)
-                    {
-                        if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data0"));
-                        return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
-                    }
-
-                    var membersCount = N2NGO_Core.Package.MsgExternalData.Decode.MsgULong(packageMembersCount.Value.external_data);
-                    var result = new List<N2NGO_Core.Models.Room.Member>();
-
-                    for (ulong i = 0; i < membersCount; i++)
-                    {
-                        var packageMemberUserNickname = Receive(6000, !exHandle);
-                        if (packageMemberUserNickname is null)
-                        {
-                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package1"));
+                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package0"));
                             return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
                         }
-                        if ((N2NGO_Core.Protocol.BaseHeader)packageMemberUserNickname.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string)
+                        if ((N2NGO_Core.Protocol.BaseHeader)packageMembersCount.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_ulong)
                         {
-                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header1"));
+                            switch ((N2NGO_Core.Protocol.BaseHeader)packageMembersCount.Value.Header)
+                            {
+                                default:
+                                    {
+                                        if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header0"));
+                                        break;
+                                    }
+
+                                case N2NGO_Core.Protocol.BaseHeader._room_client_fail_1:
+                                    {
+                                        if (exHandle) ClientExHandler(new("Cannot pull member of room: Member not exists in room"));
+                                        break;
+                                    }
+                            }
                             return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
                         }
-                        if (packageMemberUserNickname.Value.external_data is null)
+                        if (packageMembersCount.Value.external_data is null)
                         {
-                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data1"));
+                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data0"));
                             return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
                         }
 
-                        var memberUserNickname = N2NGO_Core.Package.MsgExternalData.Decode.MsgString(packageMemberUserNickname.Value.external_data);
+                        var membersCount = N2NGO_Core.Package.MsgExternalData.Decode.MsgULong(packageMembersCount.Value.external_data);
 
-                        var packageMemberUserIpAddress = Receive(6000, !exHandle);
-                        if (packageMemberUserIpAddress is null)
+                        for (ulong i = 0; i < membersCount; i++)
                         {
-                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package2"));
+                            var packageMemberIsAdmin = Receive(6000, exHandle);
+                            if (packageMemberIsAdmin is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package1"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
+                            }
+                            if ((N2NGO_Core.Protocol.BaseHeader)packageMemberIsAdmin.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_byte)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header1"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+                            }
+                            if (packageMemberIsAdmin.Value.external_data is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data1"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+                            }
+
+                            var memberIsAdmin = N2NGO_Core.Package.MsgExternalData.Decode.MsgByte(packageMemberIsAdmin.Value.external_data) != 0;
+
+                            var packageMemberID = Receive(6000, exHandle);
+                            if (packageMemberID is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package2"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
+                            }
+                            if ((N2NGO_Core.Protocol.BaseHeader)packageMemberID.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header2"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+                            }
+                            if (packageMemberID.Value.external_data is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data2"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+                            }
+
+                            var memberID = N2NGO_Core.Package.MsgExternalData.Decode.MsgString(packageMemberID.Value.external_data);
+
+                            var packageMemberUserNickname = Receive(6000, exHandle);
+                            if (packageMemberUserNickname is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package3"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
+                            }
+                            if ((N2NGO_Core.Protocol.BaseHeader)packageMemberUserNickname.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header3"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+                            }
+                            if (packageMemberUserNickname.Value.external_data is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data3"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+                            }
+
+                            var memberUserNickname = N2NGO_Core.Package.MsgExternalData.Decode.MsgString(packageMemberUserNickname.Value.external_data);
+
+                            var packageMemberUserIpAddress = Receive(6000, exHandle);
+                            if (packageMemberUserIpAddress is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package4"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
+                            }
+                            if ((N2NGO_Core.Protocol.BaseHeader)packageMemberUserIpAddress.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header4"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+                            }
+                            if (packageMemberUserIpAddress.Value.external_data is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data4"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+                            }
+
+                            var memberUserIpAddress = N2NGO_Core.Package.MsgExternalData.Decode.MsgString(packageMemberUserIpAddress.Value.external_data);
+
+                            resultMembers.Add(new() { IsAdmin = memberIsAdmin, ID = memberID, Nickname = memberUserNickname, IpAddress = memberUserIpAddress });
+                        }
+                    }
+
+                    var resultRuledMembers = new List<N2NGO_Core.Models.Room.RuledMember>();
+                    {
+                        var packageMembersCount = Receive(6000, exHandle);
+                        if (packageMembersCount is null)
+                        {
+                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package0"));
                             return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
                         }
-                        if ((N2NGO_Core.Protocol.BaseHeader)packageMemberUserIpAddress.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string)
+                        if ((N2NGO_Core.Protocol.BaseHeader)packageMembersCount.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_ulong)
                         {
-                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header2"));
+                            switch ((N2NGO_Core.Protocol.BaseHeader)packageMembersCount.Value.Header)
+                            {
+                                default:
+                                    {
+                                        if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header0"));
+                                        break;
+                                    }
+
+                                case N2NGO_Core.Protocol.BaseHeader._room_client_fail_1:
+                                    {
+                                        if (exHandle) ClientExHandler(new("Cannot pull member of room: Member not exists in room"));
+                                        break;
+                                    }
+                            }
                             return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
                         }
-                        if (packageMemberUserIpAddress.Value.external_data is null)
+                        if (packageMembersCount.Value.external_data is null)
                         {
-                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data2"));
+                            if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data0"));
                             return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
                         }
 
-                        var memberUserIpAddress = N2NGO_Core.Package.MsgExternalData.Decode.MsgString(packageMemberUserIpAddress.Value.external_data);
+                        var membersCount = N2NGO_Core.Package.MsgExternalData.Decode.MsgULong(packageMembersCount.Value.external_data);
 
-                        result.Add(new() { Nickname = memberUserNickname, IpAddress = memberUserIpAddress });
+                        for (ulong i = 0; i < membersCount; i++)
+                        {
+                            var packageMemberBehaviour = Receive(6000, exHandle);
+                            if (packageMemberBehaviour is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package2_1"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
+                            }
+                            if ((N2NGO_Core.Protocol.BaseHeader)packageMemberBehaviour.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_byte)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header2_1"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+                            }
+                            if (packageMemberBehaviour.Value.external_data is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data2_1"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+                            }
+
+                            var memberBehaviour = N2NGO_Core.Package.MsgExternalData.Decode.MsgByte(packageMemberBehaviour.Value.external_data);
+
+                            var packageMemberID = Receive(6000, exHandle);
+                            if (packageMemberID is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package2_2"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
+                            }
+                            if ((N2NGO_Core.Protocol.BaseHeader)packageMemberID.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header2_2"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+                            }
+                            if (packageMemberID.Value.external_data is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data2_2"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+                            }
+
+                            var memberID = N2NGO_Core.Package.MsgExternalData.Decode.MsgString(packageMemberID.Value.external_data);
+
+                            var packageMemberUserNickname = Receive(6000, exHandle);
+                            if (packageMemberUserNickname is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package2_3"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
+                            }
+                            if ((N2NGO_Core.Protocol.BaseHeader)packageMemberUserNickname.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header2_3"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+                            }
+                            if (packageMemberUserNickname.Value.external_data is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data2_3"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+                            }
+
+                            var memberUserNickname = N2NGO_Core.Package.MsgExternalData.Decode.MsgString(packageMemberUserNickname.Value.external_data);
+
+                            var packageMemberUserIpAddress = Receive(6000, exHandle);
+                            if (packageMemberUserIpAddress is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Null Package2_4"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackage);
+                            }
+                            if ((N2NGO_Core.Protocol.BaseHeader)packageMemberUserIpAddress.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Invalid Package Header2_4"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_InvalidPackageHeader);
+                            }
+                            if (packageMemberUserIpAddress.Value.external_data is null)
+                            {
+                                if (exHandle) ClientExHandler(new("Cannot pull member of room: Fail_Null Package External Data2_4"));
+                                return new(null, ProtocolOperationReturnStatus.Fail_NullPackageExternalData);
+                            }
+
+                            var memberUserIpAddress = N2NGO_Core.Package.MsgExternalData.Decode.MsgString(packageMemberUserIpAddress.Value.external_data);
+
+                            resultRuledMembers.Add(new() { Behaviour = (N2NGO_Core.Models.Room.RuledMember.MemberBehaviour)memberBehaviour, ID = memberID, Nickname = memberUserNickname, IpAddress = memberUserIpAddress });
+                        }
                     }
 
-                    return new(result.AsReadOnly());
+                    return new ProtocolOperationReturnType<Tuple<IReadOnlyList<N2NGO_Core.Models.Room.Member>, IReadOnlyList<N2NGO_Core.Models.Room.RuledMember>>>(new Tuple<IReadOnlyList<N2NGO_Core.Models.Room.Member>, IReadOnlyList<N2NGO_Core.Models.Room.RuledMember>>(resultMembers.AsReadOnly(), resultRuledMembers.AsReadOnly()));
                 }
             }
 
+            /// <summary>
+            /// (Admin) Close current room.<br/>
+            /// <see cref="N2NGO_Core.Protocol.BaseHeader._room_client_admin_close_room"/>
+            /// </summary>
+            /// <param name="exHandle">If true and an exception occurs, <see cref="ClientExHandler"/> will be called.</param>
+            public void AdminCloseRoom(bool exHandle = true)
+            {
+                lock (this)
+                {
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_admin_close_room), null, exHandle))
+                        goto Fail_SendFailure;
+
+                    var rpackage = Receive(6000, exHandle);
+                    if (rpackage is null)
+                    {
+                        if (exHandle) ClientExHandler(new("Cannot close room: Null Package"));
+                        return;
+                    }
+                    if ((N2NGO_Core.Protocol.BaseHeader)rpackage.Value.Header == N2NGO_Core.Protocol.BaseHeader._room_client_fail_1)
+                    {
+                        if (exHandle) ClientExHandler(new("Cannot close room: Member not exists in room"));
+                        return;
+                    }
+                    if ((N2NGO_Core.Protocol.BaseHeader)rpackage.Value.Header == N2NGO_Core.Protocol.BaseHeader._room_client_admin_fail_0)
+                    {
+                        if (exHandle) ClientExHandler(new("Cannot close room: Permission Denied"));
+                        return;
+                    }
+
+                    if ((N2NGO_Core.Protocol.BaseHeader)rpackage.Value.Header == N2NGO_Core.Protocol.BaseHeader.msg_ok)
+                    {
+                        return;
+                    }
+                }
+
+                if (exHandle) ClientExHandler(new("Cannot close room: Others Failure"));
+                return;
+
+            Fail_SendFailure:
+                if (exHandle) ClientExHandler(new("Cannot close room: Send Failure"));
+                return;
+            }
+
+            /// <summary>
+            /// (Admin) Activate current room.<br/>
+            /// <see cref="N2NGO_Core.Protocol.BaseHeader._room_client_admin_activate_room"/>
+            /// </summary>
+            /// <param name="exHandle">If true and an exception occurs, <see cref="ClientExHandler"/> will be called.</param>
+            public void AdminActivateRoom(bool exHandle = true)
+            {
+                lock (this)
+                {
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._room_client_admin_activate_room), null, exHandle))
+                        goto Fail_SendFailure;
+
+                    var rpackage = Receive(6000, exHandle);
+                    if (rpackage is null)
+                    {
+                        if (exHandle) ClientExHandler(new("Cannot activate room: Null Package"));
+                        return;
+                    }
+                    if ((N2NGO_Core.Protocol.BaseHeader)rpackage.Value.Header == N2NGO_Core.Protocol.BaseHeader._room_client_fail_1)
+                    {
+                        if (exHandle) ClientExHandler(new("Cannot activate room: Member not exists in room"));
+                        return;
+                    }
+                    if ((N2NGO_Core.Protocol.BaseHeader)rpackage.Value.Header == N2NGO_Core.Protocol.BaseHeader._room_client_admin_fail_0)
+                    {
+                        if (exHandle) ClientExHandler(new("Cannot activate room: Permission Denied"));
+                        return;
+                    }
+                    if ((N2NGO_Core.Protocol.BaseHeader)rpackage.Value.Header == N2NGO_Core.Protocol.BaseHeader._room_client_admin_activate_room_fail_0)
+                    {
+                        if (exHandle) ClientExHandler(new("Cannot activate room: Activated Lifetime reached limit"));
+                        return;
+                    }
+
+                    if ((N2NGO_Core.Protocol.BaseHeader)rpackage.Value.Header == N2NGO_Core.Protocol.BaseHeader.msg_ok)
+                    {
+                        return;
+                    }
+                }
+
+                if (exHandle) ClientExHandler(new("Cannot activate room: Others Failure"));
+                return;
+
+            Fail_SendFailure:
+                if (exHandle) ClientExHandler(new("Cannot activate room: Send Failure"));
+                return;
+            }
+
             #endregion
+
         }
+
 
         public class RoomConnection
         {
             public bool IsConnected { get; set; } = false;
             public string CurrentRoomCode { get; set; } = string.Empty;
+            public string MemberID { get; set; } = string.Empty;  // Logical MemberID relative to room
         }
 
         public class ExecLog
@@ -1033,16 +1309,18 @@ namespace N2NGO.UtilsClass
                     return false;
 
                 Dispatcher.Invoke(() => MainView.PageRoom.BeginRefresh());
+                RoomConnection.MemberID = joinRoomResult.Value ?? throw new("Cannot get MemberID by invoking N2NGOServerConnection.JoinRoom");
                 RoomConnection.CurrentRoomCode = roomCode;
                 return RoomConnection.IsConnected = true;
             }
-            public static void LeaveRoom()
+            public static void LeaveRoom(bool exHandler = true)
             {
                 TerminateEdge();
                 Dispatcher.Invoke(() => MainView.PageRoom.EndRefresh());
                 RoomConnection.IsConnected = false;
                 RoomConnection.CurrentRoomCode = string.Empty;
-                N2NGOServerConnection.LeaveRoom();
+                RoomConnection.MemberID = string.Empty;
+                N2NGOServerConnection.LeaveRoom(exHandler);
             }
 
 
@@ -1072,7 +1350,7 @@ namespace N2NGO.UtilsClass
             }
             public static void ResetConnection(bool echo = false, string? serverIp = null, int? serverPort = null, int? supernodeServerPort = null)
             {
-                LeaveRoom();
+                LeaveRoom(false);
 
                 N2NGOServerConnection.Close();
                 N2NGOServerConnection = new(new(IPAddress.Parse(Config.Get("IpGlobalServer", "43.143.37.61")), int.Parse(Config.Get("PortGlobalServer", "7477"))), int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7479")));
@@ -1127,7 +1405,7 @@ namespace N2NGO.UtilsClass
                             N2NGO_Core.Package? _pkg_get = null;
                             lock (N2NGOServerConnection)
                             {
-                                N2NGOServerConnection.Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._ver_check)); // send _ver_check ID
+                                N2NGOServerConnection.Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader._ver_check)); // send _ver_check MemberID
 
                                 _pkg_get = N2NGOServerConnection.Receive();
                                 if (_pkg_get == null || (N2NGO_Core.Protocol.BaseHeader)_pkg_get.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string || _pkg_get.Value.external_data == null)
@@ -1454,6 +1732,14 @@ namespace N2NGO.UtilsClass
                     }
                 }
             }
+        }
+
+        public static void InitializeWithUIA(this DependencyObject parent)
+        {
+            UIAnimation.InitButtons(FindVisualChildren<Button>(parent));
+            UIAnimation.InitCards(FindVisualChildren<Label>(parent));
+            UIAnimation.InitCards(FindVisualChildren<TextBox>(parent));
+            UIAnimation.InitCards(FindVisualChildren<CheckBox>(parent));
         }
 
 

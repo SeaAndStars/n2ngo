@@ -21,18 +21,18 @@
             </Grid.RowDefinitions>
             <StackPanel x:Name="RoomInfos" Grid.Row="0" Background="{DynamicResource Palette_500}" Margin="8,8,8,5">
                 <Label HorizontalAlignment="Left" Margin="2">
-                    <TextBlock>
+                    <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Image Height="20" Source="/Data/Images/Members.png"/>
                         <Run Text="{Binding MembersCount}"/>
                     </TextBlock>
                 </Label>
                 <Label HorizontalAlignment="Left" Margin="0">
-                    <TextBlock>
+                    <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Run Text="{Binding RoomCode}"/>
                     </TextBlock>
                 </Label>
                 <Label HorizontalAlignment="Left" Margin="0">
-                    <TextBlock>
+                    <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Run Text="{DynamicResource LOCALE_CurrentRoomPasswordNeeded}"/>
                         <Run Text="{Binding IsRoomPasswordNeeded}"/>
                     </TextBlock>

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace N2NGO.Views
     public partial class TerminalWindow : Window
     {
         private bool _canClose = false;
+
+        public TerminalWindowTextWriter? RefTerminalWindowTextWriter { get; set; } = null;
 
         public ObservableCollection<string> TerminalBuffer { get; set; } = new();
         public string TerminalBufferString
@@ -66,20 +69,43 @@ namespace N2NGO.Views
                 e.Handled = true;
             }
         }
+
+        private void ButtonClearBuffer_Click(object sender, RoutedEventArgs e)
+        {
+            if (RefTerminalWindowTextWriter is null)
+            {
+                Console.WriteLine("Cannot clear buffer, RefTerminalWindowTextWriter is null");
+                return;
+            }
+            RefTerminalWindowTextWriter.Clear();
+        }
     }
 
     public class TerminalWindowTextWriter : TextWriter
     {
         private TerminalWindow _data;
+
         private int _cursorX = 0;
         private int _cursorY = 0;
+
         public TerminalWindow Data => _data;
         public int CursorX => _cursorX;
         public int CursorY => _cursorY;
 
+        public Action? WriteCallBack { get; set; } = null;
+
         public TerminalWindowTextWriter(TerminalWindow terminalWindow)
         {
             _data = terminalWindow;
+            _data.RefTerminalWindowTextWriter = this;
+        }
+
+        public void Clear()
+        {
+            _data.TerminalBuffer.Clear();
+            _cursorX = 0;
+            _cursorY = 0;
+            _data.TerminalView.Text = "";
         }
 
         public override void Write(char value)
@@ -106,7 +132,14 @@ namespace N2NGO.Views
                     break;
             }
 
-            _data.TerminalView.Dispatcher.Invoke(()=> _data.TerminalView.Text = _data.TerminalBufferString);
+            _data.TerminalView.Dispatcher.InvokeAsync(() =>
+            {
+                try { _data.TerminalView.Text = _data.TerminalBufferString; }
+                catch { return; }   // Multi-threaded operation conflicts
+
+                if (_data.CheckBoxScrollToEnd.IsChecked.HasValue && _data.CheckBoxScrollToEnd.IsChecked.Value)
+                    _data.TerminalView.ScrollToEnd();
+            });
         }
 
         public override Encoding Encoding => Encoding.UTF8;

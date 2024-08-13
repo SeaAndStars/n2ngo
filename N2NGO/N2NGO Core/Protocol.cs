@@ -5,7 +5,7 @@ namespace N2NGO_Core
     public class Protocol
     {
 
-        public readonly static uint _PullRoomsRoomsTake = 50; // Obsoleted Data Define
+        public readonly static uint _PullRoomsRoomsTake = 50; // Obsoleted _data Define
 
         /* BaseHeader as Package's first byte
          * 
@@ -18,6 +18,7 @@ namespace N2NGO_Core
         {
             undefined = 0,               // Invalid client sus, send InvalidClient && disconnect
 
+            Keeplive           = 0xfc,   // Keep-alive
             InvalidClient       = 0xfd,  // Client Invalid
             NotImplemented      = 0xfe,  // NotImplemented Function
             extended_package    = 0xff,  // Read two more bytes as Big-Endian and resolve with 'ExtendedHeader'
@@ -48,7 +49,7 @@ namespace N2NGO_Core
             _rooms_pull_rooms_searched,         // Client requests to search and pull rooms and sends search keywords using 'msg_string_long', server responds package{ Rooms-Count(msg_ulong), $${ RoomCode(msg_string), RoomName(msg_string), IsRoomPasswordNeeded(msg_byte), MembersCount(msg_ulong) } }
             _rooms_create,                      // Client requests to create room, appends with package{ RoomCode(msg_string), RoomName(msg_string), IsRoomInvisible(msg_byte), IsRoomPasswordNeeded(msg_byte), RoomPassword(msg_string), MainColor(msg_ulong), MinorColor(msg_ulong) }, server responds package{CB.AdminKey(msg_string_long), msg_ok}.
             _rooms_is_code_exists,              // Client requests to check if the specified room code exists by sending the room code using 'msg_string', server responds bool as byte using 'msg_byte'
-            _rooms_get_room,                    // Client requests to get details of the specified room and sends the room code using 'msg_string', server responds package{ RoomCode(msg_string), RoomName(msg_string), IsRoomInvisible(msg_byte), IsRoomPasswordNeeded(msg_byte), RoomPassword(msg_string), MainColor(msg_ulong), MinorColor(msg_ulong), MembersCount(msg_ulong), Lifetime(msg_ulong) }
+            _rooms_get_room,                    // Client requests to get details of the specified room and sends the room code using 'msg_string', server responds package{ RoomCode(msg_string), RoomName(msg_string), IsRoomInvisible(msg_byte), IsRoomPasswordNeeded(msg_byte), RoomPassword(msg_string), MainColor(msg_ulong), MinorColor(msg_ulong), MembersCount(msg_ulong), Lifetime_MilliSeconds(msg_ulonglong) }
 
             _room_client_join_fail_0,           // Fail: Client can only be in one room at a time
             _room_client_join_fail_1,           // Fail: Room not exists
@@ -60,14 +61,14 @@ namespace N2NGO_Core
             _room_client_fail_0,                // Fail: user verification not valid
             _room_client_fail_1,                // Fail: user does not have member in room
             _room_client_push,                  // Client sends package{ Nickname(msg_string), IpAddress(msg_string) } Server responds 'msg_ok' or '_room_client_fail_1'
-            _room_client_pull,                  // Server responds package{ Members-Count(msg_ulong), $${ Nickname(msg_string), IpAddress(msg_string) } } or '_room_client_fail_1'
+            _room_client_pull,                  // Server responds package{ Members-Count(msg_ulong), $${ IsAdmin(msg_byte), ID(msg_string), Nickname(msg_string), IpAddress(msg_string) }, RuledMembers-Count(msg_ulong), $${ MemberBehaviour(msg_byte), ID(msg_string), Nickname(msg_string), IpAddress(msg_string) } }  or '_room_client_fail_1 | _room_client_fail_2'
             /* Room Commands for Admins */
-            _room_client_admin_fail_0,          // Fail: Permission Denied (Not An Administartor)
-            _room_client_admin_reset_room,      //
-            _room_client_admin_update_lifetime, //
-            _room_client_admin_member_update,   // Client sends package{ UserId(msg_string), IsAdmin(msg_byte) }, server responds 'msg_ok' or '_room_client_fail_0 | _room_client_admin_fail_0'
-            _room_client_admin_member_kick,     //
-            _room_client_admin_member_get,      //
+            _room_client_admin_fail_0,                  // Fail: Permission Denied (Not An Administartor)
+            _room_client_admin_close_room,              // Client requests to close room. Server returns 'msg_ok' or '_room_client_fail_1 | _room_client_admin_fail_0'
+            _room_client_admin_activate_room_fail_0,    // Fail: Activated Lifetime reached limit.
+            _room_client_admin_activate_room,           // Client requests to activate room. Server returns 'msg_ok' or '_room_client_fail_1 | _room_client_admin_fail_0 | _room_client_admin_activate_room_fail_0'
+            // _room_client_admin_room_update,             // Client requests to update rule. Client Request: { AccessMode(msg_short)[0 = Room.RoomAccessMode.BlockList, 1 = Room.RoomAccessMode.AllowList, 2 = Room.RoomAccessMode.None] }. Server Response: 'msg_ok' or '_room_client_admin_fail_0 | _room_client_admin_activate_room_fail_0'
+            // _room_client_admin_member_update,           // Client requests to update member. Client Request: { MemberID(msg_string), Operation(msg_string)["Permission", "Live", "Rule"], OperationParameteres(msg_string)[(Operation == "Permission"):{"administrator_add", "administrator_remove"} | (Operation == "Live"):{"kick"} | (Operation == "Rule"):{"none", "join_prevent", "join_allow"}] }. Server returns 'msg_ok' or '_room_client_admin_fail_0'
 
             /* Obsolete Protocols */
         }

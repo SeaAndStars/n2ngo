@@ -22,7 +22,7 @@
             <Image x:Name="N2NGO_GO" Source="/Data/Images/N2NGO_Logo_GO.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="865"/>
         </Canvas>
 
-        <TextBlock x:Name="N2NGO_base" Margin="0,10,0,0" VerticalAlignment="Top" Height="92" Width="844">
+        <TextBlock x:Name="N2NGO_base" Margin="0,10,0,0" VerticalAlignment="Top" Height="92" Width="844" HorizontalAlignment="Stretch">
             <TextBlock.Foreground>
                 <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
                     <GradientStop Color="#FF484848" Offset="0"/>
@@ -35,7 +35,7 @@
             <Run FontSize="10">Ver. 4.0.0</Run>
         </TextBlock>
 
-        <TextBlock x:Name="N2NGO_Link" Margin="33,107,33,118" FontSize="18">
+        <TextBlock x:Name="N2NGO_Link" Margin="33,90,33,118" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top">
             <TextBlock.Foreground>
                 <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
                     <GradientStop Color="#FF484848" Offset="1"/>

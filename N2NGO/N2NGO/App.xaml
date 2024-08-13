@@ -26,7 +26,19 @@
             <Style TargetType="{x:Type TextElement}">
                 <Setter Property="FontFamily" Value="{DynamicResource MainFont}"/>
             </Style>
-            
+
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="ListBox">
+                <Setter Property="Background" Value="{DynamicResource Palette_400}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
+                <Setter Property="BorderBrush" Value="{x:Null}"/>
+            </Style>
+
             <Style x:Key="RunLink" TargetType="Run">
                 <Setter Property="Cursor" Value="Hand"/>
                 <Setter Property="TextDecorations" Value="Underline"/>
@@ -34,7 +46,7 @@
             </Style>
             
             <Style x:Key="TitleStyle" TargetType="Label">
-                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Background" Value="{x:Null}"/>
                 <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
                 <Setter Property="BorderBrush" Value="{x:Null}"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -109,7 +121,6 @@
             <Style TargetType="hc:ScrollViewer" BasedOn="{StaticResource ScrollViewerNativeBaseStyle}">
                 <Setter Property="IsInertiaEnabled" Value="True"/>
                 <Setter Property="IsManipulationEnabled" Value="True"/>
-                <Setter Property="IsManipulationEnabled" Value="True"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ScrollViewer">
@@ -180,7 +191,10 @@
                 <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
                 <Setter Property="BorderBrush" Value="{x:Null}"/>
                 <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Top"/>
                 <Setter Property="FontSize" Value="15.6"/>
+                <Setter Property="Padding" Value="12,6,12,6"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
@@ -347,6 +361,69 @@
                 <Setter Property="Grid.RowSpan" Value="100"/>
             </Style>
 
+            <Style TargetType="TabItem">
+                <Setter Property="Foreground" Value="{DynamicResource Palette_200}"/>
+                <Setter Property="Background" Value="{DynamicResource Palette_800}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabItem}">
+                            <Border x:Name="root" Padding="4" Background="{TemplateBinding Background}">
+                                <TextBlock x:Name="label" Visibility="Visible" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{TemplateBinding Header}" ToolTip="{TemplateBinding ToolTip}" Foreground="{TemplateBinding Foreground}" TextTrimming="CharacterEllipsis" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Foreground" TargetName="label" Value="{DynamicResource Palette_100}"/>
+                                    <Setter Property="Background" TargetName="root" Value="{DynamicResource Palette_600}"/>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Left"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Opacity" TargetName="root" Value="0.56"/>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Bottom"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Opacity" TargetName="root" Value="0.56"/>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Right"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Opacity" TargetName="root" Value="0.56"/>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Opacity" TargetName="root" Value="0.56"/>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Panel.ZIndex" Value="1"/>
+                                    <Setter Property="Foreground" TargetName="label" Value="{DynamicResource Palette_50}"/>
+                                    <Setter Property="Background" TargetName="root" Value="{DynamicResource Palette_400}"/>
+                                </MultiDataTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <Style TargetType="Frame">
                 <Setter Property="BorderThickness" Value="0"/>
             </Style>

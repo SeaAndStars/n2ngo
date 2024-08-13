@@ -25,14 +25,14 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="5" Width="240" Height="470" BorderThickness="{DynamicResource RevealBorderThickness}" Visibility="{Binding Visibility}" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-            Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp">
+                        <Border Margin="5" Width="240" Height="470" BorderThickness="{DynamicResource RevealBorderThickness}" Visibility="{Binding Visibility}" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+            Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp">
                             <Border.BorderBrush>
                                 <walterlv:RevealBorderBrush/>
                             </Border.BorderBrush>
                             <Grid>
                                 <Image Name="ContentBackgroundImage" Opacity="0.5" Source="{Binding IndexerCBI}" Stretch="UniformToFill" Margin="25,250,0,0"/>
-                                <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                                <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <Run Name="_dynamicTextIndexerTitle" Text="{Binding IndexerTitle}" FontWeight="Bold" FontSize="34"/>
                                     <LineBreak/>
                                     <Run Name="_dynamicTextIndexerDescription" Text="{Binding IndexerDescription}" FontSize="16" Foreground="{DynamicResource Palette_50}"/>
@@ -43,8 +43,8 @@
                 </ItemsControl.ItemTemplate>
 
                 <Grid x:Name="ExtendIndexer2">
-                    <Border x:Name="CurrentUserIndexer" BorderThickness="{DynamicResource RevealBorderThickness}" Margin="5,5,5,5" Width="180" Height="120" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp" VerticalAlignment="Top">
+                    <Border x:Name="CurrentUserIndexer" BorderThickness="{DynamicResource RevealBorderThickness}" Margin="5,5,5,5" Width="180" Height="120" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp" VerticalAlignment="Top">
                         <Border.DataContext>
                             <local1:Indexer NagivKey="SetUserNickname"/>
                         </Border.DataContext>
@@ -52,20 +52,20 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                             <walterlv:RevealBorderBrush/>
                         </Border.BorderBrush>
                         <Grid>
-                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Run Text="{DynamicResource LOCALE_CurrentUser}" FontWeight="Bold" FontSize="34"/>
                                 <LineBreak/>
                                 <!--<hc:Gravatar x:Name="CurrentUserAvatar" Source="/Data/Images/Release.jpg" Height="80" Width="80"></hc:Gravatar>-->
                                 <Run x:Name="CurrentUserNickname" Text="NewToGO" FontSize="16" Foreground="{DynamicResource Palette_50}"/>
                                 <LineBreak/>
-                                <Button Content="{DynamicResource LOCALE_ViewUserKey}" Click="ButtonViewKey_Click" Height="30" Width="98"/>
+                                <Button Content="{DynamicResource LOCALE_ViewUserKey}" Click="ButtonViewKey_Click" Height="30"/>
                             </TextBlock>
                         </Grid>
                     </Border>
                 </Grid>
                 <Grid x:Name="ExtendIndexer1">
-                    <Border x:Name="CurrentServerIndexer" BorderThickness="{DynamicResource RevealBorderThickness}" Margin="5,5,5,5" Width="240" Height="230" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp" VerticalAlignment="Top">
+                    <Border x:Name="CurrentServerIndexer" BorderThickness="{DynamicResource RevealBorderThickness}" Margin="5,5,5,5" Width="240" Height="230" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp" VerticalAlignment="Top">
                         <Border.DataContext>
                             <local1:Indexer NagivKey="ResetConnection"/>
                         </Border.DataContext>
@@ -73,7 +73,7 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                             <walterlv:RevealBorderBrush/>
                         </Border.BorderBrush>
                         <Grid>
-                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Run Text="{DynamicResource LOCALE_CurrentServer}" FontWeight="Bold" FontSize="34"/>
                                 <LineBreak/>
                                 <LineBreak/>
@@ -94,8 +94,8 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                             </TextBlock>
                         </Grid>
                     </Border>
-                    <Border x:Name="CurrentRoomIndexer" BorderThickness="{DynamicResource RevealBorderThickness}" Margin="5,254,5,5" Width="240" Height="230" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp" VerticalAlignment="Top">
+                    <Border x:Name="CurrentRoomIndexer" BorderThickness="{DynamicResource RevealBorderThickness}" Margin="5,254,5,5" Width="240" Height="230" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp" VerticalAlignment="Top">
                         <Border.DataContext>
                             <local1:Indexer NagivKey="EnterRoom"/>
                         </Border.DataContext>
@@ -103,14 +103,14 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                             <walterlv:RevealBorderBrush/>
                         </Border.BorderBrush>
                         <Grid>
-                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Run Text="{DynamicResource LOCALE_CurrentRoom}" FontWeight="Bold" FontSize="34"/>
                                 <LineBreak/>
                                 <Run x:Name="CurrentRoomStatus" Text="{DynamicResource LOCALE_Status_Disconnected}" FontSize="16"/>
                                 <LineBreak/>
                                 <Run x:Name="CurrentRoomName" Text="{DynamicResource LOCALE_Unknown}" FontSize="16"/>
                                 <LineBreak/>
-                                <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                                <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <Run Text="{DynamicResource LOCALE_CurrentRoomCode}" Foreground="{DynamicResource Palette_50}" FontWeight="Bold" FontSize="16"/>
                                     <Run x:Name="CurrentRoomCode" Text="abcdef" FontSize="14"/>
                                     <LineBreak/>

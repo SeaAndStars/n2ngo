@@ -7,15 +7,15 @@
       xmlns:local="clr-namespace:N2NGO.Views.SubPages.Dialogs.MessageDialogs"
       mc:Ignorable="d" 
       TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="YesNo"  Foreground="{DynamicResource MainColorSolidFontBrush}">
+      d:DesignHeight="450" d:DesignWidth="800" FontFamily="{DynamicResource MainFont}"
+      Title="Input" Foreground="{DynamicResource MainColorSolidFontBrush}">
 
     <Grid Margin="5,0,5,0">
         <hc:ScrollViewer Margin="0,0,0,110">
-            <TextBlock x:Name="MessageContentRunner" TextWrapping="Wrap" FontSize="17.5" Padding="5,2,5,0" Background="{DynamicResource MainColorSolidAlphaBrush}"/>
+            <TextBlock x:Name="MessageContentRunner" TextWrapping="Wrap" FontSize="17.5" Padding="5,2,5,0" Background="{DynamicResource MainColorSolidAlphaBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
         </hc:ScrollViewer>
 
         <TextBox x:Name="InputBox" Effect="{StaticResource EffectShadow2}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="{DynamicResource MainColorSolidAlphaBrush}" BorderBrush="{x:Null}" Foreground="{DynamicResource MainColorSolidFontBrush}" FontSize="20" Height="44" HorizontalContentAlignment="Center" MinWidth="120" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,60" Padding="10,6,13,6" />
-        <Button x:Name="ButtonOK" Width="90" VerticalAlignment="Bottom" Content="{DynamicResource LOCALE_Dialog_InputOKButton}" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="0,0,0,20"/>
+        <Button x:Name="ButtonOK" VerticalAlignment="Bottom" Content="{DynamicResource LOCALE_Dialog_InputOKButton}" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="0,0,0,20"/>
     </Grid>
 </Page>

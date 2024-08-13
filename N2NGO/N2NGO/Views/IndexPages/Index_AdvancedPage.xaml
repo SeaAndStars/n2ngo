@@ -25,14 +25,14 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="5" Width="240" Height="480" BorderThickness="{DynamicResource RevealBorderThickness}" Visibility="{Binding Visibility}" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-            Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp">
+                        <Border Margin="5" Width="240" Height="480" BorderThickness="{DynamicResource RevealBorderThickness}" Visibility="{Binding Visibility}" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+            Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp">
                             <Border.BorderBrush>
                                 <walterlv:RevealBorderBrush/>
                             </Border.BorderBrush>
                             <Grid>
                                 <Image Name="ContentBackgroundImage" Opacity="0.5" Source="{Binding IndexerCBI}" Stretch="UniformToFill" Margin="25,250,0,0"/>
-                                <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                                <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <Run Name="_dynamicIndexerTitle" Text="{Binding IndexerTitle}" FontWeight="Bold" FontSize="34"/>
                                     <LineBreak/>
                                     <Run Name="_dynamicTextIndexerDescription" Text="{Binding IndexerDescription}" FontSize="16" Foreground="{DynamicResource Palette_50}"/>

@@ -1,4 +1,4 @@
-﻿<Page
+﻿<Page x:Class="N2NGO.Views.SubPages.SettingsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:N2NGO.Views.SubPages"
       xmlns:hc="https://handyorg.github.io/handycontrol"
       xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
-      xmlns:System="clr-namespace:System;assembly=System.Runtime" x:Class="N2NGO.Views.SubPages.SettingsPage"
+      xmlns:System="clr-namespace:System;assembly=System.Runtime"
       mc:Ignorable="d" 
       TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
       d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
@@ -19,11 +19,11 @@
     <Grid>
         <svgc:SvgViewbox x:Name="svgtest" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Height="50"/>
 
-        <hc:ComboBox x:Name="ColorPaletteSeletion" HorizontalAlignment="Center" VerticalAlignment="Top" Height="43" Width="326" Margin="0,134,0,0" SelectedIndex="0" SelectionChanged="ColorPaletteSeletion_SelectionChanged">
+        <hc:ComboBox x:Name="ColorPaletteSeletion" HorizontalAlignment="Center" VerticalAlignment="Top" Height="42" Width="326" Margin="0,196,0,0" SelectedIndex="0" SelectionChanged="ColorPaletteSeletion_SelectionChanged">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Rectangle Fill="{Binding Converter={StaticResource ColorPaletteConverter}, Mode=OneWay}" Width="16" Height="16" Margin="0,2,5,2" >
+                        <Rectangle Fill="{Binding Converter={StaticResource ColorPaletteConverter}, Mode=OneWay}" CacheMode="BitmapCache" Width="16" Height="16" Margin="0,2,5,2" >
                             <Rectangle.BitmapEffect>
                                 <DropShadowBitmapEffect Direction="270" Opacity="0.7" ShadowDepth="4" Softness="0.6"/>
                             </Rectangle.BitmapEffect>
@@ -36,17 +36,17 @@
             <System:String>Green</System:String>
             <System:String>Blue</System:String>
         </hc:ComboBox>
-        <hc:ComboBox x:Name="LocaleSeletion" HorizontalAlignment="Center" VerticalAlignment="Top" Height="43" Width="326" SelectedIndex="0" SelectionChanged="LocaleSeletion_SelectionChanged" Margin="0,86,0,0">
+        <hc:ComboBox x:Name="LocaleSeletion" HorizontalAlignment="Center" VerticalAlignment="Top" Height="42" Width="326" SelectedIndex="0" SelectionChanged="LocaleSeletion_SelectionChanged" Margin="0,148,0,0">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock FontSize="16">
-                        <svgc:SvgViewbox Source="{Binding Converter={StaticResource LocaleFlagIconConverter}, Mode=OneWay}" SourceUpdated="SvgViewbox_SourceUpdated" Width="25" Height="25">
+                    <StackPanel Orientation="Horizontal">
+                        <svgc:SvgViewbox Source="{Binding Converter={StaticResource LocaleFlagIconConverter}, Mode=OneWay}" CacheMode="BitmapCache" SourceUpdated="SvgViewbox_SourceUpdated" Width="25" Height="25" Margin="0,2,5,2">
                             <svgc:SvgViewbox.BitmapEffect>
                                 <DropShadowBitmapEffect Direction="270" Opacity="0.7" ShadowDepth="4" Softness="0.6"/>
                             </svgc:SvgViewbox.BitmapEffect>
                         </svgc:SvgViewbox>
-                        <Run Text="{Binding Converter={StaticResource LocaleConverter}, Mode=OneWay}"/>
-                    </TextBlock>
+                        <TextBlock Text="{Binding Converter={StaticResource LocaleConverter}, Mode=OneWay}" FontSize="16"/>
+                    </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
             <System:String>default</System:String>
@@ -54,18 +54,16 @@
             <System:String>en-US</System:String>
         </hc:ComboBox>
         <!--Button x:Name="SelectBackgroundImageButton" FontSize="14" Background="{StaticResource MainColorSolidBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,19,0,0" Height="40" Width="125" Content="选取背景图片" Foreground="White" Click="SelectBackgroundImageButton_Click" /-->
-        <Button x:Name="InstallTapButton" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,225,0,0" Height="43" Width="326" Content="{DynamicResource LOCALE_InstallTap}" Click="InstallTapButton_Click" />
-        <Button x:Name="EditServerSelection" Content="{DynamicResource LOCALE_EditServerSelection}" HorizontalAlignment="Center" Click="EditServerSelection_Click" VerticalAlignment="Top" Height="43" Width="326" Margin="0,182,0,0"/>
+        <Button x:Name="EditServerSelection" Content="{DynamicResource LOCALE_EditServerSelection}" HorizontalAlignment="Center" Click="EditServerSelection_Click" VerticalAlignment="Center" Height="42" Width="326"/>
         <Label Background="{DynamicResource Palette_500}" Margin="0,318,0,0" VerticalAlignment="Top" Width="326" FontSize="16" Height="35" HorizontalContentAlignment="Center">
             <StackPanel Orientation="Horizontal">
-                <Slider x:Name="BackgroundOSlider" Value="50" Minimum="0" Maximum="255" Background="{DynamicResource MainColorBrush}" ValueChanged="BackgroundOSlider_ValueChanged" HorizontalAlignment="Center" Width="149" VerticalAlignment="Center"/>
+                <Slider x:Name="BackgroundOpacitySlider" Value="50" Minimum="0" Maximum="255" Background="{DynamicResource MainColorBrush}" ValueChanged="BackgroundOpacitySlider_ValueChanged" HorizontalAlignment="Center" Width="149" VerticalAlignment="Center"/>
                 <TextBlock>
-                    <Run x:Name="OSliderInd"/>
+                    <Run x:Name="OpacitySliderLabel"/>
                     <Run Text="{DynamicResource LOCALE_BackgroundOpacity}" FontSize="12"/>
                 </TextBlock>
             </StackPanel>
         </Label>
-        <!--<Slider x:Name="BackgroundOSlider" Value="50" Minimum="0" Maximum="255" Background="{DynamicResource MainColorBrush}" ValueChanged="BackgroundOSlider_ValueChanged" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,326,145,0" Width="149"/>-->
 
         <Button x:Name="ResetConfigButton" Content="{DynamicResource LOCALE_ResetSettings}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,375,0,0" Width="284" Height="36" Click="ResetConfigButton_Click"/>
 

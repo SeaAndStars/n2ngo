@@ -24,14 +24,14 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Margin="5" Width="240" Height="480" BorderThickness="{DynamicResource RevealBorderThickness}" Visibility="{Binding Visibility}" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-            Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp">
+                        <Border Margin="5" Width="240" Height="480" BorderThickness="{DynamicResource RevealBorderThickness}" Visibility="{Binding Visibility}" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+            Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp">
                             <Border.BorderBrush>
                                 <walterlv:RevealBorderBrush Color="#FFB92FD0"/>
                             </Border.BorderBrush>
                             <Grid>
                                 <Image Name="ContentBackgroundImage" Opacity="0.5" Source="{Binding IndexerCBI}" Stretch="UniformToFill" Margin="25,250,0,0"/>
-                                <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                                <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <Run Name="_dynamicIndexerTitle" Text="{Binding IndexerTitle}" FontWeight="Bold" FontSize="34"/>
                                     <LineBreak/>
                                     <Run Name="_dynamicTextIndexerDescription" Text="{Binding IndexerDescription}" FontSize="16" Foreground="{DynamicResource Palette_50}"/>
@@ -50,8 +50,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Margin="5,5,5,5" Width="180" Height="84" BorderThickness="{DynamicResource RevealBorderThickness}" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp" HorizontalAlignment="Left">
+                    <Border Grid.Row="0" Margin="5,5,5,5" Width="180" Height="84" BorderThickness="{DynamicResource RevealBorderThickness}" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp" HorizontalAlignment="Left">
                         <Border.BorderBrush>
                             <walterlv:RevealBorderBrush Color="#FF66A1FF"/>
                         </Border.BorderBrush>
@@ -59,15 +59,15 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                             <local1:Indexer NagivKey="RefreshStorageAll"/>
                         </Border.DataContext>
                         <Grid>
-                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Run Text="{DynamicResource LOCALE_AppGlobalStorageUsage}" FontWeight="Bold" FontSize="34"/>
                                 <LineBreak/>
                                 <Run x:Name="StorageTotalUsage" Text="0B" FontSize="24" Foreground="{DynamicResource Palette_50}"/>
                             </TextBlock>
                         </Grid>
                     </Border>
-                    <Border Grid.Row="1" Margin="5,5,5,5" Width="345" Height="115" BorderThickness="{DynamicResource RevealBorderThickness}" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp" HorizontalAlignment="Left">
+                    <Border Grid.Row="1" Margin="5,5,5,5" Width="345" Height="115" BorderThickness="{DynamicResource RevealBorderThickness}" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp" HorizontalAlignment="Left">
                         <Border.BorderBrush>
                             <walterlv:RevealBorderBrush Color="#FFFF8000"/>
                         </Border.BorderBrush>
@@ -75,15 +75,15 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                             <local1:Indexer NagivKey="RefreshStorageAll"/>
                         </Border.DataContext>
                         <Grid>
-                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Run Text="{DynamicResource LOCALE_AppProgramFilesStorageUsage}" FontWeight="Bold" FontSize="34"/>
                                 <LineBreak/>
                                 <Run x:Name="StorageProgramFilesUsage" Text="0B" FontSize="16" Foreground="{DynamicResource Palette_50}"/>
                             </TextBlock>
                         </Grid>
                     </Border>
-                    <Border Grid.Row="2" Margin="5,5,5,5" Width="320" Height="115" BorderThickness="{DynamicResource RevealBorderThickness}" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp" HorizontalAlignment="Left">
+                    <Border Grid.Row="2" Margin="5,5,5,5" Width="320" Height="115" BorderThickness="{DynamicResource RevealBorderThickness}" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp" HorizontalAlignment="Left">
                         <Border.BorderBrush>
                             <walterlv:RevealBorderBrush Color="#FF00FF1B"/>
                         </Border.BorderBrush>
@@ -91,15 +91,15 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                             <local1:Indexer NagivKey="RefreshStorageAll"/>
                         </Border.DataContext>
                         <Grid>
-                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Run Text="{DynamicResource LOCALE_AppDataFilesStorageUsage}" FontWeight="Bold" FontSize="34"/>
                                 <LineBreak/>
                                 <Run x:Name="StorageDataFilesUsage" Text="Item 0B" FontSize="16" Foreground="{DynamicResource Palette_50}"/>
                             </TextBlock>
                         </Grid>
                     </Border>
-                    <Border Grid.Row="3" Margin="5,5,5,5" Width="380" Height="115" BorderThickness="{DynamicResource RevealBorderThickness}" Background="#5FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
-Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp" HorizontalAlignment="Left">
+                    <Border Grid.Row="3" Margin="5,5,5,5" Width="380" Height="115" BorderThickness="{DynamicResource RevealBorderThickness}" Background="#1FB3B3B3" CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="Indexer_MouseLeave" MouseDown="Indexer_MouseDown" MouseUp="Indexer_MouseUp" MouseLeftButtonUp="Indexer_MouseLeftButtonUp" HorizontalAlignment="Left">
                         <Border.BorderBrush>
                             <walterlv:RevealBorderBrush Color="#FFC76DD6"/>
                         </Border.BorderBrush>
@@ -107,7 +107,7 @@ Initialized="TempGrid_Initialized" MouseEnter="TempGrid_MouseEnter" MouseLeave="
                             <local1:Indexer NagivKey="RefreshStorageAll"/>
                         </Border.DataContext>
                         <Grid>
-                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap">
+                            <TextBlock Margin="5" Foreground="{DynamicResource Palette_100}" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Run Text="{DynamicResource LOCALE_AppOtherDataFilesStorageUsage}" FontWeight="Bold" FontSize="24"/>
                                 <LineBreak/>
                                 <Run x:Name="StorageOtherDataFilesUsage" Text="Item 0B" FontSize="16" Foreground="{DynamicResource Palette_50}"/>

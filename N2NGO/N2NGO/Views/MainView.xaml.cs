@@ -1,16 +1,16 @@
 ﻿using CT.WPF.MagicEffects;
-using HandyControl.Tools.Extension;
 using N2NGO.UtilsClass;
 using N2NGO.Views.SubPages;
 using N2NGO.Views.SubPages.Dialogs;
-using N2NGO.Views.SubPages.Dialogs.MessageDialogs;
 using N2NGO_Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.InteropServices;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -120,7 +120,7 @@ namespace N2NGO.Views
 
             SetBackColor((byte?)alpha);
             SetWindowMaxNormalButtonImage();
-            PageSettings.BackgroundOSlider.Value = alpha;
+            PageSettings.BackgroundOpacitySlider.Value = alpha;
 
             Console.WriteLine("Console output will be redirected to Terminal Window!");
             DebugTerminalWindow = new()
@@ -218,6 +218,73 @@ namespace N2NGO.Views
             SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageRoom.Content));
             SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageInfo.Content));
         }
+        public void SetBackColor(byte? a = null, byte? r = null, byte? g = null, byte? b = null)
+        {
+            var c = ((SolidColorBrush)App.Current.Resources["MainColorSolidBrush"]).Color;
+            ContentRoot.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(
+                a == null ? c.A : a.Value,
+                r == null ? c.R : r.Value,
+                g == null ? c.G : g.Value,
+                b == null ? c.B : b.Value));
+        }
+        public async void UpdateColorPalette(string? newColorPaletteName = null)
+        {
+            if (!isInitialized)
+                return;
+
+            var resCurrentColorPalette = App.Current.TryFindResource("CurrentColorPalette") as ResourceDictionary ?? throw new NullReferenceException("Current Color Palette Resource null");
+            if (newColorPaletteName != null)
+            {
+                var resNewColorPalette = App.Current.TryFindResource("BuiltinColorPalette_" + newColorPaletteName) as ResourceDictionary ?? throw new NullReferenceException(string.Format("Target new Color Palette({0}) Resource null", newColorPaletteName));
+                foreach (var key in resCurrentColorPalette.Keys)
+                {
+                    if (resNewColorPalette.Contains(key))
+                    {
+                        resCurrentColorPalette[key] = resNewColorPalette[key];
+                    }
+                }
+
+                App.Current.Resources["CurrentColorPalette"] = resCurrentColorPalette;
+            }
+
+            foreach (var key in resCurrentColorPalette.Keys)
+            {
+                var brush = new SolidColorBrush(((SolidColorBrush)App.Current.Resources[key]).Color);
+                brush.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)resCurrentColorPalette[key], Duration = TimeSpan.FromSeconds(0.45) });
+                App.Current.Resources[key] = brush;
+            }
+
+
+            var imgs = SharedData.FindVisualChildren<Image>(this);
+            foreach (Image cimg in imgs)
+            {
+                var n = cimg.Name;
+
+                if (n.Contains("LBImage_"))
+                {
+                    await cimg.Dispatcher.InvokeAsync(() =>
+                    {
+                        (cimg.Effect as TexturedColorReplaceEffect)?.BeginAnimation(TexturedColorReplaceEffect.ReplacementColorProperty,
+                            new ColorAnimation { To = (Color)resCurrentColorPalette["Palette_50"], Duration = TimeSpan.FromSeconds(0.45) });
+                    });
+                }
+
+                continue;
+            }
+            await TitleBorder.Dispatcher.InvokeAsync(() =>
+            {
+                var b = new SolidColorBrush(((SolidColorBrush)TitleBorder.Background).Color);
+                TitleBorder.Background = b;
+                b.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)resCurrentColorPalette["Palette_400"], Duration = TimeSpan.FromSeconds(0.45) });
+            });
+
+
+            SetBackColor((byte)PageSettings.BackgroundOpacitySlider.Value);
+            SharedData.UIAnimation.Refresh();
+            RefreshUIAnimations();
+
+            return;
+        }
 
         public void DoMessageInputDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null)
         {
@@ -314,26 +381,6 @@ namespace N2NGO.Views
             page.BeginAnimation(OpacityProperty, _fadeInAnimation);
         }
 
-        static async Task<string> Run(string command, bool noWindow = false)
-        {
-            Process process = new();
-
-            ProcessStartInfo startInfo = new()
-            {
-                FileName = "cmd.exe",
-                Arguments = "/c " + command,
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = noWindow
-            };
-
-            process.StartInfo = startInfo;
-
-            process.Start();
-            await process.WaitForExitAsync();
-            return process.StandardOutput.ReadToEnd();
-        }
-
         private async void CloseExit()
         {
             _canClose = false;
@@ -380,78 +427,125 @@ namespace N2NGO.Views
                 });
             });
         }
+        private bool FirstRun()
+        {
+            return true;
+        }
+        private async void AsyncLoading()
+        {
+            Stopwatch swbm = Stopwatch.StartNew();
 
+            SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading Begin");
+            PageRooms.Refresh();
+
+            var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
+            var tg_st = tg.Children[0] as ScaleTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
+            var tg_tt = tg.Children[1] as TranslateTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
+
+            tg_tt.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation { From = 450, To = 0, Duration = TimeSpan.FromSeconds(0.55), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } });
+
+            this.BeginAnimation(OpacityProperty, _fadeInAnimationEx);
+
+            NavigatePage(PageIndex);
+
+            RefreshUIAnimations();
+
+            await Task.Run(async () =>
+            {
+                if (SharedData.CurrentApp.Config == null)
+                    throw new NullReferenceException(nameof(SharedData.CurrentApp.Config));
+
+                SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading SubBegin");
+                PageSettings.Dispatcher.InvokeAsync(() => PageSettings.UpdateColorPaletteSelectionItems());
+                PageRoom.Dispatcher.InvokeAsync(() =>
+                {
+                    PageRoom.AdminPanelMembers.InitializeWithUIA();
+                    PageRoom.AdminPanelRuledMembers.InitializeWithUIA();
+                    PageRoom.UserSuggestionForm.InitializeWithUIA();
+                });
+
+                await Task.Run(async () =>
+                {
+                    var url = $"https://mail.bestlgf.pro/N2NGO/UpdateInfo?raw=true&depth=50";
+                    using (HttpClient client = new HttpClient())
+                    {
+                        try
+                        {
+                            HttpResponseMessage response = await client.GetAsync(url);
+
+                            response.EnsureSuccessStatusCode();
+
+                            string responseBody = await response.Content.ReadAsStringAsync();
+
+                            using (JsonDocument document = JsonDocument.Parse(responseBody))
+                            {
+                                JsonElement root = document.RootElement;
+
+                                if (root.TryGetProperty("success", out JsonElement success) && success.GetBoolean())
+                                {
+                                    StringBuilder stringBuilder = new();
+                                    stringBuilder.AppendLine("https://mail.bestlgf.pro/N2NGO/UpdateInfo\n");
+
+                                    foreach (JsonElement version in root.GetProperty("versions").EnumerateArray())
+                                    {
+                                        var updateInfo = new
+                                        {
+                                            version = version.GetProperty("version").GetString(),
+                                            detail = version.GetProperty("detail").GetString(),
+                                            id = version.GetProperty("id").GetString(),
+                                            updateLog = version.GetProperty("updateLog").GetString()
+                                        };
+
+                                        stringBuilder.AppendLine($"[{updateInfo.id}]{updateInfo.version} ({updateInfo.detail}):");
+                                        if (updateInfo.updateLog is not null)
+                                            stringBuilder.AppendLine($"  {updateInfo.updateLog.Replace("\n", "\n  ")}:");
+                                        stringBuilder.AppendLine("");
+                                    }
+
+                                    Dispatcher.InvokeAsync(() => { DoMessageDialog(stringBuilder.ToString(), "Update Info"); });
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"[AsyncLoading] Failed to retrieve update information from '{url}'.");
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"[AsyncLoading] Cannot get update info from '{url}': {e.Message}");
+                        }
+                    }
+                });
+
+                if (SharedData.CurrentApp.Config.Get("FirstRun", "1") == "1")
+                {
+                    if (FirstRun())
+                        SharedData.CurrentApp.Config.Set("FirstRun", "0");
+                    else
+                        Dispatcher.InvokeAsync(() => { DoMessageDialog("FirstRun Method returns false!"); });
+                }
+
+                var connected = SharedData.CurrentApp.ConnectAndPeek();
+
+                if (SharedData.CurrentApp.Config.Get("NeedUpdate", "0") == "1")
+                {
+                    Dispatcher.InvokeAsync(() => DoMessageDialog("N2N GO 上一次更新未成功，将会在本次关闭后重新尝试。", "更新"));
+                }
+                else
+                {
+                    if (connected) SharedData.CurrentApp.CheckN2NGOClientUpdate();
+                }
+
+                SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading Sub Finished");
+            });
+
+            swbm.Stop();
+            Console.WriteLine($"App asynchronous loading finished({swbm.Elapsed})");
+            SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading End");
+        }
         private void SetWindowMaxNormalButtonImage()
         {
             LBImage_Wnd_Btn_MaxNormal.Source = new BitmapImage(new Uri(String.Format("/Data/Images/icon/wnd_btn_{0}.png", (WindowState == WindowState.Maximized ? "normal" : "max")), UriKind.Relative));
-        }
-        public void SetBackColor(byte? a = null, byte? r = null, byte? g = null, byte? b = null)
-        {
-            var c = ((SolidColorBrush)App.Current.Resources["MainColorSolidBrush"]).Color;
-            ContentRoot.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(
-                a == null ? c.A : a.Value,
-                r == null ? c.R : r.Value,
-                g == null ? c.G : g.Value,
-                b == null ? c.B : b.Value));
-        }
-
-        public async void UpdateColorPalette(string? newColorPaletteName = null)
-        {
-            if (!isInitialized)
-                return;
-
-            var resCurrentColorPalette = App.Current.TryFindResource("CurrentColorPalette") as ResourceDictionary ?? throw new NullReferenceException("Current Color Palette Resource null");
-            if (newColorPaletteName != null)
-            {
-                var resNewColorPalette = App.Current.TryFindResource("BuiltinColorPalette_" + newColorPaletteName) as ResourceDictionary ?? throw new NullReferenceException(string.Format("Target new Color Palette({0}) Resource null", newColorPaletteName));
-                foreach (var key in resCurrentColorPalette.Keys)
-                {
-                    if (resNewColorPalette.Contains(key))
-                    {
-                        resCurrentColorPalette[key] = resNewColorPalette[key];
-                    }
-                }
-
-                App.Current.Resources["CurrentColorPalette"] = resCurrentColorPalette;
-            }
-
-            foreach (var key in resCurrentColorPalette.Keys)
-            {
-                var brush = new SolidColorBrush(((SolidColorBrush)App.Current.Resources[key]).Color);
-                brush.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)resCurrentColorPalette[key], Duration = TimeSpan.FromSeconds(0.45) });
-                App.Current.Resources[key] = brush;
-            }
-
-
-            var imgs = SharedData.FindVisualChildren<Image>(this);
-            foreach (Image cimg in imgs)
-            {
-                var n = cimg.Name;
-
-                if (n.Contains("LBImage_"))
-                {
-                    await cimg.Dispatcher.InvokeAsync(() =>
-                    {
-                        (cimg.Effect as TexturedColorReplaceEffect)?.BeginAnimation(TexturedColorReplaceEffect.ReplacementColorProperty,
-                            new ColorAnimation { To = (Color)resCurrentColorPalette["Palette_50"], Duration = TimeSpan.FromSeconds(0.45) });
-                    });
-                }
-
-                continue;
-            }
-            await TitleBorder.Dispatcher.InvokeAsync(() =>
-            {
-                var b = new SolidColorBrush(((SolidColorBrush)TitleBorder.Background).Color);
-                TitleBorder.Background = b;
-                b.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)resCurrentColorPalette["Palette_400"], Duration = TimeSpan.FromSeconds(0.45) });
-            });
-
-
-            SetBackColor((byte)PageSettings.BackgroundOSlider.Value);
-            SharedData.UIAnimation.Refresh();
-            RefreshUIAnimations();
-
-            return;
         }
 
         private void ButtonClose_Click(object sender, RoutedEventArgs e)
@@ -503,81 +597,9 @@ namespace N2NGO.Views
                 NavigatePage(PageLog);
             else
                 NavigatePage(null);
-
         }
-        private void WinMove_main(object sender, MouseButtonEventArgs e)
+        private void TestButton_Click(object sender, RoutedEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-                this.DragMove();
-        }
-
-        private async void AsyncLoading()
-        {
-            Stopwatch swbm = Stopwatch.StartNew();
-
-            SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading Begin");
-            PageRooms.Refresh();
-
-            var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
-            var tg_st = tg.Children[0] as ScaleTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
-            var tg_tt = tg.Children[1] as TranslateTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
-
-            tg_tt.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation { From = 450, To = 0, Duration = TimeSpan.FromSeconds(0.55), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } });
-
-            this.BeginAnimation(OpacityProperty, _fadeInAnimationEx);
-
-            NavigatePage(PageIndex);
-
-            RefreshUIAnimations();
-
-            await Task.Run(() =>
-            {
-                if (SharedData.CurrentApp.Config == null)
-                    throw new NullReferenceException(nameof(SharedData.CurrentApp.Config));
-
-                SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading SubBegin");
-                PageSettings.Dispatcher.Invoke(() => PageSettings.UpdateColorPaletteSelectionItems());
-
-                if (SharedData.CurrentApp.Config.Get("FirstRun", "1") == "1")
-                {
-                    //Dispatcher.BeginInvoke(() => HandyControl.Controls.Growl.Ask(new HandyControl.Data.GrowlInfo { CancelStr = "", Type = HandyControl.Data.InfoType.Info, ActionBeforeClose = (bool b) => { return b ? b : b; }, ShowCloseButton = false, Message = "N2N GO 需要配合Tap虚拟网卡来使用，如果您未安装，请前往设置-安装Tap驱动。" }));
-                    Dispatcher.InvokeAsync(() =>
-                    DoMessageYesNoDialog("如果您未安装Tap驱动，请前往设置页面安装，如果您是第一次使用N2N GO，我们强烈建议您安装一次。\n需要立即安装吗？", "首次运行",
-                    new()
-                    {
-                        (_) =>
-                        {
-                            if (_ is not DialogMessage dialogMessage || dialogMessage.MessageContent is not DialogYesNo dialogYesNo)
-                                throw new Exception("Cannot get DialogYesNo");
-
-                            if (dialogYesNo.YesNo == DialogYesNo.YesNoE.Yes)
-                                SharedData.CurrentApp.Dispatcher.Invoke(()=>SharedData.CurrentApp.MainView.PageSettings.InstallTapButton_Click(null, null));
-                        }
-                    }
-                    ));
-                    SharedData.CurrentApp.Config.Set("FirstRun", "0");
-                }
-
-                var connected = SharedData.CurrentApp.ConnectAndPeek();
-
-                if (SharedData.CurrentApp.Config.Get("NeedUpdate", "0") == "1")
-                {
-                    Dispatcher.InvokeAsync(() => DoMessageDialog("N2N GO 上一次更新未成功，将会在本次关闭后重新尝试。", "更新"));
-                }
-                else
-                {
-                    if (connected) SharedData.CurrentApp.CheckN2NGOClientUpdate();
-                }
-
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    Run("Data/BinRef/Windows/WinIPBroadcast/WinIPBroadcast.exe run", true); // 运行WinIPBroadcast（数据转发到虚拟网卡）
-
-                SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading Sub Finished");
-            });
-
-            swbm.Stop();
-            Console.WriteLine($"App asynchronous loading finished({swbm.Elapsed})");
-            SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading End");
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -613,36 +635,6 @@ namespace N2NGO.Views
             }
         }
 
-        //Point ___tmp_pos = Point();
-        //private void Window_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    ___tmp_pos = e.GetPosition(this);
-        //    ___tmp_pos.X = ___tmp_pos.X / ImageBackgroundImage.RenderSize.Width /2;
-        //    ___tmp_pos.Y = ___tmp_pos.Y / ImageBackgroundImage.RenderSize.Height/2;
-
-        //    ImageBackgroundImage.RenderTransformOrigin = ___tmp_pos;
-        //}
-        private void LocaleSeletion_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count <= 0)
-                return;
-
-            if (e.AddedItems[0] is not string selectedItem)
-                throw new Exception("Unsupported data type for locale selection item");
-
-            SharedData.CurrentApp.Locale.UpdateLocale(selectedItem);
-        }
-
-        private void TestButton_Click(object sender, RoutedEventArgs e)
-        {
-            Task.Run(() =>
-            {
-                var onlines = SharedData.CurrentApp.N2NGOServerConnection.PullTotalOnlines();
-                if (onlines.IsSuccessfulStatusCode)
-                    Dispatcher.InvokeAsync(() => DoMessageDialog($"Onlines: {onlines.Value}", "Test"));
-            });
-        }
-
         private void Window_Activated(object sender, EventArgs e)
         {
             var b = new SolidColorBrush(((SolidColorBrush)TitleBorder.Background).Color);
@@ -656,6 +648,16 @@ namespace N2NGO.Views
             var b = new SolidColorBrush(((SolidColorBrush)TitleBorder.Background).Color);
             TitleBorder.Background = b;
             b.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)((ResourceDictionary)SharedData.CurrentApp.Get.Resources["CurrentColorPalette"])["Palette_200"], Duration = TimeSpan.FromSeconds(0.25) });
+        }
+
+        private void WinMove_main(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+                this.DragMove();
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
         }
     }
 
