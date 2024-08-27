@@ -2,6 +2,7 @@
 using N2NGO.Views.SubPages;
 using N2NGO.Views.SubPages.Dialogs;
 using N2NGO.Views.SubPages.Dialogs.MessageDialogs;
+using SharpVectors.Dom;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,12 +13,14 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -26,7 +29,7 @@ namespace N2NGO.UtilsClass
 {
     public static class SharedData
     {
-        public readonly static Version Version = new(4, 0, 0, 0);
+        public readonly static Version Version = new(4, 0, 1, 0);
         public readonly static string VersionTag = "Release";
 
         public readonly static string DefaultRoomPassword = "null";
@@ -57,7 +60,7 @@ namespace N2NGO.UtilsClass
 
             public virtual void ClientExHandler(Exception? ex = null)
             {
-                CurrentApp.Dispatcher.InvokeAsync(() => CurrentApp.MainView.DoMessageYesNoDialog($"我们与N2N GO 服务器通出现错误（可能已经断开），信息：{ex?.Message}\n要重置连接吗？", "N2N GO 连接异常",
+                CurrentApp.Dispatcher.InvokeAsync(() => CurrentApp.MainWindow.DoMessageYesNoDialog($"我们与N2N GO 服务器通出现错误（可能已经断开），信息：{ex?.Message}\n要重置连接吗？", "N2N GO 连接异常",
                     new()
                     {
                         (_) =>
@@ -108,7 +111,7 @@ namespace N2NGO.UtilsClass
             /// <returns>true if successful, otherwise false.</returns>
             public bool Send(N2NGO_Core.Package package, int? timeOut = null, bool exHandle = true)
             {
-                var id = $"[{new Random().Next().ToString("x").Substring(0, 5)}] Send '{(N2NGO_Core.Protocol.BaseHeader)package.Header}':";
+                //var id = $"[{new Random().Next().ToString("x").Substring(0, 5)}] Send '{(N2NGO_Core.Protocol.BaseHeader)package.Header}':";
 
                 //CurrentApp.Dispatcher.InvokeAsync(() => Console.WriteLine($"{id} LOCK"));
 
@@ -149,7 +152,7 @@ namespace N2NGO.UtilsClass
             /// <returns>If failed, a null packageMember will be returned.</returns>
             public N2NGO_Core.Package? Receive(int? timeOut = null, bool exHandle = true)
             {
-                var id = $"[{new Random().Next().ToString("x").Substring(0, 5)}] Receive:";
+                //var id = $"[{new Random().Next().ToString("x").Substring(0, 5)}] Receive:";
 
                 //CurrentApp.Dispatcher.InvokeAsync(() => Console.WriteLine($"{id} LOCK"));
 
@@ -524,7 +527,11 @@ namespace N2NGO.UtilsClass
                         byte[]? edata = roomPackage[6].external_data;
                         if ((N2NGO_Core.Protocol.BaseHeader)roomPackage[6].Header != N2NGO_Core.Protocol.BaseHeader.msg_ulonglong || edata == null)
                             goto invalid;
-                        room.CB.ActivatedLifetime = TimeSpan.FromMilliseconds(N2NGO_Core.Package.MsgExternalData.Decode.MsgULongLong(edata));
+                        try
+                        {
+                            room.CB.ActivatedLifetime = TimeSpan.FromMilliseconds(N2NGO_Core.Package.MsgExternalData.Decode.MsgULongLong(edata));
+                        }
+                        catch (OverflowException) { room.CB.ActivatedLifetime = TimeSpan.FromSeconds(-1); }
                     }
                 }
 
@@ -547,7 +554,7 @@ namespace N2NGO.UtilsClass
             /// <param name="minorColor">Minor room color theme</param>
             /// <param name="exHandle">If true and an exception occurs, <see cref="ClientExHandler"/> will be called.</param>
             /// <returns>Room code and Admin key in string array</returns>
-            public ProtocolOperationReturnType<string[]> CreateRoom(string roomName, bool isRoomInvisible, bool isRoomPasswordNeeded, string roomPassword, UInt32 mainColor, UInt32 minorColor, bool exHandle = true)
+            public ProtocolOperationReturnType<string[]> CreateRoom(string roomName, bool isRoomInvisible, bool isRoomPasswordNeeded, string roomPassword, UInt32 mainColor, UInt32 minorColor, UInt64 initialLifetime, bool exHandle = true)
             {
                 string RoomCode = GenerateRoomCode();
                 while (true)
@@ -578,6 +585,8 @@ namespace N2NGO.UtilsClass
                     if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_ulong, N2NGO_Core.Package.MsgExternalData.Encode.MsgULong(mainColor)), null, exHandle))
                         goto CreateRoom_Fail_Send;
                     if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_ulong, N2NGO_Core.Package.MsgExternalData.Encode.MsgULong(minorColor)), null, exHandle))
+                        goto CreateRoom_Fail_Send;
+                    if (!Send(N2NGO_Core.Package.MakePackage(N2NGO_Core.Protocol.BaseHeader.msg_ulonglong, N2NGO_Core.Package.MsgExternalData.Encode.MsgULongLong(initialLifetime)), null, exHandle))
                         goto CreateRoom_Fail_Send;
 
                     var packageReceive = Receive(6000, exHandle);
@@ -619,7 +628,7 @@ namespace N2NGO.UtilsClass
             }
 
             /// <summary>
-            /// Join room<br/>
+            /// JoinRoomAsync room<br/>
             /// <see cref="N2NGO_Core.Protocol.BaseHeader._room_client_join"/>
             /// </summary>
             /// <param name="roomCode"></param>
@@ -1130,73 +1139,96 @@ namespace N2NGO.UtilsClass
             public string MemberID { get; set; } = string.Empty;  // Logical MemberID relative to room
         }
 
-        public class ExecLog
+        public class BinExecutor
         {
-            public string LogOut { get; private set; } = string.Empty;
-            public Task? ProcessExecuteTask { get; private set; }
+            public Task? BinProcessTask { get; private set; }
+
+            internal Process? _currentProcess = null;
+
+            internal StringBuilder _output = new();
+            internal StringBuilder _error = new();
+
+            public string GetOutput => _output.ToString();
+            public string GetError => _error.ToString();
+            public string WriteInput { set { if (_currentProcess is null) throw new NullReferenceException("BinExecutor: Cannot write input: process is null, did you forget to call ExecuteAsync?"); _currentProcess.StandardInput.WriteLine(value); } }
+
+            public Action<string?>? ActionOnOutput { get; set; } = null;
+            public Action<string?>? ActionOnError { get; set; } = null;
 
             /// <summary>
-            /// Begin command execution asynchronously
+            /// Begin binary execution asynchronously
             /// </summary>
-            /// <param name="command">Command</param>
-            /// <returns>If there is an existing <see cref="ProcessExecuteTask"/> that has not been completed, null is returned.</returns>
-            public async Task<int?> ExecuteAsync(string command, bool newLog)
+            /// <param name="exec">Command</param>
+            /// <returns>If there is an existing <see cref="BinProcessTask"/> that has not been completed, null is returned.</returns>
+            public async Task<int?> ExecuteAsync(string exec, string args)
             {
-                if (ProcessExecuteTask is not null && !ProcessExecuteTask.IsCompleted)
+                if (BinProcessTask is not null && !BinProcessTask.IsCompleted)
                     return null;
 
-                if (newLog)
-                    LogOut = string.Empty;
-
-                AddLog("Executing Command: " + command + Environment.NewLine);
-                Process ProcessExecuteCommand = new()
+                _currentProcess = new()
                 {
-                    StartInfo = new() { FileName = "cmd.exe", Arguments = $"/c {command}", UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true },
+                    StartInfo = new()
+                    {
+                        FileName = exec,
+                        Arguments = args,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardInput = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                    },
                 };
 
-                ProcessExecuteCommand.OutputDataReceived += OutputDataReceived;
-                ProcessExecuteCommand.ErrorDataReceived += OutputDataReceived;
+                _currentProcess.OutputDataReceived += OutputDataReceived;
+                _currentProcess.ErrorDataReceived += ErrorDataReceived;
 
-                ProcessExecuteCommand.Start();
+                _currentProcess.Start();
 
-                ProcessExecuteCommand.BeginOutputReadLine();
-                ProcessExecuteCommand.BeginErrorReadLine();
+                _currentProcess.BeginOutputReadLine();
+                _currentProcess.BeginErrorReadLine();
 
-                var task = ProcessExecuteCommand.WaitForExitAsync();
-                await task;
+                BinProcessTask = _currentProcess.WaitForExitAsync();
+                await BinProcessTask;
 
-                return ProcessExecuteCommand.ExitCode;
-            }
-
-            protected virtual void AddLog(string data)
-            {
-                LogOut += data + Environment.NewLine;
-
-                CurrentApp.Dispatcher.Invoke(() =>
-                {
-                    // Output to LogPage
-                    LogPage? logPage = CurrentApp.MainView.PageLog;
-                    if (logPage != null)
-                        logPage.LogBox.Text += data + Environment.NewLine;
-                });
+                return _currentProcess.ExitCode;
             }
 
             private void OutputDataReceived(object sender, DataReceivedEventArgs e)
             {
                 if (e.Data is not null)
                 {
-                    AddLog(e.Data);
+                    _output.Append(e.Data);
+                    if (ActionOnOutput is not null)
+                        ActionOnOutput(e.Data);
+                }
+            }
+
+            private void ErrorDataReceived(object sender, DataReceivedEventArgs e)
+            {
+                if (e.Data is not null)
+                {
+                    _error.Append(e.Data);
+                    if (ActionOnError is not null)
+                        ActionOnError(e.Data);
                 }
             }
         }
 
-        public static class N2NEdgeLogHelper
+        public static class N2NEdgeOutputHelper
         {
             public enum EdgeDeviceAllocating
             {
                 IP, Mask, MAC
             }
-            public static Dictionary<EdgeDeviceAllocating, string?> GetEdgeDeviceAllocation(string log)
+            public enum EdgeAnalysisResults
+            {
+                None = 0,
+                Connected = 1 << 0,
+                NoWindowsTapDevices = 1 << 1,
+                DeviceOperationFailure = 1 << 2
+            }
+
+            public static Dictionary<EdgeDeviceAllocating, string?> GetEdgeDeviceAllocation(string output)
             {
                 Dictionary<EdgeDeviceAllocating, string?> result = new()
                 {
@@ -1205,7 +1237,7 @@ namespace N2NGO.UtilsClass
                     { EdgeDeviceAllocating.MAC, null }
                 };
 
-                foreach (var line in log.Split(Environment.NewLine).Reverse())
+                foreach (var line in output.Split(Environment.NewLine).Reverse())
                 {
                     if (line.Contains("created local tap device IP:"))
                     {
@@ -1222,7 +1254,21 @@ namespace N2NGO.UtilsClass
                 return result;
             }
 
-            public static bool IsEdgeConnectedToSupernode(string log) => log.Contains("[OK] edge <<< ================ >>> supernode");
+            public static EdgeAnalysisResults Analyze(string output)
+            {
+                EdgeAnalysisResults results = EdgeAnalysisResults.None;
+
+                if (output.Contains("[OK] edge <<< ================ >>> supernode"))
+                    results |= EdgeAnalysisResults.Connected;
+
+                if (output.Contains("No Windows tap devices found, did you run tapinstall.exe?"))
+                    results |= EdgeAnalysisResults.NoWindowsTapDevices;
+
+                if (output.Contains("WARNING: Unable to set device"))
+                    results |= EdgeAnalysisResults.DeviceOperationFailure;
+
+                return results;
+            }
         }
 
         public static class CurrentApp
@@ -1236,15 +1282,26 @@ namespace N2NGO.UtilsClass
                 }
             }
             public static Dispatcher Dispatcher => Get.Dispatcher;
-            public static MainView MainView { get => (MainView)App.Current.MainWindow; }
+            public static MainWindow MainWindow => (MainWindow)App.Current.MainWindow;
             public static EasyConfig Config { get; } = new(Path.Combine(N2NGO_Core.UserDef.N2NGO_N2NGO_AppData_Path, "UserData/config.ini"));
 
             // 7476 & 7478 for release
             // 7477 & 7479 for alpha
-            public static N2NGOServerConnection N2NGOServerConnection { get; set; } = new(new(IPAddress.Parse(Config.Get("IpGlobalServer", "43.143.37.61")), int.Parse(Config.Get("PortGlobalServer", "7477"))), int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7479")));
+            public static N2NGOServerConnection N2NGOServerConnection { get; set; } = new(new(IPAddress.Parse(Config.Get("IpGlobalServer", "43.143.37.61")), int.Parse(Config.Get("PortGlobalServer", "7476"))), int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7478")));
             public static RoomConnection RoomConnection { get; set; } = new();
 
-            public static ExecLog N2NExecLog { get; } = new();
+            public static BinExecutor EdgeN2NExecutor { get; } = new()
+            {
+                ActionOnOutput = (data) =>
+                {
+                    Dispatcher.InvokeAsync(() => Log.WriteLine($"{data}", Log.Module.N2NEdge));
+                },
+
+                ActionOnError = (data) =>
+                {
+                    Dispatcher.InvokeAsync(() => Log.WriteLine($"{data}", Log.Module.N2NEdge));
+                }
+            };
 
             public static class Locale
             {
@@ -1302,13 +1359,37 @@ namespace N2NGO.UtilsClass
                 }
             }
 
+            public static class Log
+            {
+                public enum Module
+                {
+                    None = 0,
+                    MainWindow,
+                    TerminalWindow,
+                    MainWindow_RoomPage,
+                    MainWindow_RoomsPage,
+                    N2NEdge
+                }
+                public static readonly Dictionary<Module, string> ModulePrefixes = new()
+                {
+                    { Module.None, "[App]" },
+                    { Module.TerminalWindow, "[TerminalWindow]" },
+                    { Module.MainWindow, "[MainWindow]" },
+                    { Module.MainWindow_RoomPage, "[MainWindow.RoomPage]" },
+                    { Module.MainWindow_RoomsPage, "[MainWindow.RoomsPage]" },
+                    { Module.N2NEdge, "[edge - n2n]" }
+                };
+
+                public static void WriteLine(string message, Module module = Module.None) => Console.WriteLine($"{ModulePrefixes[module]} {message}");
+            }
+
             public static bool EnterRoom(string roomCode, string roomPassword)
             {
                 var joinRoomResult = N2NGOServerConnection.JoinRoom(roomCode, roomPassword);
                 if (!joinRoomResult.IsSuccessfulStatusCode)
                     return false;
 
-                Dispatcher.Invoke(() => MainView.PageRoom.BeginRefresh());
+                Dispatcher.Invoke(() => MainWindow.PageRoom.BeginRefresh());
                 RoomConnection.MemberID = joinRoomResult.Value ?? throw new("Cannot get MemberID by invoking N2NGOServerConnection.JoinRoom");
                 RoomConnection.CurrentRoomCode = roomCode;
                 return RoomConnection.IsConnected = true;
@@ -1316,11 +1397,84 @@ namespace N2NGO.UtilsClass
             public static void LeaveRoom(bool exHandler = true)
             {
                 TerminateEdge();
-                Dispatcher.Invoke(() => MainView.PageRoom.EndRefresh());
+                Dispatcher.Invoke(() => MainWindow.PageRoom.EndRefresh());
                 RoomConnection.IsConnected = false;
                 RoomConnection.CurrentRoomCode = string.Empty;
                 RoomConnection.MemberID = string.Empty;
                 N2NGOServerConnection.LeaveRoom(exHandler);
+            }
+            public static async Task<bool> JoinRoomAsync(bool needPassword, string roomCode, string roomPassword)
+            {
+                LeaveRoom();
+
+                roomCode = roomCode.Trim();
+                roomPassword = roomPassword.Trim();
+                roomPassword = needPassword ? roomPassword : DefaultRoomPassword;
+
+                if (string.IsNullOrEmpty(roomCode))
+                {
+                    MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title");
+                    LeaveRoom();
+                    return false;
+                }
+
+                if (needPassword && string.IsNullOrEmpty(roomPassword.Trim()))
+                {
+                    MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomPassEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title");
+                    LeaveRoom();
+                    return false;
+                }
+
+                DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1) };
+                timer.Tick += async (_, __) =>
+                {
+                    var analysis = N2NEdgeOutputHelper.Analyze(EdgeN2NExecutor.GetOutput);
+                    if (analysis == N2NEdgeOutputHelper.EdgeAnalysisResults.None)
+                        return;
+                    if ((analysis & N2NEdgeOutputHelper.EdgeAnalysisResults.NoWindowsTapDevices) == N2NEdgeOutputHelper.EdgeAnalysisResults.NoWindowsTapDevices)
+                    {
+                        Dispatcher.InvokeAsync(() => MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_NoWindowsTapDevices_Description_Content", "@LOCALE_DialogJoinRoom_Failure_Title"));
+                        LeaveRoom();
+                        timer.Stop();
+                        return;
+                    }
+                    if ((analysis & N2NEdgeOutputHelper.EdgeAnalysisResults.DeviceOperationFailure) == N2NEdgeOutputHelper.EdgeAnalysisResults.DeviceOperationFailure)
+                    {
+                        Dispatcher.InvokeAsync(() => MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_DeviceOperationFailure_Description_Content", "@LOCALE_DialogJoinRoom_Failure_Title"));
+                        LeaveRoom();
+                        timer.Stop();
+                        return;
+                    }
+                    if ((analysis & N2NEdgeOutputHelper.EdgeAnalysisResults.Connected) == N2NEdgeOutputHelper.EdgeAnalysisResults.Connected)
+                    {
+
+                    }
+
+                    timer.Stop();
+
+                    var enterRoomResult = await Task.Run(() => EnterRoom(roomCode, roomPassword));
+                    if (!enterRoomResult)
+                    {
+                        Dispatcher.InvokeAsync(() => MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content", "@LOCALE_DialogJoinRoom_Failure_Title"));
+                        return;
+                    }
+
+                    Dispatcher.InvokeAsync(() => MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Success_Description_Content", "@LOCALE_DialogJoinRoom_Title"));
+                };
+                timer.Start();
+
+                string arg = $"-c {roomCode} -k {roomPassword} -l {N2NGOServerConnection.ServerIPEndPoint.Address}:{N2NGOServerConnection.ServerSupernodePort}";
+
+                if (await EdgeN2NExecutor.ExecuteAsync(EdgePath, arg) is null)
+                {
+                    Dispatcher.Invoke(() => MainWindow.DoMessageDialog("您当前仍有其他正在进入房间的任务，请查看日志", "进入房间终止"));
+
+                    timer.Stop();
+                    return false;
+                }
+
+                timer.Stop();
+                return true;
             }
 
 
@@ -1341,7 +1495,7 @@ namespace N2NGO.UtilsClass
                     if (N2NGOServerConnection.Connect())
                     {
                         if (successEcho)
-                            Dispatcher.Invoke(() => MainView.DoMessageDialog("@LOCALE_DialogConnectionSuccessful_Content", "@LOCALE_DialogConnectionSuccessful_Title"));
+                            Dispatcher.Invoke(() => MainWindow.DoMessageDialog("@LOCALE_DialogConnectionSuccessful_Content", "@LOCALE_DialogConnectionSuccessful_Title"));
                         return Peek();
                     }
                     else
@@ -1353,7 +1507,7 @@ namespace N2NGO.UtilsClass
                 LeaveRoom(false);
 
                 N2NGOServerConnection.Close();
-                N2NGOServerConnection = new(new(IPAddress.Parse(Config.Get("IpGlobalServer", "43.143.37.61")), int.Parse(Config.Get("PortGlobalServer", "7477"))), int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7479")));
+                N2NGOServerConnection = new(new(IPAddress.Parse(Config.Get("IpGlobalServer", "43.143.37.61")), int.Parse(Config.Get("PortGlobalServer", "7476"))), int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7478")));
                 if (serverIp != null)
                     N2NGOServerConnection.ServerIPEndPoint.Address = IPAddress.Parse(serverIp);
                 if (serverPort != null)
@@ -1363,33 +1517,6 @@ namespace N2NGO.UtilsClass
                 ConnectAndPeek(echo);
             }
 
-            public static async void DownloadN2NGOUpdateAsync()
-            {
-                try
-                {
-                    using HttpClient client = new();
-                    using HttpResponseMessage response = await
-                        client.GetAsync($"http://{(N2NGOServerConnection.Client.Client.RemoteEndPoint as IPEndPoint) ?? throw new NullReferenceException(nameof(N2NGOServerConnection.Client.Client.RemoteEndPoint))}:{N2NGO_Core.UserDef.ExtendServerOptions.N2NGO_File_Server_Port}/{N2NGO_Core.UserDef.N2NGOUpdateInstallerFileName}");
-                    try
-                    {
-                        response.EnsureSuccessStatusCode();
-
-                        using FileStream fileStream = File.Create(N2NGO_Core.UserDef.N2NGOUpdateInstallerFilePath);
-                        await response.Content.CopyToAsync(fileStream);
-
-                        MainView.DispatcherDoMessageDialog($"N2N GO 更新包已下载({GetFileSizeReadableString(fileStream.Length)})，将在N2N GO 关闭后升级。", "更新N2N GO");
-                        Config.Set("NeedUpdate", "1");
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        MainView.DispatcherDoMessageDialog($"从服务器下载更新包时失败：{ex.Message}", "更新N2N GO");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MainView.DispatcherDoMessageDialog($"从服务器下载更新包时失败：{ex.Message}", "更新N2N GO");
-                }
-            }
             /// <summary>
             /// Check update for N2N GO client asynchronous
             /// Coding Example: <br/>
@@ -1410,7 +1537,7 @@ namespace N2NGO.UtilsClass
                                 _pkg_get = N2NGOServerConnection.Receive();
                                 if (_pkg_get == null || (N2NGO_Core.Protocol.BaseHeader)_pkg_get.Value.Header != N2NGO_Core.Protocol.BaseHeader.msg_string || _pkg_get.Value.external_data == null)
                                 {
-                                    Dispatcher.Invoke(() => MainView.DispatcherDoMessageDialog("@LOCALE_DialogUpdate_Fail_InvalidServer_Content", "@LOCALE_DialogUpdate_Title"));
+                                    Dispatcher.Invoke(() => MainWindow.DoMessageDialog("@LOCALE_DialogUpdate_Fail_InvalidServer_Content", "@LOCALE_DialogUpdate_Title"));
                                     return;
                                 }
                             }
@@ -1422,29 +1549,14 @@ namespace N2NGO.UtilsClass
                             if (SharedData.Version < serverVersionGet)
                             {
                                 StringBuilder strNewVersionMsg = new();
-                                strNewVersionMsg.AppendLine($"{SharedData.VersionString} -> {serverVersionGet.ToString()} ?");
-
-                                Dispatcher.Invoke(() => MainView.DispatcherDoMessageYesNoDialog(strNewVersionMsg.ToString(), "@LOCALE_DialogUpdate_NewVersion_Title",
-                                         new() {
-                                        (_dialogMessage) =>
-                                        {
-                                            if (_dialogMessage is not DialogMessage dialogMessage)
-                                                throw new NullReferenceException(nameof(dialogMessage));
-                                            if ( dialogMessage.MessageContent is not DialogYesNo dialogYesNo || dialogYesNo.YesNo != DialogYesNo.YesNoE.Yes)
-                                                return;
-
-                                            DownloadN2NGOUpdateAsync();
-                                        }
-                                         }
-                                     )
-                                );
+                                strNewVersionMsg.AppendLine($"{SharedData.VersionString} -> {serverVersionGet.ToString()}:\nhttps://mail.bestlgf.pro/N2NGO/Download");
                             }
                             else
-                                Dispatcher.Invoke(() => MainView.DispatcherDoMessageDialog("@LOCALE_DialogUpdate_UpToDate_Content", "@LOCALE_DialogUpdate_Title"));
+                                Dispatcher.Invoke(() => MainWindow.DoMessageDialog("@LOCALE_DialogUpdate_UpToDate_Content", "@LOCALE_DialogUpdate_Title"));
                         }
                         catch (Exception ex)
                         {
-                            Dispatcher.Invoke(() => MainView.DispatcherDoMessageDialog($"无法从服务器获取更新：{ex.Message}"));
+                            Dispatcher.Invoke(() => MainWindow.DoMessageDialog($"无法从服务器获取更新：{ex.Message}"));
                             return;
                         }
                     }
@@ -1461,7 +1573,7 @@ namespace N2NGO.UtilsClass
                 long memoryUsage = currentProcess.WorkingSet64;
                 double memoryUsageInMB = memoryUsage / (1024 * 1024);
 
-                Console.WriteLine($"({tag ?? "App"}) Memory usage: {memoryUsageInMB} MBytes");
+                Log.WriteLine($"({tag ?? "App"}) Memory usage: {memoryUsageInMB} MBytes");
             }
         }
 

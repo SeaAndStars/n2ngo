@@ -388,6 +388,7 @@ namespace N2NGO_Server.N2NGOServer.Base
                                 string passwd;
                                 UInt32 mainColor;
                                 UInt32 minorColor;
+                                UInt64 initialLifetime = (ulong)TimeSpan.FromMinutes(10).TotalMilliseconds;
 
                                 Package? pkg_app = iO_Tool.Receive(client);
                                 if (pkg_app != null)
@@ -435,6 +436,13 @@ namespace N2NGO_Server.N2NGOServer.Base
                                     else goto RemoveClient;
                                 else goto RemoveClient;
 
+                                pkg_app = iO_Tool.Receive(client);
+                                if (pkg_app != null)
+                                    if (pkg_app.Value.Header == (byte)BaseHeader.msg_ulonglong && pkg_app.Value.external_data != null)
+                                        initialLifetime = Package.MsgExternalData.Decode.MsgULongLong(pkg_app.Value.external_data);
+                                    else goto RemoveClient;
+                                else goto RemoveClient;
+
                                 lock (Rooms)
                                     for (int i = 0; i < Rooms.Count; i++)
                                     {
@@ -446,8 +454,9 @@ namespace N2NGO_Server.N2NGOServer.Base
                                     }
 
                                 var newRoom = new Room { RoomCode = code, RoomName = name, IsRoomInvisible = iri, IsRoomPasswordNeeded = irp, RoomPassword = passwd, MainColor = new RoomColor(mainColor), MinorColor = new RoomColor(minorColor) };
-                                newRoom.InitControlBlock();
+                                newRoom.CB.ActivatedLifetime = TimeSpan.FromMilliseconds(initialLifetime);
                                 newRoom.CB.AdminKey.Add(clientControlBlock.ClientConnectionData["UserSessionKey"] as string ?? throw new("Cannot get userkey from data."));
+                                newRoom.InitHandler();
                                 lock (Rooms)
                                     Rooms.Add(newRoom);
 

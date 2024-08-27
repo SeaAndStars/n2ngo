@@ -11,17 +11,17 @@
       Title="Page4">
     <Grid>
         <StackPanel Orientation="Horizontal" Margin="8,18,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Label HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="24" Foreground="{DynamicResource MainColorSolidFontBrush}" Content="{DynamicResource LOCALE_QuickJoinRoomRoomCode}" Background="{x:Null}" BorderBrush="{x:Null}" Padding="0,0,8,0" Height="34"/>
+            <Label FontSize="24" Padding="0" Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" Content="{DynamicResource LOCALE_QuickJoinRoomRoomCode}" Background="{x:Null}" BorderBrush="{x:Null}"/>
             <TextBox x:Name="RoomConnectText" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" MinWidth="210" Height="43" TextBlock.FontSize="14" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" FontSize="24"/>
         </StackPanel>
 
         <StackPanel x:Name="GroupPasswordInput" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,66,0,0">
-            <Label HorizontalAlignment="Left" FontSize="20" Foreground="{DynamicResource MainColorSolidFontBrush}" Canvas.Top="2" Content="{DynamicResource LOCALE_QuickJoinRoomRoomPassword}" Padding="0,0,8,0" Background="{x:Null}" BorderBrush="{x:Null}" Canvas.Left="6"/>
-            <TextBox x:Name="RoomPasswordText" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" MinWidth="140" TextBlock.FontSize="14" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" Height="33" FontSize="16" Canvas.Left="53" />
+            <Label FontSize="20" Padding="0" Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" Content="{DynamicResource LOCALE_QuickJoinRoomRoomPassword}" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <TextBox x:Name="RoomPasswordText" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" MinWidth="140" TextBlock.FontSize="14" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" Height="33" FontSize="16"/>
         </StackPanel>
-        <CheckBox x:Name="IsPasswdNeeded" Content="{DynamicResource LOCALE_QuickJoinRoomRoomNeedPassword}" TextBlock.FontSize="14" Foreground="{DynamicResource MainColorSolidFontBrush}" Background="{DynamicResource MainColorSolidAlphaBrush}" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,11,66" Click="IsPasswdNeeded_Click"/>
+        <CheckBox x:Name="IsPasswdNeeded" Content="{DynamicResource LOCALE_QuickJoinRoomRoomNeedPassword}" Foreground="{DynamicResource MainColorSolidFontBrush}" Background="{DynamicResource MainColorSolidAlphaBrush}" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,11,66" Click="IsPasswdNeeded_Click"/>
 
-        <Button Content="{DynamicResource LOCALE_QuickJoinRoomJoin}" Height="61" Width="195" Click="Button_Click" TextBlock.FontSize="14" FontSize="24" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+        <Button Content="{DynamicResource LOCALE_QuickJoinRoomJoin}" Height="61" Width="195" Click="Button_Click" FontSize="24" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
 
         <Grid x:Name="DialogJoiningRoom" Background="{DynamicResource MainColorSolidAlphaBrush}" Visibility="Collapsed" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <hc:LoadingCircle Foreground="{DynamicResource MainColorSolidFontBrush}" Background="#FFF70000" HorizontalAlignment="Center" VerticalAlignment="Center"/>

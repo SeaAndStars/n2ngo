@@ -17,9 +17,9 @@
     <SignAssembly>False</SignAssembly>
     <PackAsTool>False</PackAsTool>
     <IncludeSymbols>False</IncludeSymbols>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <AssemblyVersion>4.0.1.0</AssemblyVersion>
     <Copyright>Copyright © 2024 LGF-Studio. All rights reserved.</Copyright>
-    <FileVersion>4.0.0.0</FileVersion>
+    <FileVersion>4.0.1.0</FileVersion>
     <Description>N2N GO
 </Description>
     <Title>$(AssemblyName)</Title>
@@ -407,7 +407,7 @@
     <PackageReference Include="MagicEffects" Version="1.0.0">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
-    <PackageReference Include="SharpVectors" Version="1.8.4" />
+    <PackageReference Include="SharpVectors" Version="1.8.4.2" />
     <PackageReference Include="Walterlv.Themes.FluentDesign" Version="7.9.0" />
   </ItemGroup>
 

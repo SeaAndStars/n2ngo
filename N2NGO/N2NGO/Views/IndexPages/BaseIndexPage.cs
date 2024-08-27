@@ -87,11 +87,11 @@ namespace N2NGO.UtilsClass
                     indexPage_BaseIndexPage.Dispatcher.InvokeAsync(() => indexPage_BaseIndexPage.Page_Navigated());
             }
 
-            SharedData.CurrentApp.MainView.NavigatePage(indexPage);
+            SharedData.CurrentApp.MainWindow.NavigatePage(indexPage);
         }
         protected static void NavigatePage(Page? page)
         {
-            SharedData.CurrentApp.MainView.NavigatePage(page);
+            SharedData.CurrentApp.MainWindow.NavigatePage(page);
         }
         protected static void InitIndexer(object obj)
         {

@@ -60,7 +60,7 @@ namespace N2NGO.Views.SubPages
         //    tempImage.UriSource = new Uri(dialog.FileName, UriKind.RelativeOrAbsolute);
         //    tempImage.EndInit();
 
-        //    ((MainView)App.Current.MainWindow).ImageBackgroundImage.Source = tempImage;
+        //    ((MainWindow)App.Current.MainWindow).ImageBackgroundImage.Source = tempImage;
         //}
 
         int i = 0;
@@ -73,7 +73,7 @@ namespace N2NGO.Views.SubPages
 
             if (i > 1)
             {
-                SharedData.CurrentApp.MainView.SetBackColor((byte)e.NewValue);
+                SharedData.CurrentApp.MainWindow.SetBackColor((byte)e.NewValue);
                 SharedData.CurrentApp.Config.Set("WindowBackgroundAlpha", ((int)e.NewValue).ToString());
             }
             else
@@ -83,7 +83,7 @@ namespace N2NGO.Views.SubPages
         private void ResetConfigButton_Click(object sender, RoutedEventArgs e)
         {
             SharedData.CurrentApp.Config.Clear();
-            SharedData.CurrentApp.MainView.DoMessageDialog("重启应用以生效。", "设置");
+            SharedData.CurrentApp.MainWindow.DoMessageDialog("重启应用以生效。", "设置");
         }
 
         private void ColorPaletteSeletion_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -94,16 +94,11 @@ namespace N2NGO.Views.SubPages
             if (sender is not HandyControl.Controls.ComboBox combo)
                 throw new ArgumentNullException(nameof(sender));
 
-            if (SharedData.CurrentApp.MainView.isInitialized)
+            if (SharedData.CurrentApp.MainWindow.isInitialized)
                 SharedData.CurrentApp.Config.Set("CurrentColorPalette", combo.SelectedIndex.ToString());
 
             if (e.AddedItems[0] is string selectedItem)
-                SharedData.CurrentApp.MainView.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.UpdateColorPalette(selectedItem));
-        }
-
-        private void SwitchLogButtonButton_Click(object sender, RoutedEventArgs e)
-        {
-            SharedData.CurrentApp.MainView.LogButtonVisibility = SharedData.CurrentApp.MainView.LogButtonVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                SharedData.CurrentApp.MainWindow.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.UpdateColorPalette(selectedItem));
         }
 
         private void LocaleSeletion_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -121,12 +116,12 @@ namespace N2NGO.Views.SubPages
 
         private void ShowConsoleButton_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.CurrentApp.MainView.DebugTerminalWindow.Show();
+            SharedData.CurrentApp.MainWindow.DebugTerminalWindow.Show();
         }
 
         private void EditServerSelection_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.CurrentApp.MainView.DoMessageInputDialog("@LOCALE_DialogCustomServer_Description_Content", "@LOCALE_DialogCustomServer_Title"
+            SharedData.CurrentApp.MainWindow.DoMessageInputDialog("@LOCALE_DialogCustomServer_Description_Content", "@LOCALE_DialogCustomServer_Title"
                 , new List<Action<object>> {
                     (_)=> {
                         if (_ is not DialogMessage dialogMessage)

@@ -43,7 +43,7 @@ namespace N2NGO.Views.SubPages
 
                 case "Rooming":
                     {
-                        NavigatePage(SharedData.CurrentApp.MainView.PageRooming);
+                        NavigatePage(SharedData.CurrentApp.MainWindow.PageRooming);
                         break;
                     }
             }

@@ -3,18 +3,25 @@ using N2NGO.Views.SubPages.Dialogs;
 using N2NGO.Views.SubPages.Dialogs.MessageDialogs;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace N2NGO.Views.SubPages
 {
     public partial class RoomingPage : Page
     {
+        private SolidColorBrush _mainColor = new(), _minorColor = new();
+        internal SolidColorBrush MainColor { get => _mainColor; set { _mainColor = value; PreviewMainColor.DataContext = _mainColor; } } 
+        internal SolidColorBrush MinorColor { get => _minorColor; set { _minorColor = value; PreviewMinorColor.DataContext = _minorColor; } } 
+
         public RoomingPage()
         {
             InitializeComponent();
+
+            MainColor = new(Color.FromArgb(255, 0x64, 0x95, 0xED));
+            MinorColor = new(Color.FromArgb(255, 0xF5, 0xDE, 0xB3));
 
             CheckIsRoomPasswordNeeded_Click(null, null);
         }
@@ -29,29 +36,41 @@ namespace N2NGO.Views.SubPages
             string password = RoomPasswordInput.Text;
             bool needPassword = CheckIsRoomPasswordNeeded.IsChecked == true;
             bool roomInvisible = CheckIsRoomInvisible.IsChecked == true;
-            var brushMain = (SolidColorBrush)SetMain.Background;
-            var brushMinor = (SolidColorBrush)SetMinor.Background;
+            var colorMain = MainColor.Color;
+            var colorMinor = MinorColor.Color;
+            double initialLifetime;
+            try
+            {
+                initialLifetime = TimeSpan.Parse(RoomInitialLifetimeInput.Text).TotalMilliseconds;
+            }
+            catch 
+            {
+                var _ = TimeSpan.FromMinutes(10);
+                initialLifetime = _.TotalMilliseconds;
+                RoomInitialLifetimeInput.Text = _.ToString();
+            }
 
             if (!needPassword)
                 password = SharedData.DefaultRoomPassword;
 
             if (needPassword && string.IsNullOrEmpty(password.Trim()))
             {
-                SharedData.CurrentApp.MainView.DoMessageDialog("密码不能为空！", "无法创建房间");
+                SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoom_Failure_Invalid_RoomPasswordInput_Content", "@LOCALE_DialogCreateRoom_Failure_Title");
                 return;
             }
 
             if (false && string.IsNullOrEmpty(name.Trim()))   // Disabled
             {
-                SharedData.CurrentApp.MainView.DoMessageDialog("房间名不能为空！", "无法创建房间");
+                SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoom_Failure_Invalid_RoomNameInput_Content", "@LOCALE_DialogCreateRoom_Failure_Title");
                 return;
             }
 
             var roomCreateResult = SharedData.CurrentApp.N2NGOServerConnection.CreateRoom(name, roomInvisible, needPassword, password,
-                new N2NGO_Core.Objects.RoomColor(brushMain.Color.R, brushMain.Color.G, brushMain.Color.B).data,
-                new N2NGO_Core.Objects.RoomColor(brushMinor.Color.R, brushMinor.Color.G, brushMinor.Color.B).data);
+                new N2NGO_Core.Objects.RoomColor(colorMain.R, colorMain.G, colorMain.B).data,
+                new N2NGO_Core.Objects.RoomColor(colorMinor.R, colorMinor.G, colorMinor.B).data,
+                (ulong)initialLifetime);
 
-            if (roomCreateResult.Status!=SharedData.N2NGOServerConnection.ProtocolOperationReturnStatus.Success)
+            if (roomCreateResult.Status != SharedData.N2NGOServerConnection.ProtocolOperationReturnStatus.Success)
             {
                 return;
             }
@@ -59,13 +78,13 @@ namespace N2NGO.Views.SubPages
             var roomCreate = roomCreateResult.Value;
             if (roomCreate == null || roomCreate[0] == null || roomCreate[1] == null)
             {
-                SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogCreateRoom_Fail_Invalid_String_Array_Content", "@LOCALE_DialogCreateRoom_Title");
+                SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoom_Failure_Invalid_String_Array_Content", "@LOCALE_DialogCreateRoom_Title");
 
                 return;
             }
 
             //ButtonCloseRoom.IsEnabled = true;
-            SharedData.CurrentApp.MainView.DoMessageYesNoDialog(string.Format("房间创建成功，是否立即加入？\n名称：{0}\n代码：{1}\n管理员密钥：{2}", name, roomCreate[0], roomCreate[1]), "房间已创建",
+            SharedData.CurrentApp.MainWindow.DoMessageYesNoDialog(string.Format("房间创建成功，是否立即加入？\n名称：{0}\n代码：{1}\n管理员密钥：{2}", name, roomCreate[0], roomCreate[1]), "房间已创建",
                 new List<Action<object>>
                 {
                     (_) =>
@@ -75,7 +94,7 @@ namespace N2NGO.Views.SubPages
 
                         if (dialogYesNo.YesNo == DialogYesNo.YesNoE.Yes)
                         {
-                            QuickJoinPage.Join(needPassword, roomCreate[0], password);
+                            SharedData.CurrentApp.JoinRoomAsync(needPassword, roomCreate[0], password);
                         }
                     }
                 }
@@ -90,19 +109,67 @@ namespace N2NGO.Views.SubPages
                 GroupPasswordInput.IsEnabled = bNeedPassword;
                 if (bNeedPassword)
                 {
-                    SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogCreateRoomSecurity_Content", "@LOCALE_DialogCreateRoomSecurity_Title");
+                    SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoomSecurity_Content", "@LOCALE_DialogCreateRoomSecurity_Title");
                 }
             }
         }
 
-        private void SetTheme_Click(object sender, RoutedEventArgs e)
+        private void SetMain_Click(object sender, RoutedEventArgs e)
         {
+            SharedData.CurrentApp.MainWindow.DoMessagePickBrushDialog("@LOCALE_DialogSetMainColor_Content", "@LOCALE_DialogSetMainColor_Title"
+                , new List<Action<object>> {
+                    (_)=> {
+                        if (_ is not DialogMessage dialogMessage)
+                            throw new ArgumentException("Argument is not DialogMessage", nameof(_));
 
+                        if (dialogMessage.MessageContent is not DialogPickBrush dialogPickBrush)
+                            throw new Exception("dialogMessage.MessageContent is not DialogPickBrush dialogPickBrush");
+
+                          MainColor = dialogPickBrush.GetColorBrush();
+                    } },
+
+                (_) =>
+                {
+                    if (_ is not DialogMessage dialogMessage)
+                        throw new ArgumentException("Argument is not DialogMessage", nameof(_));
+
+                    if (dialogMessage.MessageContent is not DialogPickBrush dialogPickBrush)
+                        throw new Exception("dialogMessage.MessageContent is not DialogPickBrush dialogPickBrush");
+
+                    dialogPickBrush.ColorAlphaInput.Text = MainColor.Color.A.ToString();
+                    dialogPickBrush.ColorRedInput.Text = MainColor.Color.R.ToString();
+                    dialogPickBrush.ColorGreenInput.Text = MainColor.Color.G.ToString();
+                    dialogPickBrush.ColorBlueInput.Text = MainColor.Color.B.ToString();
+                });
         }
 
         private void SetMinor_Click(object sender, RoutedEventArgs e)
         {
+            SharedData.CurrentApp.MainWindow.DoMessagePickBrushDialog("@LOCALE_DialogSetMinorColor_Content", "@LOCALE_DialogSetMinorColor_Title"
+                , new List<Action<object>> {
+                    (_)=> {
+                        if (_ is not DialogMessage dialogMessage)
+                            throw new ArgumentException("Argument is not DialogMessage", nameof(_));
 
+                        if (dialogMessage.MessageContent is not DialogPickBrush dialogPickBrush)
+                            throw new Exception("dialogMessage.MessageContent is not DialogPickBrush dialogPickBrush");
+
+                          MinorColor = dialogPickBrush.GetColorBrush();
+                    } },
+
+                (_) =>
+                {
+                    if (_ is not DialogMessage dialogMessage)
+                        throw new ArgumentException("Argument is not DialogMessage", nameof(_));
+
+                    if (dialogMessage.MessageContent is not DialogPickBrush dialogPickBrush)
+                        throw new Exception("dialogMessage.MessageContent is not DialogPickBrush dialogPickBrush");
+
+                    dialogPickBrush.ColorAlphaInput.Text = MinorColor.Color.A.ToString();
+                    dialogPickBrush.ColorRedInput.Text = MinorColor.Color.R.ToString();
+                    dialogPickBrush.ColorGreenInput.Text = MinorColor.Color.G.ToString();
+                    dialogPickBrush.ColorBlueInput.Text = MinorColor.Color.B.ToString();
+                });
         }
     }
 }

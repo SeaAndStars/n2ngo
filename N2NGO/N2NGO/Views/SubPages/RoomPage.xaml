@@ -8,8 +8,7 @@
         xmlns:local="clr-namespace:N2NGO.Views.SubPages"
         mc:Ignorable="d"
         TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
-        d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
-        Background="{DynamicResource MainColorSolidAlphaBrush}">
+        d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}">
     <Page.Resources>
         <local:IsAdminBoolToMemberImageConverter x:Key="IsAdminBoolConverter"/>
     </Page.Resources>
@@ -53,7 +52,7 @@
                                     <Run Text=": "/>
                                     <Run x:Name="LifetimeValueText" Text="30 min."/>
                                 </TextBlock>
-                                <Button x:Name="ButtonSwitchAdminPanel" Content="Admin Panel" Visibility="Visible" HorizontalAlignment="Center" Click="ButtonSwitchAdminPanel_Click" Margin="6,133,6,10"/>
+                                <Button x:Name="ButtonSwitchAdminPanel" Content="{DynamicResource LOCALE_PageRoom-AdminPanelButton_Content}" Visibility="Visible" HorizontalAlignment="Center" Click="ButtonSwitchAdminPanel_Click" Margin="6,133,6,10"/>
                             </Grid>
 
                             <Grid Grid.Column="1">
@@ -80,7 +79,7 @@
 
                         </Grid>
                     </Border>
-                    <Border x:Name="PanelAdminControl" Grid.Column="0" RenderTransformOrigin="0.5,0.5">
+                    <Border x:Name="PanelAdminControl" Grid.Column="0" RenderTransformOrigin="0,0.5">
                         <Border.LayoutTransform>
                             <ScaleTransform ScaleX="1"/>
                         </Border.LayoutTransform>
@@ -164,38 +163,12 @@
                     </Border>
                 </Grid>
 
-                <Grid x:Name="PanelUserSuggestion" Grid.Row="1" Margin="8" Background="{DynamicResource Palette_500}">
-                    <Grid.LayoutTransform>
-                        <ScaleTransform ScaleY="1"/>
-                    </Grid.LayoutTransform>
-
-                    <TextBlock x:Name="UserSuggestionSection1" HorizontalAlignment="Left" Margin="10,10,0,0" Foreground="{DynamicResource Palette_50}" VerticalAlignment="Top">
-                        <Run Text="对我们的界面布局设计感到满意吗？" FontSize="28" FontWeight="Bold"/>
-                        <LineBreak/>
-                        <Run Text="向我们发送匿名提议！" FontSize="16"/>
-                        
-                        <LineBreak/>
-                        <LineBreak/>
-                        <Grid x:Name="UserSuggestionForm">
-                            <TextBox x:Name="UserSuggestions" BorderBrush="{x:Null}" Text="你好，开发组：" FontSize="14" Padding="5" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" AcceptsReturn="True" Height="105" Width="358" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Top"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,110,0,0">
-                                <Button x:Name="ButtonCloseUserSuggestions" Content="下次再说" Margin="0,0,4,0" Click="ButtonCloseUserSuggestions_Click"/>
-                                <Button x:Name="ButtonCommitUserSuggestions" Content="提交！" Margin="4,0,0,0" Click="ButtonCommitUserSuggestions_Click"/>
-                            </StackPanel>
-                        </Grid>
-                        <LineBreak/>
-                        <Hyperlink Click="AnonymousSuggestionsHyperlink_Click">匿名提议箱</Hyperlink>
-                    </TextBlock>
-
-                    <TextBlock x:Name="UserSuggestionSection2" FontSize="28" FontWeight="Bold" Block.TextAlignment="Center">
-                        <Run>感谢您在社区的贡献！</Run>
-                        <LineBreak/>
-                        <Run FontSize="16" FontWeight="Normal">此面板将会自动关闭</Run>
-                    </TextBlock>
+                <Grid Grid.Row="1" Margin="8" Background="{DynamicResource Palette_500}">
+                    
                 </Grid>
             </Grid>
 
-            <Grid x:Name="RightPanel" Background="{DynamicResource Palette_500}" Margin="10,0,0,0" Grid.Column="1">
+            <Grid x:Name="RightPanel" Background="{DynamicResource Palette_400}" Margin="10,0,0,0" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
@@ -219,13 +192,10 @@
                                     <Grid x:Name="MemberRootGrid">
                                         <Image Height="18" HorizontalAlignment="Left" IsHitTestVisible="False" VerticalAlignment="Center" Source="{Binding IsAdmin, Converter={StaticResource IsAdminBoolConverter}, Mode=OneWay}"/>
                                         <Grid x:Name="MemberSubGrid" Margin="20,0,0,0">
-                                            <Button x:Name="IpAddressButton" Content="{Binding IpAddress}" Cursor="Hand" Click="IpAddressButton_Click" Initialized="IpAddressButton_Initialized"/>
+                                            <Button x:Name="IpAddressButton" Content="{Binding IpAddress}" Cursor="Hand" Click="IpAddressButton_Click" Initialized="IpAddressButton_Initialized" Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                                             <Grid x:Name="NicknameLabel" IsHitTestVisible="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="106" Background="{DynamicResource Palette_400}">
                                                 <TextBlock Text="{Binding Nickname}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                <TextBlock FontSize="10" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                                        <Run Text="{Binding PingLatency}"/>
-                                                        <Run Text="ms"/>
-                                                </TextBlock>
+                                                <TextBlock FontSize="10" Text="{Binding PingLatency}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -233,9 +203,9 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
 
-                        <local:RoomPageMemberModel IsAdmin="False" Nickname="Admin" IpAddress="172.16.0.1" PingLatency="10"/>
-                        <local:RoomPageMemberModel IsAdmin="false" Nickname="Guest1" IpAddress="172.16.0.2" PingLatency="10"/>
-                        <local:RoomPageMemberModel IsAdmin="false" Nickname="Guest2" IpAddress="172.16.0.3" PingLatency="10"/>
+                        <local:RoomPageMemberModel IsAdmin="False" Nickname="Admin" IpAddress="172.16.0.1" PingLatency="0ms"/>
+                        <local:RoomPageMemberModel IsAdmin="false" Nickname="Guest1" IpAddress="172.16.0.2" PingLatency="10ms"/>
+                        <local:RoomPageMemberModel IsAdmin="false" Nickname="Guest2" IpAddress="172.16.0.3" PingLatency="20ms"/>
                     </ItemsControl>
                 </hc:ScrollViewer>
             </Grid>

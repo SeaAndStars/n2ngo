@@ -10,7 +10,7 @@
     <system:String x:Key="LOCALE_Index-GoBack_Description">Go Back to the Previous Index</system:String>
     
     <system:String x:Key="LOCALE_Index-Community_Title">Community</system:String>
-    <system:String x:Key="LOCALE_Index-Community_Description">View all visible public rooms in the community here</system:String>
+    <system:String x:Key="LOCALE_Index-Community_Description">Let's get started here!</system:String>
     <system:String x:Key="LOCALE_Index-Hosting_Title">Hosting</system:String>
     <system:String x:Key="LOCALE_Index-Hosting_Description">Host your own room</system:String>
     <system:String x:Key="LOCALE_Index-Clienting_Title">Join</system:String>
@@ -44,6 +44,12 @@
     <system:String x:Key="LOCALE_Dialog_NoButton">No</system:String>
     <system:String x:Key="LOCALE_Dialog_InputOKButton">Confirm</system:String>
 
+    <system:String x:Key="LOCALE_DialogSetMainColor_Title">New Main Color</system:String>
+    <system:String x:Key="LOCALE_DialogSetMainColor_Content">Edit Color</system:String>
+
+    <system:String x:Key="LOCALE_DialogSetMinorColor_Title">New Minor Color</system:String>
+    <system:String x:Key="LOCALE_DialogSetMinorColor_Content">Edit Color</system:String>
+
     <system:String x:Key="LOCALE_DialogConnectionSuccessful_Title">Success</system:String>
     <system:String x:Key="LOCALE_DialogConnectionSuccessful_Content">Successfully connected to the N2N GO server.</system:String>
 
@@ -62,14 +68,18 @@
     <system:String x:Key="LOCALE_DialogEnterRoom_Fail_Not_Connected_Content">You have not joined any room.</system:String>
 
     <system:String x:Key="LOCALE_DialogCreateRoom_Title">Creating Room</system:String>
-    <system:String x:Key="LOCALE_DialogCreateRoom_Fail_Invalid_String_Array_Content">An exception occurs when creating a room.</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoom_Failure_Invalid_String_Array_Content">An exception occurs when creating a room.</system:String>
     <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Title">Security</system:String>
     <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Content">Currently your connection to our servers is not securely encrypted and the servers will also store data in plaintext.&#13;
 This means that our connection can be monitored and stolen by third parties and that the server administrators will also be able to see our data in plaintext.&#13;
 Therefore, please do not give us your important personal data!</system:String>
 
     <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Title">Clipboard</system:String>
-    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Content">IP Address is copied to clipborad.</system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Content">IP Address has been copied to the clipborad.</system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_TimedOut_Content">Oops, looks like something is wrong, if you can't access the address, just wait, it will fix it automatically! :) &#13;
+(IP Address is copied to clipborad)</system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Unknown_Content">Oops, it looks like something is wrong, you may not be able to access the address, and we're not sure why, please try again later! :( &#13;
+(IP Address is copied to clipborad)</system:String>
 
     <system:String x:Key="LOCALE_DialogViewUserKey_Title">Viewing User Key</system:String>
     <system:String x:Key="LOCALE_DialogViewUserKey_Description_Content">The User Key is the unique identifier of your current session with the server, it is unique and you will get a new User Key every time you reset the connection, please do not disclose it.&#13;&#13;Press 'Yes' to Continue</system:String>
@@ -82,11 +92,16 @@ Therefore, please do not give us your important personal data!</system:String>
     <system:String x:Key="LOCALE_DialogJoinRoom_Failure_Title">Failed to Join Room</system:String>
     <system:String x:Key="LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content">Invalid Room Code input.</system:String>
     <system:String x:Key="LOCALE_DialogJoinRoom_Failure_RoomPassEmptyInput_Description_Content">Invalid Room Password input.</system:String>
-    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content">Failed to enter room, continue for more information.</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_NoWindowsTapDevices_Description_Content">Failed to enter room: No available Windows Tap devices. Please check and install the Windows Tap network adapter driver. Tap-Windows available here: https://mail.bestlgf.pro/N2NGO/Download</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_DeviceOperationFailure_Description_Content">Failed to enter room: Cannot access network adapter devices. Please check your user permission level.</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content">Continue for more information.</system:String>
+
+    <system:String x:Key="LOCALE_DialogUpdateInfo_Title">Update Info</system:String>
 
     <system:String x:Key="LOCALE_PageRooms-SearchPlaceholder_Content">Space Separation Room Code or Name</system:String>
-    
+
     <system:String x:Key="LOCALE_PageRoom-CurrentRoomLifetime">Lifetime</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminPanelButton_Content">Admin Panel</system:String>
     <system:String x:Key="LOCALE_PageRoom-AdminCloseRoomButton_Content">Close</system:String>
     <system:String x:Key="LOCALE_PageRoom-AdminActivateRoomButton_Content">Activate</system:String>
     <system:String x:Key="LOCALE_PageRoom-AdminTabMembersHeader_Content">Live</system:String>
@@ -100,8 +115,8 @@ Therefore, please do not give us your important personal data!</system:String>
 
 
     <system:String x:Key="LOCALE_Tooltip-ClicktoSet">Click to set</system:String>
-    
-    <system:String x:Key="LOCALE_ShowConsole">Open Debug Console</system:String>
+
+    <system:String x:Key="LOCALE_ShowConsole">Debug Console</system:String>
     <system:String x:Key="LOCALE_ToggleLogButton">Toggle Log Button</system:String>
     <system:String x:Key="LOCALE_InstallTap">Install Tap</system:String>
     <system:String x:Key="LOCALE_ClearShaderCache">Clear Shader Cache</system:String>
@@ -137,6 +152,7 @@ Therefore, please do not give us your important personal data!</system:String>
     <system:String x:Key="LOCALE_CreateRoomCreate">Create!</system:String>
     <system:String x:Key="LOCALE_CreateRoomRoomName">Name</system:String>
     <system:String x:Key="LOCALE_CreateRoomRoomPassword">Password</system:String>
+    <system:String x:Key="LOCALE_CreateRoomRoomInitialLifetime">Lifetime(hh:mm:ss)</system:String>
     <system:String x:Key="LOCALE_CreateRoomSetMain">Main Color</system:String>
     <system:String x:Key="LOCALE_CreateRoomSetMinor">Minor Color</system:String>
     <system:String x:Key="LOCALE_CreateRoomPreview">Preview</system:String>

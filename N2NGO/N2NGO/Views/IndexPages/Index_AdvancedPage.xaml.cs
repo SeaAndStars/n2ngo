@@ -43,13 +43,13 @@ namespace N2NGO.Views.SubPages
 
                 case "Settings":
                     {
-                        NavigatePage(SharedData.CurrentApp.MainView.PageSettings);
+                        NavigatePage(SharedData.CurrentApp.MainWindow.PageSettings);
                         break;
                     }
 
                 case "Storage":
                     {
-                        NavigateIndexPage(SharedData.CurrentApp.MainView.PageIndex.StorageIndexPage);
+                        NavigateIndexPage(SharedData.CurrentApp.MainWindow.PageIndex.StorageIndexPage);
                         break;
                     }
 

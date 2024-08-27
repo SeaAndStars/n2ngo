@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:N2NGO"
         xmlns:hc="clr-namespace:HandyControl.Controls;assembly=HandyControl"
         xmlns:hc1="https://handyorg.github.io/handycontrol" xmlns:system="clr-namespace:System;assembly=netstandard" xmlns:MagicEffects="clr-namespace:CT.WPF.MagicEffects;assembly=CT.WPF.MagicEffects" 
-        xmlns:local1="clr-namespace:N2NGO.Views" x:Class="N2NGO.Views.MainView"
+        xmlns:local1="clr-namespace:N2NGO.Views" x:Class="N2NGO.Views.MainWindow"
         xmlns:walterlv="clr-namespace:Walterlv.Windows.Effects;assembly=Walterlv.Themes.FluentDesign"
         mc:Ignorable="d"
         Title="N2N GO" Height="600" Width="930"
@@ -129,13 +129,13 @@
                 </Grid>
             </Border>
 
-            <Button x:Name="ButtonLog" Height="55" Width="55" VerticalAlignment="Bottom" HorizontalAlignment="Left"  Style="{DynamicResource CylindricalButtonStyle}" ToolTip="日志" Click="TitleIconButton_Click" Margin="40,0,0,55" Grid.Row="1">
+            <!--<Button x:Name="ButtonFunc" Height="55" Width="55" VerticalAlignment="Bottom" HorizontalAlignment="Left"  Style="{DynamicResource CylindricalButtonStyle}" ToolTip="日志" Margin="40,0,0,55" Grid.Row="1">
                 <Image x:Name="LBImage_Wnd_Btn_Log" Width="30" Height="30" Stretch="Fill" Source="/Data/Images/icon/log.png">
                     <Image.Effect>
                         <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
                     </Image.Effect>
                 </Image>
-            </Button>
+            </Button>-->
             <Border x:Name="DebugOverlay" Visibility="Collapsed" IsHitTestVisible="False" Background="#8C272727" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,5,0,0" Grid.Row="1" Width="140">
                 <Label x:Name="DebugLabel_FPS" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource Palette_50}" HorizontalAlignment="Stretch" Content="FPS: 0" FontSize="22" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Height="95"/>
             </Border>

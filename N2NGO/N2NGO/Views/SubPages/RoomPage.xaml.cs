@@ -2,9 +2,8 @@
 using N2NGO.UtilsClass;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -39,8 +38,6 @@ namespace N2NGO.Views.SubPages
             AdminMembersList.Items.Clear();
             AdminRuledMembersList.Items.Clear();
             ItemsControl_Members.Items.Clear();
-            UserSuggestionSection2.Visibility = Visibility.Collapsed;
-            UserSuggestionSection2.Opacity = 0;
 
             _refreshTimer = new()
             {
@@ -63,10 +60,10 @@ namespace N2NGO.Views.SubPages
 
             try
             {
-                var edgeDeviceAllocation = SharedData.N2NEdgeLogHelper.GetEdgeDeviceAllocation(SharedData.CurrentApp.N2NExecLog.LogOut);
+                var edgeDeviceAllocation = SharedData.N2NEdgeOutputHelper.GetEdgeDeviceAllocation(SharedData.CurrentApp.EdgeN2NExecutor.GetOutput);
 
                 var CurrentUser_UserNickname = SharedData.CurrentApp.Config.Get("UserNickname") ?? "null_local";
-                var CurrentUser_IpAddress = edgeDeviceAllocation[SharedData.N2NEdgeLogHelper.EdgeDeviceAllocating.IP] ?? "...";
+                var CurrentUser_IpAddress = edgeDeviceAllocation[SharedData.N2NEdgeOutputHelper.EdgeDeviceAllocating.IP] ?? "...";
                 SharedData.CurrentApp.N2NGOServerConnection.MemberPush(CurrentUser_UserNickname, CurrentUser_IpAddress);
 
                 var members = SharedData.CurrentApp.N2NGOServerConnection.MemberPull();
@@ -87,7 +84,8 @@ namespace N2NGO.Views.SubPages
                     {
                         var pingTest = ping.Send(member.IpAddress, 1000);
 
-                        if (pingTest.Status == System.Net.NetworkInformation.IPStatus.Success)
+                        _member.PingStatus = pingTest.Status;
+                        if (pingTest.Status == IPStatus.Success)
                         {
                             _member.PingLatency = $"{pingTest.RoundtripTime}ms";
                         }
@@ -96,7 +94,7 @@ namespace N2NGO.Views.SubPages
                             _member.PingLatency = $"{pingTest.Status.ToString()}";
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         _member.PingLatency = "-1";
                     }
@@ -138,7 +136,7 @@ namespace N2NGO.Views.SubPages
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => Console.WriteLine($"An Exception occurred while pulling room data: {ex.Message}"));
+                Dispatcher.InvokeAsync(() => SharedData.CurrentApp.Log.WriteLine($"An Exception occurred while pulling room data: {ex.Message}", SharedData.CurrentApp.Log.Module.MainWindow_RoomPage));
             }
         }
 
@@ -174,8 +172,8 @@ namespace N2NGO.Views.SubPages
 
             if (isConnectedToRoom)
             {
-                var edgeDeviceAllocation = SharedData.N2NEdgeLogHelper.GetEdgeDeviceAllocation(SharedData.CurrentApp.N2NExecLog.LogOut);
-                CurrentRoomIpAddress.Text = edgeDeviceAllocation[SharedData.N2NEdgeLogHelper.EdgeDeviceAllocating.IP] ?? "...";
+                var edgeDeviceAllocation = SharedData.N2NEdgeOutputHelper.GetEdgeDeviceAllocation(SharedData.CurrentApp.EdgeN2NExecutor.GetOutput);
+                CurrentRoomIpAddress.Text = edgeDeviceAllocation[SharedData.N2NEdgeOutputHelper.EdgeDeviceAllocating.IP] ?? "...";
             }
             else
             {
@@ -213,7 +211,7 @@ namespace N2NGO.Views.SubPages
         private async void ButtonExitRoom_Click(object? sender, RoutedEventArgs? e)
         {
             await Task.Run(() => SharedData.CurrentApp.LeaveRoom());
-            SharedData.CurrentApp.MainView.NavigatePage(null);
+            SharedData.CurrentApp.MainWindow.NavigatePage(null);
         }
 
         private void IpAddressButton_Initialized(object sender, EventArgs e)
@@ -280,7 +278,109 @@ namespace N2NGO.Views.SubPages
                 return;
 
             Clipboard.SetDataObject(member.IpAddress);
-            SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogRoomMemberIpAddressCopied_Content", "@LOCALE_DialogRoomMemberIpAddressCopied_Title");
+            string copiedTipSource = "@LOCALE_DialogRoomMemberIpAddressCopied_Content";
+            switch (member.PingStatus)
+            {
+                default:
+                    {
+                        copiedTipSource = "@LOCALE_DialogRoomMemberIpAddressCopied_Unknown_Content";
+                        break;
+                    }
+
+                case IPStatus.Success:
+                    {
+                        copiedTipSource = "@LOCALE_DialogRoomMemberIpAddressCopied_Content";
+                        break;
+                    }
+                case IPStatus.TimedOut:
+                    {
+                        copiedTipSource = "@LOCALE_DialogRoomMemberIpAddressCopied_TimedOut_Content"; 
+                        break;
+                    }
+                //case IPStatus.DestinationNetworkUnreachable:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.DestinationHostUnreachable:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.DestinationProhibited:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.DestinationPortUnreachable:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.NoResources:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.BadOption:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.HardwareError:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.PacketTooBig:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.BadRoute:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.TtlExpired:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.TtlReassemblyTimeExceeded:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.ParameterProblem:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.SourceQuench:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.BadDestination:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.DestinationUnreachable:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.TimeExceeded:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.BadHeader:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.UnrecognizedNextHeader:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.IcmpError:
+                //    {
+                //        break;
+                //    }
+                //case IPStatus.DestinationScopeMismatch:
+                //    {
+                //        break;
+                //    }
+            }
+
+
+            SharedData.CurrentApp.MainWindow.DoMessageDialog(copiedTipSource, "@LOCALE_DialogRoomMemberIpAddressCopied_Title");
         }
 
         private bool _showAdminPanel = true;
@@ -306,39 +406,6 @@ namespace N2NGO.Views.SubPages
         {
             SwitchAdminPanel();
         }
-
-        private void CollapseUserSuggestionPanel()
-        {
-            UserSuggestionSection1.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation() { To = 0, Duration = TimeSpan.FromSeconds(0.225) });
-            UserSuggestionSection2.Visibility = Visibility.Visible;
-            UserSuggestionSection2.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation() { To = 1, BeginTime = TimeSpan.FromSeconds(0.7), Duration = TimeSpan.FromSeconds(0.225) });
-            PanelUserSuggestion.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation() { To = 0, BeginTime = TimeSpan.FromSeconds(2), Duration = TimeSpan.FromSeconds(0.325), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } });
-            ((ScaleTransform)PanelUserSuggestion.LayoutTransform).BeginAnimation(ScaleTransform.ScaleYProperty, new DoubleAnimation() { To = 0, BeginTime = TimeSpan.FromSeconds(2), Duration = TimeSpan.FromSeconds(0.325), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } });
-        }
-
-        private void ButtonCloseUserSuggestions_Click(object sender, RoutedEventArgs e)
-        {
-            CollapseUserSuggestionPanel();
-        }
-
-        private async void ButtonCommitUserSuggestions_Click(object sender, RoutedEventArgs e)
-        {
-            UserSuggestions.Text += $"\n\n{DateTime.Now.ToString()}";
-
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                    (await client.PostAsync($"https://mail.bestlgf.pro/N2NGO/AnonymousSuggestions?Date={DateTime.UtcNow.ToString()}&Content={UserSuggestions.Text}", null)).EnsureSuccessStatusCode();
-
-                CollapseUserSuggestionPanel();
-            }
-            catch (Exception ex)
-            {
-                SharedData.CurrentApp.MainView.DoMessageDialog(ex.Message, "发送匿名建议");
-            }
-        }
-
-        private void AnonymousSuggestionsHyperlink_Click(object sender, RoutedEventArgs e) => Process.Start(new ProcessStartInfo("https://mail.bestlgf.pro/N2NGO/AnonymousSuggestions") { UseShellExecute = true });
 
         private void ButtonAdminCloseRoom_Click(object sender, RoutedEventArgs e)
         {
@@ -378,6 +445,8 @@ namespace N2NGO.Views.SubPages
         public string Nickname { get; set; } = string.Empty;
         public string IpAddress { get; set; } = string.Empty;
         public string PingLatency { get; set; } = "Unknown";
+
+        public IPStatus PingStatus = IPStatus.Unknown;
     }
     public class RoomPageRuledMemberModel : RoomPageMemberModel
     {

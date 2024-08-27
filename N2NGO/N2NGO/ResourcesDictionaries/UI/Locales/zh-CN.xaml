@@ -10,7 +10,7 @@
     <system:String x:Key="LOCALE_Index-GoBack_Description">返回至上一个索引</system:String>
     
     <system:String x:Key="LOCALE_Index-Community_Title">大厅</system:String>
-    <system:String x:Key="LOCALE_Index-Community_Description">在这里查看社区所有可见的公开房间</system:String>
+    <system:String x:Key="LOCALE_Index-Community_Description">让我们在这里开始！</system:String>
     <system:String x:Key="LOCALE_Index-Hosting_Title">主持</system:String>
     <system:String x:Key="LOCALE_Index-Hosting_Description">创建一个属于您的房间</system:String>
     <system:String x:Key="LOCALE_Index-Clienting_Title">加入</system:String>
@@ -44,6 +44,12 @@
     <system:String x:Key="LOCALE_Dialog_NoButton">否</system:String>
     <system:String x:Key="LOCALE_Dialog_InputOKButton">确认</system:String>
 
+    <system:String x:Key="LOCALE_DialogSetMainColor_Title">设置主要色</system:String>
+    <system:String x:Key="LOCALE_DialogSetMainColor_Content">编辑新颜色：</system:String>
+
+    <system:String x:Key="LOCALE_DialogSetMinorColor_Title">设置次要色</system:String>
+    <system:String x:Key="LOCALE_DialogSetMinorColor_Content">编辑新颜色：</system:String>
+
     <system:String x:Key="LOCALE_DialogConnectionSuccessful_Title">连接</system:String>
     <system:String x:Key="LOCALE_DialogConnectionSuccessful_Content">成功连接到 N2N GO 服务器</system:String>
 
@@ -62,7 +68,10 @@
     <system:String x:Key="LOCALE_DialogEnterRoom_Fail_Not_Connected_Content">您还未加入任何房间。</system:String>
 
     <system:String x:Key="LOCALE_DialogCreateRoom_Title">创建房间</system:String>
-    <system:String x:Key="LOCALE_DialogCreateRoom_Fail_Invalid_String_Array_Content">创建房间时出现未知异常。</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoom_Failure_Title">创建房间失败</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoom_Failure_Invalid_RoomNameInput_Content">无效房间名</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoom_Failure_Invalid_RoomPasswordInput_Content">无效密码</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoom_Failure_Invalid_String_Array_Content">创建房间时出现未知异常。</system:String>
     <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Title">安全性</system:String>
     <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Content">您当前与我们服务器的连接未采用安全加密措施，并且服务器也将会以明文的方式存储数据。&#13;
 这意味着我们的连接可能会被第三方监视并窃取，并且服务器管理员也将可以看到我们的明文数据。&#13;
@@ -70,6 +79,10 @@
 
     <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Title">剪贴板</system:String>
     <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Content">IP地址已复制到剪贴板。</system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_TimedOut_Content">哎呀，看起来出了点问题，如果您无法访问该地址，请稍候，它将会自动恢复！:) &#13;
+(IP地址已复制到剪贴板)</system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Unknown_Content">哎呀，看起来出了点问题，您可能无法访问该地址，我们也不确定是何原因，请稍后再试！:( &#13;
+(IP地址已复制到剪贴板)</system:String>
 
     <system:String x:Key="LOCALE_DialogViewUserKey_Title">查看用户密钥</system:String>
     <system:String x:Key="LOCALE_DialogViewUserKey_Description_Content">User Key 是您当前与服务器连接Session 的唯一标识，它是独一无二的，并且每次重置连接后您都会获得新的User Key，请不要泄露它。&#13;&#13;点击'是'来查看您的密钥</system:String>
@@ -82,11 +95,16 @@
     <system:String x:Key="LOCALE_DialogJoinRoom_Failure_Title">加入房间失败</system:String>
     <system:String x:Key="LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content">房间代码无效。</system:String>
     <system:String x:Key="LOCALE_DialogJoinRoom_Failure_RoomPassEmptyInput_Description_Content">房间密码无效。</system:String>
-    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content">进入房间失败，请继续以查看更多信息。</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_NoWindowsTapDevices_Description_Content">加入房间失败，我们无法找到可用设备，请从这里获取 Tap-Windows：https://mail.bestlgf.pro/N2NGO/Download</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_DeviceOperationFailure_Description_Content">加入房间失败，请确保您有足够的权限用于访问网络设备。</system:String>
+    <system:String x:Key="LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content">加入房间失败，请继续以查看更多信息。</system:String>
+
+    <system:String x:Key="LOCALE_DialogUpdateInfo_Title">更新信息</system:String>
     
     <system:String x:Key="LOCALE_PageRooms-SearchPlaceholder_Content">空格分隔房间代码或房间名</system:String>
 
     <system:String x:Key="LOCALE_PageRoom-CurrentRoomLifetime">剩余时间</system:String>
+    <system:String x:Key="LOCALE_PageRoom-AdminPanelButton_Content">管理员面板</system:String>
     <system:String x:Key="LOCALE_PageRoom-AdminCloseRoomButton_Content">关闭房间</system:String>
     <system:String x:Key="LOCALE_PageRoom-AdminActivateRoomButton_Content">激活</system:String>
     <system:String x:Key="LOCALE_PageRoom-AdminTabMembersHeader_Content">房间内</system:String>
@@ -100,8 +118,8 @@
 
 
     <system:String x:Key="LOCALE_Tooltip-ClicktoSet">点击设置</system:String>
-    
-    <system:String x:Key="LOCALE_ShowConsole">显示调试控制台</system:String>
+
+    <system:String x:Key="LOCALE_ShowConsole">调试控制台</system:String>
     <system:String x:Key="LOCALE_ToggleLogButton">切换日志按钮</system:String>
     <system:String x:Key="LOCALE_InstallTap">安装Tap驱动</system:String>
     <system:String x:Key="LOCALE_ClearShaderCache">清除着色器缓存</system:String>
@@ -137,6 +155,7 @@
     <system:String x:Key="LOCALE_CreateRoomCreate">创建！</system:String>
     <system:String x:Key="LOCALE_CreateRoomRoomName">名字</system:String>
     <system:String x:Key="LOCALE_CreateRoomRoomPassword">密码</system:String>
+    <system:String x:Key="LOCALE_CreateRoomRoomInitialLifetime">存活时间(时:分:秒)</system:String>
     <system:String x:Key="LOCALE_CreateRoomSetMain">设置主要色</system:String>
     <system:String x:Key="LOCALE_CreateRoomSetMinor">设置次要色</system:String>
     <system:String x:Key="LOCALE_CreateRoomPreview">预览</system:String>

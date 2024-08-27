@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using static N2NGO_Server.N2NGOServer.Base.N2NGOServer;
 using N2NGO_Core.Models.Server;
+using System.Text.Json;
 
 namespace N2NGO_Server.N2NGOServer
 {
@@ -264,7 +265,7 @@ namespace N2NGO_Server.N2NGOServer
                                     if (UInt32.TryParse(cmd_Args[7], System.Globalization.NumberStyles.HexNumber, null, out var color))
                                         room.MinorColor = new RoomColor(color);
                                 }
-                                room.InitControlBlock();
+                                room.InitHandler();
                                 Server.Rooms.Add(room);
                             }
                             else
@@ -275,52 +276,23 @@ namespace N2NGO_Server.N2NGOServer
 
                         if (cmdLower == "save_rooms")
                         {
-                            StringBuilder sb = new();
-                            for (int i = 0; i < Server.Rooms.Count; i++)
-                            {
-                                try
-                                {
-                                    var code = Server.Rooms[i].RoomCode ?? throw new($"RoomCode of '{Server.Rooms[i].RoomCode}' is null");
-                                    var name = Server.Rooms[i].RoomName ?? throw new($"RoomName of '{Server.Rooms[i].RoomCode}' is null");
-                                    var ipn = Server.Rooms[i].IsRoomPasswordNeeded ?? throw new($"IsRoomPasswordNeeded of '{Server.Rooms[i].RoomCode}' is null");
-                                    var iri = Server.Rooms[i].IsRoomInvisible ?? throw new($"IsRoomInvisible of '{Server.Rooms[i].RoomCode}' is null");
-                                    var pwd = Server.Rooms[i].RoomPassword ?? throw new($"RoomPassword of '{Server.Rooms[i].RoomCode}' is null");
-                                    var mainColor = Server.Rooms[i].MainColor ?? throw new($"MainColor of '{Server.Rooms[i].RoomCode}' is null");
-                                    var minorColor = Server.Rooms[i].MinorColor ?? throw new($"MinorColor of '{Server.Rooms[i].RoomCode}' is null");
-
-                                    sb.AppendFormat("{0}|{1}|{2}|{3}|{4}|{5}|{6}", code, name, iri ? '1' : '0', ipn ? '1' : '0', pwd, mainColor.data, minorColor.data);
-                                    sb.AppendLine();
-                                }
-                                catch (Exception ex)
-                                {
-                                    Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, $"Cannot save room '{Server.Rooms[i].RoomCode ?? Server.Rooms[i].RoomName ?? string.Empty}': {ex}");
-                                }
-                            }
-                            File.WriteAllText("Rooms", sb.ToString());
+                            lock (Server.Rooms)
+                                File.WriteAllText("Rooms.json", JsonSerializer.Serialize<List<Room>>(Server.Rooms));
 
                             goto loop;
                         }
 
                         if (cmdLower == "load_rooms")
                         {
-                            string[] lines = File.ReadAllLines("Rooms");
-                            long _lineIndex = 0;
-                            foreach (string s in lines)
-                            {
-                                string[] infos = s.Split('|');
-                                if (infos.Length == 7)
+                            var rooms = JsonSerializer.Deserialize<List<Room>>(File.ReadAllText("Rooms.json"));
+                            if (rooms is null)
+                                throw new("Cannot cast data to List<Room> from file 'Rooms.json'");
+                            lock (Server.Rooms)
+                                foreach (var room in rooms)
                                 {
-                                    Room room = new() { RoomCode = infos[0], RoomName = infos[1], IsRoomInvisible = infos[2] != "0", IsRoomPasswordNeeded = infos[3] != "0", RoomPassword = infos[4], MainColor = new RoomColor(UInt32.Parse(infos[5])), MinorColor = new RoomColor(UInt32.Parse(infos[6])) };
-                                    room.InitControlBlock();
+                                    room.InitHandler();
                                     Server.Rooms.Add(room);
                                 }
-                                else
-                                {
-                                    Server.ConsoleBuffer.AppendBuffer(ConsoleBuffer.BufferContentType.Error, $"Cannot load room on line {_lineIndex}:\"{s}\"");
-                                }
-
-                                _lineIndex++;
-                            }
 
                             goto loop;
                         }

@@ -1,6 +1,5 @@
 ﻿using N2NGO.UtilsClass;
 using N2NGO.Views.SubPages.Dialogs;
-using N2NGO.Views.SubPages.Dialogs.MessageDialogs;
 using N2NGO_Core;
 using System;
 using System.Collections.Generic;
@@ -333,14 +332,14 @@ namespace N2NGO.Views.SubPages
                                     }
                                 }
                             invalid:
-                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("无效的N2N GO 服务器协议", "刷新页面"));
+                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.DoMessageDialog("无效的N2N GO 服务器协议", "刷新页面"));
                             end:
                                 DialogOut(DialogLoadingRooms, Dispatcher);
                                 return;
                             }
                             catch (Exception ex)
                             {
-                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog($"在刷新房间列表时发生异常：{ex}"));
+                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.DoMessageDialog($"在刷新房间列表时发生异常：{ex}"));
                                 DialogOut(DialogLoadingRooms, Dispatcher);
                                 return;
                             }
@@ -357,7 +356,7 @@ namespace N2NGO.Views.SubPages
                 });
 
                 sw.Stop();
-                Dispatcher.InvokeAsync(() => Console.WriteLine($"[Rooms Refresh] Total Time: {sw.ElapsedMilliseconds}ms({sw.ElapsedTicks}ticks)"));
+                Dispatcher.InvokeAsync(() => SharedData.CurrentApp.Log.WriteLine($"Refresh Time: {sw.ElapsedMilliseconds}ms({sw.ElapsedTicks}ticks)", SharedData.CurrentApp.Log.Module.MainWindow_RoomsPage));
             });
         }
 
@@ -491,14 +490,14 @@ namespace N2NGO.Views.SubPages
                                     }
                                 }
                             invalid:
-                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("无效的N2N GO 服务器协议", "刷新页面"));
+                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.DoMessageDialog("无效的N2N GO 服务器协议", "刷新页面"));
                             end:
                                 DialogOut(DialogLoadingRooms, Dispatcher);
                                 return;
                             }
                             catch (Exception ex)
                             {
-                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog($"在刷新房间列表时发生异常：{ex}"));
+                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.DoMessageDialog($"在刷新房间列表时发生异常：{ex}"));
                                 DialogOut(DialogLoadingRooms, Dispatcher);
                                 return;
                             }
@@ -515,7 +514,7 @@ namespace N2NGO.Views.SubPages
                 });
 
                 sw.Stop();
-                Dispatcher.InvokeAsync(() => Console.WriteLine($"[Rooms Refresh] Total Time: {sw.ElapsedMilliseconds}ms({sw.ElapsedTicks}ticks)"));
+                Dispatcher.InvokeAsync(() => SharedData.CurrentApp.Log.WriteLine($"Refresh Time: {sw.ElapsedMilliseconds}ms({sw.ElapsedTicks}ticks)", SharedData.CurrentApp.Log.Module.MainWindow_RoomsPage));
             });
         }
 
@@ -591,7 +590,7 @@ namespace N2NGO.Views.SubPages
         private void TempGrid_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             // Click
-            CardDialogBorderFrame.Navigate(new Dialogs.DialogRoomInfo((RoomsPageRoomCardModel)(((Grid)sender).DataContext), async (_, __) =>
+            CardDialogBorderFrame.Navigate(new DialogRoomInfo((RoomsPageRoomCardModel)(((Grid)sender).DataContext), async (_, __) =>
             {
                 await Dispatcher.InvokeAsync(() =>
                 {
@@ -603,76 +602,13 @@ namespace N2NGO.Views.SubPages
                     _loadingDialogFadeIn.Completed += (s, _) =>
                     {
                         animationCompletedTask.SetResult(0);
+
+                        RoomsPageRoomCardModel card = (RoomsPageRoomCardModel)((Grid)sender).DataContext;
+                        var rJoin = SharedData.CurrentApp.JoinRoomAsync(card.IsRoomPasswordNeeded, card.RoomCode, ((DialogRoomInfo)CardDialogBorderFrame.Content).TextBoxPasswd.Text);
+                        DialogOut(DialogJoiningRoom, Dispatcher);
                     };
                     DialogJoiningRoom.BeginAnimation(OpacityProperty, _loadingDialogFadeIn);
-
-
                 });
-
-                SharedData.CurrentApp.LeaveRoom();
-
-                RoomsPageRoomCardModel card = (RoomsPageRoomCardModel)((Grid)sender).DataContext;
-
-                string roomCode = card.RoomCode;
-                string roomPassword = (card.IsRoomPasswordNeeded ? ((DialogRoomInfo)CardDialogBorderFrame.Content).TextBoxPasswd.Text : SharedData.DefaultRoomPassword).Trim();
-
-                if (card.IsRoomPasswordNeeded && string.IsNullOrEmpty(roomPassword))
-                {
-                    await SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("密码不能为空！", "进入房间失败"));
-                    DialogOut(DialogJoiningRoom, Dispatcher);
-                    return;
-                }
-
-                string cmd = SharedData.EdgePath + " -c " + roomCode + " -k " + roomPassword + " -l " + $"{SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Address}:{SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort}";
-
-                timer.Stop();
-                timer = new();
-                timer.Tick += async (_, __) =>
-                {
-
-                    if (!SharedData.N2NEdgeLogHelper.IsEdgeConnectedToSupernode(SharedData.CurrentApp.N2NExecLog.LogOut))
-                        return;
-
-                    timer.Stop();
-
-                    if (string.IsNullOrEmpty(roomCode))
-                    {
-                        SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Failure_Title"));
-                        SharedData.CurrentApp.LeaveRoom();
-
-                        return;
-                    }
-
-                    var enterRoomResult = await Task.Run(() => SharedData.CurrentApp.EnterRoom(roomCode, roomPassword));
-                    if (!enterRoomResult)
-                    {
-                        SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content", "@LOCALE_DialogJoinRoom_Failure_Title"));
-                        return;
-                    }
-
-                    SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Success_Description_Content", "@LOCALE_DialogJoinRoom_Title"));
-                };
-                timer.Start();
-
-
-                if (await SharedData.CurrentApp.N2NExecLog.ExecuteAsync(cmd, true) is null)
-                {
-                    SharedData.CurrentApp.Dispatcher.Invoke(() => SharedData.CurrentApp.MainView.DoMessageDialog("您当前仍有其他正在进入房间的任务，请查看日志", "进入房间终止"));
-
-                    timer.Stop();
-                    DialogOut(DialogJoiningRoom, Dispatcher);
-                    return;
-                }
-
-                if (SharedData.CurrentApp.N2NExecLog.LogOut.Contains("No Windows tap devices found, did you run tapinstall.exe?"))
-                {
-                    // No Windows tap
-                    SharedData.CurrentApp.MainView.DoMessageDialog("我们无法找到可用的Tap设备，请检查并安装Tap虚拟网卡驱动。您可以在以下地址获取 Tap-Windows：https://mail.bestlgf.pro/N2NGO/Download", "进入房间失败");
-                    timer.Stop();
-                }
-                timer.Stop();
-
-                DialogOut(DialogJoiningRoom, Dispatcher);
             }, (_, __) => HideCardInfoDialog()));
 
             ShowCardInfoDialog();
@@ -685,7 +621,7 @@ namespace N2NGO.Views.SubPages
 
         private void ButtonCancelLoadingRooms_Click(object sender, RoutedEventArgs e)
         {
-            DialogOut(DialogLoadingRooms, ((MainView)App.Current.MainWindow).Dispatcher);
+            DialogOut(DialogLoadingRooms, ((MainWindow)App.Current.MainWindow).Dispatcher);
         }
 
         private void PageIndexButton_Click(object sender, RoutedEventArgs e)

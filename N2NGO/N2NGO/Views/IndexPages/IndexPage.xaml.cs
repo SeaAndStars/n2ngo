@@ -119,15 +119,15 @@ namespace N2NGO.Views.SubPages
             
             if (isConnectedToRoom)
             {
-                var edgeDeviceAllocation = SharedData.N2NEdgeLogHelper.GetEdgeDeviceAllocation(SharedData.CurrentApp.N2NExecLog.LogOut);
-                CurrentRoomIpAddress.Text = edgeDeviceAllocation[SharedData.N2NEdgeLogHelper.EdgeDeviceAllocating.IP] ?? "...";
+                var edgeDeviceAllocation = SharedData.N2NEdgeOutputHelper.GetEdgeDeviceAllocation(SharedData.CurrentApp.EdgeN2NExecutor.GetOutput);
+                CurrentRoomIpAddress.Text = edgeDeviceAllocation[SharedData.N2NEdgeOutputHelper.EdgeDeviceAllocating.IP] ?? "...";
             }
             else
             {
                 CurrentRoomIpAddress.SetResourceReference(Run.TextProperty, "LOCALE_Unknown");
             }
 
-            SharedData.CurrentApp.MainView.PageRoom.UpdateRoomInfoWithLocal(room);
+            SharedData.CurrentApp.MainWindow.PageRoom.UpdateRoomInfoWithLocal(room);
         }
 
         private void DispatcherTimerCurrentUserIndexerUpdater_Tick(object? sender, EventArgs e)
@@ -147,7 +147,7 @@ namespace N2NGO.Views.SubPages
 
                 case "SetUserNickname":
                     {
-                        SharedData.CurrentApp.MainView.DoMessageInputDialog("@LOCALE_DialogEditNickname_Content", "@LOCALE_DialogEditNickname_Title"
+                        SharedData.CurrentApp.MainWindow.DoMessageInputDialog("@LOCALE_DialogEditNickname_Content", "@LOCALE_DialogEditNickname_Title"
                             , new List<Action<object>> {
                     (_)=> {
                         if (_ is not DialogMessage dialogMessage)
@@ -176,7 +176,7 @@ namespace N2NGO.Views.SubPages
 
                 case "ResetConnection":
                     {
-                        SharedData.CurrentApp.MainView.DoMessageYesNoDialog("@LOCALE_DialogResetConnectionDialog_Content", "@LOCALE_DialogResetConnectionDialog_Title",
+                        SharedData.CurrentApp.MainWindow.DoMessageYesNoDialog("@LOCALE_DialogResetConnectionDialog_Content", "@LOCALE_DialogResetConnectionDialog_Title",
                         new()
                         {
                             (_) =>
@@ -196,10 +196,10 @@ namespace N2NGO.Views.SubPages
                     {
                         if (!SharedData.CurrentApp.RoomConnection.IsConnected)
                         {
-                            SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogEnterRoom_Fail_Not_Connected_Content", "@LOCALE_DialogEnterRoom_Title");
+                            SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogEnterRoom_Fail_Not_Connected_Content", "@LOCALE_DialogEnterRoom_Title");
                             break;
                         }
-                        NavigatePage(SharedData.CurrentApp.MainView.PageRoom);
+                        NavigatePage(SharedData.CurrentApp.MainWindow.PageRoom);
                         break;
                     }
 
@@ -251,7 +251,7 @@ namespace N2NGO.Views.SubPages
 
         private void ButtonViewKey_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.CurrentApp.MainView.DoMessageYesNoDialog("@LOCALE_DialogViewUserKey_Description_Content", "@LOCALE_DialogViewUserKey_Title",
+            SharedData.CurrentApp.MainWindow.DoMessageYesNoDialog("@LOCALE_DialogViewUserKey_Description_Content", "@LOCALE_DialogViewUserKey_Title",
                         new()
                         {
                             (_) =>
@@ -266,7 +266,7 @@ namespace N2NGO.Views.SubPages
                                         if (usrKeyResult.IsSuccessfulStatusCode)
                                         {
                                             if (usrKeyResult.Value is not null)
-                                                Dispatcher.Invoke(()=>SharedData.CurrentApp.MainView.DoMessageDialog(usrKeyResult.Value, "@LOCALE_DialogViewUserKey_Title"));
+                                                Dispatcher.Invoke(()=>SharedData.CurrentApp.MainWindow.DoMessageDialog(usrKeyResult.Value, "@LOCALE_DialogViewUserKey_Title"));
                                         }
                                     });
                             }

@@ -22,79 +22,6 @@ namespace N2NGO.Views.SubPages
             IsPasswdNeeded_Click(null, null);
         }
 
-        public static async void Join(bool needPassword, string roomCode, string roomPassword)
-        {
-            SharedData.CurrentApp.LeaveRoom();
-
-            roomCode = roomCode.Trim();
-            roomPassword = roomPassword.Trim();
-            roomPassword = needPassword ? roomPassword : SharedData.DefaultRoomPassword;
-
-            if (string.IsNullOrEmpty(roomCode))
-            {
-                SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title");
-                return;
-            }
-
-            if (needPassword == true && string.IsNullOrEmpty(roomPassword.Trim()))
-            {
-                SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomPassEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title");
-                return;
-            }
-
-            DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1) };
-            timer.Tick += async (_, __) =>
-            {
-                if (!SharedData.N2NEdgeLogHelper.IsEdgeConnectedToSupernode(SharedData.CurrentApp.N2NExecLog.LogOut))
-                    return;
-
-                timer.Stop();
-
-                if (string.IsNullOrEmpty(roomCode))
-                {
-                    SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Failure_Title"));
-                    SharedData.CurrentApp.LeaveRoom();
-
-                    return;
-                }
-
-                var enterRoomResult = await Task.Run(() => SharedData.CurrentApp.EnterRoom(roomCode, roomPassword));
-                if (!enterRoomResult)
-                {
-                    SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content", "@LOCALE_DialogJoinRoom_Failure_Title"));
-                    return;
-                }
-
-                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogJoinRoom_Success_Description_Content", "@LOCALE_DialogJoinRoom_Title"));
-            };
-
-            timer.Start();
-
-            string cmd = SharedData.EdgePath + " -c " + roomCode + " -k " + roomPassword + " -l " + $"{SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Address}:{SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort}";
-
-            //EdgeInvoker edgeInvoker = new();
-            //edgeInvoker.PushArgs(" -c " + roomCode + " -k " + (needPassword ? roomPassword : SharedData.DefaultRoomPassword) + " -l " + SharedData.n2nServerIPP);
-            //edgeInvoker.Call();
-
-
-            if (await SharedData.CurrentApp.N2NExecLog.ExecuteAsync(cmd, true) is null)
-            {
-                SharedData.CurrentApp.Dispatcher.Invoke(() => SharedData.CurrentApp.MainView.DoMessageDialog("您当前仍有其他正在进入房间的任务，请查看日志", "进入房间终止"));
-
-                timer.Stop();
-                return;
-            }
-
-            if (SharedData.CurrentApp.N2NExecLog.LogOut.Contains("No Windows tap devices found, did you run tapinstall.exe?"))
-            {
-                // No Windows tap
-                SharedData.CurrentApp.MainView.DoMessageDialog("我们无法找到可用的Tap设备，请检查并安装Tap虚拟网卡驱动。您可以在以下地址获取 Tap-Windows：https://mail.bestlgf.pro/N2NGO/Download", "进入房间失败");
-                timer.Stop();
-            }
-
-            timer.Stop();
-        }
-
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             DialogJoiningRoom.Opacity = 0;
@@ -111,7 +38,7 @@ namespace N2NGO.Views.SubPages
             {
                 animationCompletedTask.Task.Wait();
 
-                Dispatcher.Invoke(() => Join(IsPasswdNeeded.IsChecked == true, RoomConnectText.Text, RoomPasswordText.Text));
+                SharedData.CurrentApp.JoinRoomAsync(IsPasswdNeeded.IsChecked == true, RoomConnectText.Text, RoomPasswordText.Text);
             });
 
             TaskCompletionSource<object> animationCompletedTask1 = new();
@@ -141,7 +68,7 @@ namespace N2NGO.Views.SubPages
                 GroupPasswordInput.IsEnabled = bNeedPassword;
                 if (bNeedPassword)
                 {
-                    SharedData.CurrentApp.MainView.DoMessageDialog("@LOCALE_DialogCreateRoomSecurity_Content", "@LOCALE_DialogCreateRoomSecurity_Title");
+                    SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoomSecurity_Content", "@LOCALE_DialogCreateRoomSecurity_Title");
                 }
             }
         }

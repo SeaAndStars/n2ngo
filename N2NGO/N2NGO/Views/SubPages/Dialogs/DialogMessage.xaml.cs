@@ -39,7 +39,8 @@ namespace N2NGO.Views.SubPages.Dialogs
         {
             OK,
             YesNo,
-            InputOK
+            InputConfirm,
+            PickBrushDone
         }
 
         void ButtonClicked()
@@ -136,7 +137,7 @@ namespace N2NGO.Views.SubPages.Dialogs
                         break;
                     }
 
-                case DialogType.InputOK:
+                case DialogType.InputConfirm:
                     {
                         var _c = new MessageDialogs.DialogInput();
                         if (MessageText.StartsWith('@'))
@@ -146,6 +147,24 @@ namespace N2NGO.Views.SubPages.Dialogs
 
                         SharedData.UIAnimation.InitButtons(new Button[] { _c.ButtonOK });
                         _c.ButtonOK.Click += (_, __) =>
+                        {
+                            ButtonClicked();
+                        };
+                        c = _c;
+
+                        break;
+                    }
+
+                case DialogType.PickBrushDone:
+                    {
+                        var _c = new MessageDialogs.DialogPickBrush();
+                        if (MessageText.StartsWith('@'))
+                            _c.MessageContentRunner.SetResourceReference(TextBlock.TextProperty, MessageText.Substring(1));
+                        else
+                            _c.MessageContentRunner.Text = MessageText;
+
+                        SharedData.UIAnimation.InitButtons(new Button[] { _c.ButtonDone });
+                        _c.ButtonDone.Click += (_, __) =>
                         {
                             ButtonClicked();
                         };

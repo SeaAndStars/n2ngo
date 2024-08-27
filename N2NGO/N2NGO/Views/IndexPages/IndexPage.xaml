@@ -87,10 +87,10 @@ Initialized="Indexer_Initialized" MouseEnter="Indexer_MouseEnter" MouseLeave="In
                                 <LineBreak/>
                                 <LineBreak/>
                                 <Run Text="{DynamicResource LOCALE_Global}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource Palette_50}"/>
-                                <Run x:Name="CurrentServerGlobalAddress" Text="127.0.0.1:7478" FontSize="16" Foreground="{DynamicResource Palette_100}"/>
+                                <Run x:Name="CurrentServerGlobalAddress" Text="addr:port" FontSize="16" Foreground="{DynamicResource Palette_100}"/>
                                 <LineBreak/>
                                 <Run Text="{DynamicResource LOCALE_Supernode}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource Palette_50}"/>
-                                <Run x:Name="CurrentServerSupernodeAddress" Text="127.0.0.1:7777" FontSize="16" Foreground="{DynamicResource Palette_100}"/>
+                                <Run x:Name="CurrentServerSupernodeAddress" Text="addr:port" FontSize="16" Foreground="{DynamicResource Palette_100}"/>
                             </TextBlock>
                         </Grid>
                     </Border>

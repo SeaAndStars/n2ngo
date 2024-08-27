@@ -44,7 +44,7 @@ namespace N2NGO.Views.SubPages
 
                 case "Rooms":
                     {
-                        NavigatePage(SharedData.CurrentApp.MainView.PageRooms);
+                        NavigatePage(SharedData.CurrentApp.MainWindow.PageRooms);
                         break;
                     }
             }

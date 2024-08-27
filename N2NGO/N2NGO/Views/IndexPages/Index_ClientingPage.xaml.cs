@@ -43,7 +43,7 @@ namespace N2NGO.Views.SubPages
 
                 case "QuickJoin":
                     {
-                        NavigatePage(SharedData.CurrentApp.MainView.PageQuickJoin);
+                        NavigatePage(SharedData.CurrentApp.MainWindow.PageQuickJoin);
                         break;
                     }
             }

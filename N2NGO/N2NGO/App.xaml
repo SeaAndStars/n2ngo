@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:N2NGO"
              xmlns:hc="clr-namespace:HandyControl.Controls;assembly=HandyControl"
              Startup="Application_Startup"
-             StartupUri="Views/MainView.xaml">
+             StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

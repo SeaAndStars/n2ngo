@@ -11,17 +11,22 @@
       Title="Page2">
     <Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="8,16,0,0" VerticalAlignment="Top" >
-            <Label FontSize="24" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.CanContentScroll="True" Content="{DynamicResource LOCALE_CreateRoomRoomName}"/>
+            <Label FontSize="24" Padding="0" Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" Background="{x:Null}" ScrollViewer.CanContentScroll="True" Content="{DynamicResource LOCALE_CreateRoomRoomName}"/>
             <TextBox x:Name="RoomNameInput" TextWrapping="Wrap" MinWidth="283" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" Height="42" FontSize="22"/>
         </StackPanel>
 
         <StackPanel x:Name="GroupPasswordInput" Orientation="Horizontal" Margin="8,59,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Label FontSize="20" Foreground="{DynamicResource MainColorSolidFontBrush}" Content="{DynamicResource LOCALE_CreateRoomRoomPassword}" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <Label FontSize="20" Padding="0" Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" Content="{DynamicResource LOCALE_CreateRoomRoomPassword}" Background="{x:Null}" BorderBrush="{x:Null}"/>
             <TextBox x:Name="RoomPasswordInput" TextWrapping="Wrap" MinWidth="200" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" Height="42" FontSize="18"/>
         </StackPanel>
 
-        <Button x:Name="SetMain" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{DynamicResource LOCALE_CreateRoomSetMain}" Margin="10,110,0,0" Height="34" Width="132" Background="#FF4FCC62" Click="SetTheme_Click"/>
-        <Button x:Name="SetMinor" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{DynamicResource LOCALE_CreateRoomSetMinor}" Margin="147,110,0,0" Height="34" Width="132" Background="#FFFFCECE" Click="SetMinor_Click"/>
+        <StackPanel x:Name="GroupInitialLifetimeInput" Orientation="Horizontal" Margin="8,106,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Label FontSize="20" Padding="0" Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" Content="{DynamicResource LOCALE_CreateRoomRoomInitialLifetime}" Background="{x:Null}" BorderBrush="{x:Null}"/>
+            <TextBox x:Name="RoomInitialLifetimeInput" Text="00:10:00" TextWrapping="Wrap" MinWidth="80" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" Height="28" FontSize="16"/>
+        </StackPanel>
+
+        <Button x:Name="SetMain" Content="{DynamicResource LOCALE_CreateRoomSetMain}" Margin="8,153,0,0" Height="34" Width="132" Click="SetMain_Click"/>
+        <Button x:Name="SetMinor" Content="{DynamicResource LOCALE_CreateRoomSetMinor}" Margin="145,153,0,0" Height="34" Width="132"  Click="SetMinor_Click"/>
 
         <Border HorizontalAlignment="Left" VerticalAlignment="Top" Height="263" Width="395" Margin="435,17,0,0" BorderThickness="1" Background="{DynamicResource MainColorSolidAlphaBrush}" BorderBrush="{DynamicResource MainColorSolidForeBrush}">
             <Grid>
@@ -32,7 +37,11 @@
                         <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
                     </Border.RenderTransform>
                     <Grid>
-                        <Canvas Opacity="0.37" CacheMode="BitmapCache" Background="{Binding Background, ElementName=SetMinor}"/>
+                        <Canvas x:Name="PreviewMinorColor" Opacity="0.37" CacheMode="BitmapCache" Background="{Binding}">
+                            <Canvas.DataContext>
+                                <SolidColorBrush Color="#F5DEB3"/>
+                            </Canvas.DataContext>
+                        </Canvas>
                         <TextBlock Margin="5,35,5,5" Foreground="{DynamicResource Palette_400}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                     <Run Text="{DynamicResource LOCALE_CurrentRoomCode}" FontSize="16"/>
                                     <Run Text="abc123" FontSize="18"/>
@@ -45,16 +54,19 @@
                                     <Image Height="12" Source="/Data/Images/Members.png"/>
                         </TextBlock>
 
-                        <TextBlock Text="{Binding Text, ElementName=RoomNameInput}" Background="{Binding Background, ElementName=SetMain}" FontSize="20" Foreground="{DynamicResource Palette_50}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="3"/>
+                        <TextBlock x:Name="PreviewMainColor" Text="{Binding Text, ElementName=RoomNameInput}" Background="{Binding}" FontSize="20" Foreground="{DynamicResource Palette_50}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="3">
+                            <TextBlock.DataContext>
+                                <SolidColorBrush Color="#6495ED"/>
+                            </TextBlock.DataContext>
+                        </TextBlock>
                     </Grid>
                 </Border>
             </Grid>
         </Border>
 
-        <CheckBox x:Name="CheckIsRoomPasswordNeeded" Content="{DynamicResource LOCALE_CreateRoomNeedPassword}" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextBlock.FontSize="14" Foreground="{DynamicResource MainColorSolidFontBrush}" Background="{DynamicResource MainColorSolidAlphaBrush}" FontSize="18" Click="CheckIsRoomPasswordNeeded_Click" Margin="0,0,11,88" IsChecked="False"/>
-        <CheckBox x:Name="CheckIsRoomInvisible" Content="{DynamicResource LOCALE_CreateRoomInvisible}" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextBlock.FontSize="14" Foreground="{DynamicResource MainColorSolidFontBrush}" Background="{DynamicResource MainColorSolidAlphaBrush}" FontSize="18" Margin="0,0,11,56" IsChecked="True"/>
+        <CheckBox x:Name="CheckIsRoomPasswordNeeded" Content="{DynamicResource LOCALE_CreateRoomNeedPassword}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource MainColorSolidFontBrush}" Background="{DynamicResource MainColorSolidAlphaBrush}" FontSize="18" Click="CheckIsRoomPasswordNeeded_Click" Margin="0,0,11,88" IsChecked="False"/>
+        <CheckBox x:Name="CheckIsRoomInvisible" Content="{DynamicResource LOCALE_CreateRoomInvisible}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource MainColorSolidFontBrush}" Background="{DynamicResource MainColorSolidAlphaBrush}" FontSize="18" Margin="0,0,11,56" IsChecked="True"/>
 
         <Button x:Name="ButtonCreateRoom" Content="{DynamicResource LOCALE_CreateRoomCreate}" HorizontalAlignment="Right" Height="51" Width="189" Click="ButtonCreateRoom_Click" VerticalAlignment="Bottom" FontSize="24"/>
-        <!--Button x:Name="ButtonCloseRoom" Style="{StaticResource ButtonDanger}" Content="关闭房间" HorizontalAlignment="Left" Margin="393,300,0,0" Height="40" Width="115" Click="ButtonCloseRoom_Click" TextBlock.FontSize="14" VerticalAlignment="Top"/-->
     </Grid>
 </Page>

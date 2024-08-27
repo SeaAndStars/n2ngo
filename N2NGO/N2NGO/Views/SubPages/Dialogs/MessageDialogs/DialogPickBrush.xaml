@@ -12,7 +12,23 @@
 
     <Grid>
         <hc:ScrollViewer Margin="0,0,0,65">
-            <TextBlock x:Name="MessageContentRunner" TextWrapping="Wrap" FontSize="17.5" Padding="5,2,5,0" Background="{DynamicResource MainColorSolidAlphaBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <TextBlock TextWrapping="Wrap" FontSize="14" Padding="5,2,5,0" Background="{DynamicResource MainColorSolidAlphaBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBlock x:Name="MessageContentRunner" FontSize="18"/>
+                <LineBreak/>
+                <Rectangle x:Name="PreviewColor" Effect="{StaticResource EffectShadow2}" Width="50" Height="50" Fill="{Binding}">
+                    <Rectangle.DataContext>
+                        <SolidColorBrush Color="#FFFFFFFF"/>
+                    </Rectangle.DataContext>
+                </Rectangle>
+                <LineBreak/>
+                <LineBreak/>
+                <Run Text="ARGB:"/>
+                <LineBreak/>
+                <TextBox x:Name="ColorAlphaInput" Text="255" TextChanged="ColorInput_TextChanged" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}"/>
+                <TextBox x:Name="ColorRedInput" Text="255" TextChanged="ColorInput_TextChanged" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}"/>
+                <TextBox x:Name="ColorGreenInput" Text="255" TextChanged="ColorInput_TextChanged" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}"/>
+                <TextBox x:Name="ColorBlueInput" Text="255" TextChanged="ColorInput_TextChanged" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}"/>
+            </TextBlock>
         </hc:ScrollViewer>
         <Button x:Name="ButtonDone" VerticalAlignment="Bottom" Content="Done" HorizontalAlignment="Center" FontSize="18" Height="36" Margin="0,0,0,20"/>
     </Grid>

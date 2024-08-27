@@ -30,14 +30,13 @@ namespace N2NGO.Views
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
 
-    public partial class MainView : System.Windows.Window
+    public partial class MainWindow : System.Windows.Window
     {
         public readonly TerminalWindow DebugTerminalWindow;
 
         public RoomsPage PageRooms { get; private set; }
         public RoomingPage PageRooming { get; private set; }
         public QuickJoinPage PageQuickJoin { get; private set; }
-        public LogPage PageLog { get; private set; }
         public SettingsPage PageSettings { get; private set; }
         public IndexPage PageIndex { get; private set; }
         public RoomPage PageRoom { get; private set; }
@@ -55,13 +54,11 @@ namespace N2NGO.Views
 #pragma warning restore IDE1006 // 命名样式
         bool _canClose = false;
 
-        public Visibility LogButtonVisibility { get => ButtonLog.Visibility; set => ButtonLog.Visibility = value; }
-
-        public MainView()
+        public MainWindow()
         {
             Stopwatch swbm = Stopwatch.StartNew();
 
-            SharedData.CurrentApp.PrintMemSet("MainView Initialization Begin");
+            SharedData.CurrentApp.PrintMemSet("MainWindow Initialization Begin");
 
             App.Current.MainWindow = this;
             InitializeComponent();
@@ -69,12 +66,11 @@ namespace N2NGO.Views
             PageRooms = new();
             PageRooming = new();
             PageQuickJoin = new();
-            PageLog = new();
             PageSettings = new();
             PageRoom = new();
             PageInfo = new();
             PageIndex = new();
-            SharedData.CurrentApp.PrintMemSet("Pages Initialized by MainView");
+            SharedData.CurrentApp.PrintMemSet("Pages Initialized by MainWindow");
 
             var r = App.Current.Resources;
             var MainColorBrush = (SolidColorBrush)r["MainColorSolidBrush"];
@@ -83,9 +79,15 @@ namespace N2NGO.Views
             HandyControl.Controls.Growl.GrowlPanel = PanelMsg;
 
             Opacity = 0;
-            SharedData.CurrentApp.Config.Get("DisableAnimation", "0");
             SharedData.CurrentApp.Config.Get("UserNickname", "NewToGO");
 
+            if (SharedData.CurrentApp.Config.Get("FirstRun_1", "1") == "1")
+            {
+                SharedData.CurrentApp.Config.Set("IpGlobalServer", "43.143.37.61");
+                SharedData.CurrentApp.Config.Set("PortGlobalServer", "7476");
+                SharedData.CurrentApp.Config.Set("PortSupernodeServer", "7478");
+                SharedData.CurrentApp.Config.Set("FirstRun_1", "0");
+            }
             if (SharedData.CurrentApp.Config.Get("FirstRun", "1") == "1")
             {
                 var culture = CultureInfo.CurrentCulture;
@@ -122,7 +124,7 @@ namespace N2NGO.Views
             SetWindowMaxNormalButtonImage();
             PageSettings.BackgroundOpacitySlider.Value = alpha;
 
-            Console.WriteLine("Console output will be redirected to Terminal Window!");
+            SharedData.CurrentApp.Log.WriteLine("Console output will be redirected to Terminal Window!", SharedData.CurrentApp.Log.Module.MainWindow);
             DebugTerminalWindow = new()
             {
                 Title = $"N2N GO({SharedData.VersionString}) Debug Console",
@@ -131,13 +133,11 @@ namespace N2NGO.Views
 
             {
 #if DEBUG
-                LogButtonVisibility = Visibility.Visible;
                 TestButton.Visibility = Visibility.Visible;
                 DebugOverlay.Visibility = Visibility.Visible;
 
                 DebugTerminalWindow.Show();
 #else
-                LogButtonVisibility = Visibility.Collapsed;
                 TestButton.Visibility = Visibility.Collapsed;
                 DebugOverlay.Visibility = Visibility.Collapsed;
 #endif
@@ -147,9 +147,10 @@ namespace N2NGO.Views
 
             isInitialized = true;
 
+            GC.Collect();
             swbm.Stop();
-            Console.WriteLine($"MainView initialization finished({swbm.Elapsed})");
-            SharedData.CurrentApp.PrintMemSet("MainView Initialization End");
+            SharedData.CurrentApp.Log.WriteLine($"MainWindow initialization finished({swbm.Elapsed})", SharedData.CurrentApp.Log.Module.MainWindow);
+            SharedData.CurrentApp.PrintMemSet("MainWindow Initialization End");
         }
 
         ulong __frameCounter = 0;
@@ -179,7 +180,6 @@ namespace N2NGO.Views
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageRooms.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageRooming.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageQuickJoin.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageLog.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageSettings.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageIndex.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageRoom.Content));
@@ -190,7 +190,6 @@ namespace N2NGO.Views
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageRooms.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageRooming.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageQuickJoin.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageLog.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageSettings.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageIndex.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageRoom.Content));
@@ -201,7 +200,6 @@ namespace N2NGO.Views
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageRooms.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageRooming.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageQuickJoin.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageLog.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageSettings.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageIndex.Content));
                 SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageRoom.Content));
@@ -212,7 +210,6 @@ namespace N2NGO.Views
             SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageRooms.Content));
             SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageRooming.Content));
             SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageQuickJoin.Content));
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageLog.Content));
             SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageSettings.Content));
             SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageIndex.Content));
             SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageRoom.Content));
@@ -286,6 +283,30 @@ namespace N2NGO.Views
             return;
         }
 
+        public void DoMessagePickBrushDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null)
+        {
+            MainFrameBlurEffect.BeginAnimation(System.Windows.Media.Effects.BlurEffect.RadiusProperty, new DoubleAnimation(10, TimeSpan.FromSeconds(0.2)) { EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseIn } });
+            Frame? m = null;
+
+            ActsRet ??= new();
+            ActsRet.Add((_) =>
+            {
+                if (m == null)
+                    throw new NullReferenceException("MessagePickBrushDialog Callbacks");
+
+                Dispatcher.Invoke(() =>
+                {
+                    MessageDialogs.Children.Remove(m);
+                    MainFrameBlurEffect.BeginAnimation(System.Windows.Media.Effects.BlurEffect.RadiusProperty, new DoubleAnimation(0, TimeSpan.FromSeconds(0.16)) { EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseIn } });
+                });
+            });
+            var dm = new DialogMessage(MessageText, MessageTitle, DialogMessage.DialogType.PickBrushDone, ActsRet);
+            m = new Frame { Content = dm, BorderThickness = new Thickness(0), BorderBrush = null };
+
+            ActPreRun?.Invoke(dm);
+
+            MessageDialogs.Children.Add(m);
+        }
         public void DoMessageInputDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null)
         {
             MainFrameBlurEffect.BeginAnimation(System.Windows.Media.Effects.BlurEffect.RadiusProperty, new DoubleAnimation(10, TimeSpan.FromSeconds(0.2)) { EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseIn } });
@@ -303,14 +324,13 @@ namespace N2NGO.Views
                     MainFrameBlurEffect.BeginAnimation(System.Windows.Media.Effects.BlurEffect.RadiusProperty, new DoubleAnimation(0, TimeSpan.FromSeconds(0.16)) { EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseIn } });
                 });
             });
-            var dm = new DialogMessage(MessageText, MessageTitle, DialogMessage.DialogType.InputOK, ActsRet);
+            var dm = new DialogMessage(MessageText, MessageTitle, DialogMessage.DialogType.InputConfirm, ActsRet);
             m = new Frame { Content = dm, BorderThickness = new Thickness(0), BorderBrush = null };
 
             ActPreRun?.Invoke(dm);
 
             MessageDialogs.Children.Add(m);
         }
-        public void DispatcherDoMessageInputDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null) => this.Dispatcher.Invoke(() => DoMessageInputDialog(MessageText, MessageTitle, ActsRet, ActPreRun));
         public void DoMessageYesNoDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null)
         {
             MainFrameBlurEffect.BeginAnimation(System.Windows.Media.Effects.BlurEffect.RadiusProperty, new DoubleAnimation(10, TimeSpan.FromSeconds(0.2)) { EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseIn } });
@@ -335,7 +355,6 @@ namespace N2NGO.Views
 
             MessageDialogs.Children.Add(m);
         }
-        public void DispatcherDoMessageYesNoDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null) => this.Dispatcher.Invoke(() => DoMessageYesNoDialog(MessageText, MessageTitle, ActsRet, ActPreRun));
         public void DoMessageDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null)
         {
             MainFrameBlurEffect.BeginAnimation(System.Windows.Media.Effects.BlurEffect.RadiusProperty, new DoubleAnimation(10, TimeSpan.FromSeconds(0.2)) { EasingFunction = new QuadraticEase() { EasingMode = EasingMode.EaseIn } });
@@ -360,7 +379,6 @@ namespace N2NGO.Views
 
             MessageDialogs.Children.Add(m);
         }
-        public void DispatcherDoMessageDialog(string MessageText = "", string? MessageTitle = null, List<Action<object>>? ActsRet = null, Action<object>? ActPreRun = null) => this.Dispatcher.Invoke(() => DoMessageDialog(MessageText, MessageTitle, ActsRet, ActPreRun));
 
         public void NavigatePage(Page? page)
         {
@@ -393,9 +411,9 @@ namespace N2NGO.Views
             var at = new TaskCompletionSource<object>();
             _fadeOutAnimationEx.Completed += (_, _) => at.SetResult(0);
 
-            var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
-            var tg_st = tg.Children[0] as ScaleTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
-            var tg_tt = tg.Children[1] as TranslateTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
+            var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainWindow] 'this.RenderTransform as TransformGroup' gets null!");
+            var tg_st = tg.Children[0] as ScaleTransform ?? throw new NullReferenceException("[MainWindow] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
+            var tg_tt = tg.Children[1] as TranslateTransform ?? throw new NullReferenceException("[MainWindow] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
             tg_tt.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation { To = 800, Duration = TimeSpan.FromSeconds(0.55), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } });
 
             BeginAnimation(OpacityProperty, _fadeOutAnimationEx);
@@ -407,7 +425,7 @@ namespace N2NGO.Views
                 Dispatcher.Invoke(() =>
                 {
                     SharedData.CurrentApp.Config.SaveConfigDataToFile();
-                    Console.WriteLine("(Exit) Config Wrote");
+                    SharedData.CurrentApp.Log.WriteLine("(Exit) Config Wrote", SharedData.CurrentApp.Log.Module.MainWindow);
 
                     if (SharedData.CurrentApp.Config.Get("NeedUpdate", "0") == "1")
                     {
@@ -435,12 +453,12 @@ namespace N2NGO.Views
         {
             Stopwatch swbm = Stopwatch.StartNew();
 
-            SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading Begin");
+            SharedData.CurrentApp.PrintMemSet("MainWindow AsyncLoading Begin");
             PageRooms.Refresh();
 
-            var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
-            var tg_st = tg.Children[0] as ScaleTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
-            var tg_tt = tg.Children[1] as TranslateTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
+            var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainWindow] 'this.RenderTransform as TransformGroup' gets null!");
+            var tg_st = tg.Children[0] as ScaleTransform ?? throw new NullReferenceException("[MainWindow] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
+            var tg_tt = tg.Children[1] as TranslateTransform ?? throw new NullReferenceException("[MainWindow] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
 
             tg_tt.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation { From = 450, To = 0, Duration = TimeSpan.FromSeconds(0.55), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut } });
 
@@ -450,21 +468,22 @@ namespace N2NGO.Views
 
             RefreshUIAnimations();
 
-            await Task.Run(async () =>
+            await Task.Run(() =>
             {
                 if (SharedData.CurrentApp.Config == null)
                     throw new NullReferenceException(nameof(SharedData.CurrentApp.Config));
 
-                SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading SubBegin");
+                SharedData.CurrentApp.PrintMemSet("MainWindow AsyncLoading SubBegin");
                 PageSettings.Dispatcher.InvokeAsync(() => PageSettings.UpdateColorPaletteSelectionItems());
                 PageRoom.Dispatcher.InvokeAsync(() =>
                 {
                     PageRoom.AdminPanelMembers.InitializeWithUIA();
                     PageRoom.AdminPanelRuledMembers.InitializeWithUIA();
-                    PageRoom.UserSuggestionForm.InitializeWithUIA();
                 });
 
-                await Task.Run(async () =>
+                SharedData.CurrentApp.ResetConnection();
+
+                Task.Run(async () =>
                 {
                     var url = $"https://mail.bestlgf.pro/N2NGO/UpdateInfo?raw=true&depth=50";
                     using (HttpClient client = new HttpClient())
@@ -502,17 +521,17 @@ namespace N2NGO.Views
                                         stringBuilder.AppendLine("");
                                     }
 
-                                    Dispatcher.InvokeAsync(() => { DoMessageDialog(stringBuilder.ToString(), "Update Info"); });
+                                    Dispatcher.InvokeAsync(() => { DoMessageDialog(stringBuilder.ToString(), "@LOCALE_DialogUpdateInfo_Title"); });
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"[AsyncLoading] Failed to retrieve update information from '{url}'.");
+                                    SharedData.CurrentApp.Log.WriteLine($"[AsyncLoading] Failed to retrieve update info from '{url}'.", SharedData.CurrentApp.Log.Module.MainWindow);
                                 }
                             }
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine($"[AsyncLoading] Cannot get update info from '{url}': {e.Message}");
+                            SharedData.CurrentApp.Log.WriteLine($"[AsyncLoading] Cannot get update info from '{url}': {e.Message}", SharedData.CurrentApp.Log.Module.MainWindow);
                         }
                     }
                 });
@@ -525,7 +544,7 @@ namespace N2NGO.Views
                         Dispatcher.InvokeAsync(() => { DoMessageDialog("FirstRun Method returns false!"); });
                 }
 
-                var connected = SharedData.CurrentApp.ConnectAndPeek();
+                var connected = SharedData.CurrentApp.Peek();
 
                 if (SharedData.CurrentApp.Config.Get("NeedUpdate", "0") == "1")
                 {
@@ -536,12 +555,12 @@ namespace N2NGO.Views
                     if (connected) SharedData.CurrentApp.CheckN2NGOClientUpdate();
                 }
 
-                SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading Sub Finished");
+                SharedData.CurrentApp.PrintMemSet("MainWindow AsyncLoading Sub Finished");
             });
 
             swbm.Stop();
-            Console.WriteLine($"App asynchronous loading finished({swbm.Elapsed})");
-            SharedData.CurrentApp.PrintMemSet("MainView AsyncLoading End");
+            SharedData.CurrentApp.Log.WriteLine($"App asynchronous loading finished({swbm.Elapsed})", SharedData.CurrentApp.Log.Module.MainWindow);
+            SharedData.CurrentApp.PrintMemSet("MainWindow AsyncLoading End");
         }
         private void SetWindowMaxNormalButtonImage()
         {
@@ -554,9 +573,9 @@ namespace N2NGO.Views
         }
         private void ButtonWindowMin_Click(object sender, RoutedEventArgs e)
         {
-            var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
-            var tg_st = tg.Children[0] as ScaleTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
-            var tg_tt = tg.Children[1] as TranslateTransform ?? throw new NullReferenceException("[MainView] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
+            var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainWindow] 'this.RenderTransform as TransformGroup' gets null!");
+            var tg_st = tg.Children[0] as ScaleTransform ?? throw new NullReferenceException("[MainWindow] 'TransformGroup.Children[0] as ScaleTransform' gets null!");
+            var tg_tt = tg.Children[1] as TranslateTransform ?? throw new NullReferenceException("[MainWindow] 'TransformGroup.Children[1] as TranslateTransform' gets null!");
 
             var anim1 = new DoubleAnimation { To = -800, Duration = TimeSpan.FromSeconds(0.45), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
             var at1 = new TaskCompletionSource<object>();
@@ -584,20 +603,6 @@ namespace N2NGO.Views
         {
             NavigatePage(null);
         }
-        private void ButtonLog_Click(object sender, RoutedEventArgs e)
-        {
-            NavigatePage(PageLog);
-        }
-        bool _bLogShow = false;
-        private void TitleIconButton_Click(object sender, RoutedEventArgs e)
-        {
-            _bLogShow = !_bLogShow;
-
-            if (_bLogShow)
-                NavigatePage(PageLog);
-            else
-                NavigatePage(null);
-        }
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
         }
@@ -622,7 +627,7 @@ namespace N2NGO.Views
         {
             if (WindowState != WindowState.Minimized)
             {
-                var transformGroup = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainView] 'this.RenderTransform as TransformGroup' gets null!");
+                var transformGroup = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainWindow] 'this.RenderTransform as TransformGroup' gets null!");
                 foreach (var transform in transformGroup.Children)
                 {
                     if (transform is TranslateTransform translateTransform)

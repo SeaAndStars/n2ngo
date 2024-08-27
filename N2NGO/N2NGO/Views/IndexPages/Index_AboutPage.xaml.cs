@@ -25,7 +25,7 @@ namespace N2NGO.Views.SubPages
                 IndexerTitle = "N2N GO",
                 IndexerDescription = string.Format("版本 {0}\n构建日期 {1}\n链接 {2}\nRuntime {3}\n.NET {4}",
                 SharedData.VersionString,
-                "8/2/2024",
+                "8/28/2024",
                 "https://gitee.com/xue-jiangbin/n2nmc-private",
                 (Environment.Is64BitProcess ? "64-bit" : "32-bit"),
                 RuntimeEnvironment.GetRuntimeDirectory()
@@ -39,7 +39,7 @@ namespace N2NGO.Views.SubPages
                 IndexerTitle = "N2N GO Core",
                 IndexerDescription = string.Format("版本 {0}\n构建日期 {1}\n链接 {2}\nRuntime {3}\n.NET {4}",
                 SharedData.Version,
-                "8/2/2024",
+                "8/28/2024",
                 "https://gitee.com/xue-jiangbin/n2nmc-private",
                 (Environment.Is64BitProcess ? "64-bit" : "32-bit"),
                 RuntimeEnvironment.GetRuntimeDirectory()
@@ -82,7 +82,7 @@ namespace N2NGO.Views.SubPages
 
                 case "N2NGO":
                     {
-                        NavigatePage(SharedData.CurrentApp.MainView.PageInfo);
+                        NavigatePage(SharedData.CurrentApp.MainWindow.PageInfo);
                         break;
                     }
             }

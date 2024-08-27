@@ -1,6 +1,5 @@
 ﻿using N2NGO_Core.Objects;
-using System.Diagnostics;
-using static N2NGO_Core.Models.Room;
+using System.Text.Json.Serialization;
 
 namespace N2NGO_Core.Models
 {
@@ -20,26 +19,27 @@ namespace N2NGO_Core.Models
 
         public struct ControlBlock
         {
-            public bool IsAlive;
-            public TimeSpan ActivatedLifetime;
-            public DateTime LastActivatedTime;
-            public List<string> AdminKey;
+            [JsonInclude] public bool IsAlive;
+            [JsonInclude] public TimeSpan ActivatedLifetime;
+            [JsonInclude] public DateTime LastActivatedTime;
+            [JsonInclude] public List<string> AdminKey;
 
+            [JsonIgnore]
             public Thread thRoomHandler;
         }
 
         public class Member
         {
-            public string ID = "none"; // Logical ID relative to room
-            public string Nickname = "Unknown";
-            public string IpAddress = "Unknown";
-            public string UserKey = "none";
+            [JsonInclude] public string ID = "none"; // Logical ID relative to room
+            [JsonInclude] public string Nickname = "Unknown";
+            [JsonInclude] public string IpAddress = "Unknown";
+            [JsonInclude] public string UserKey = "none";
 
             // Client Properties (null for server)
-            public bool? IsAdmin = null;
+            [JsonInclude] public bool? IsAdmin = null;
 
             // Server Properties (null for client)
-            public Server.ClientControlBlock? ClientControlBlock = null;
+            [JsonInclude] public Server.ClientControlBlock? ClientControlBlock = null;
         }
         public class RuledMember : Member
         {
@@ -52,37 +52,32 @@ namespace N2NGO_Core.Models
             public MemberBehaviour Behaviour = MemberBehaviour.None;
         }
 
-        public string? RoomCode;
-        public string? RoomName;
-        public bool? IsRoomInvisible = false;
-        public bool? IsRoomPasswordNeeded = false;
-        public string? RoomPassword = "null";
-        public RoomColor? MainColor = new RoomColor();
-        public RoomColor? MinorColor = new RoomColor();
+        [JsonInclude] public string? RoomCode;
+        [JsonInclude] public string? RoomName;
+        [JsonInclude] public bool? IsRoomInvisible = false;
+        [JsonInclude] public bool? IsRoomPasswordNeeded = false;
+        [JsonInclude] public string? RoomPassword = "null";
+        [JsonInclude] public RoomColor? MainColor = new RoomColor();
+        [JsonInclude] public RoomColor? MinorColor = new RoomColor();
 
-        public ControlBlock CB = new ControlBlock();
-        public RoomAccessMode AccessMode = RoomAccessMode.BlockList;
-        public List<Member> Members = new List<Member>();
-        public List<RuledMember> RuledMembers = new List<RuledMember>();
+        [JsonInclude] public ControlBlock CB = new ControlBlock() { IsAlive = true, ActivatedLifetime = new TimeSpan(0, 10, 0), LastActivatedTime = DateTime.Now, AdminKey = new() { RandomKeyString() } };
+        [JsonInclude] public RoomAccessMode AccessMode = RoomAccessMode.BlockList;
+        [JsonInclude] public List<Member> Members = new List<Member>();
+        [JsonInclude] public List<RuledMember> RuledMembers = new List<RuledMember>();
 
         public Room()
         {
         }
 
-        public void InitControlBlock()
+        public void InitHandler()
         {
-            CB.IsAlive = true;
-            CB.ActivatedLifetime = new TimeSpan(0, 10, 0);   // 10 min. for default
-            CB.LastActivatedTime = DateTime.Now;
-            CB.AdminKey = new() { RandomKeyString() };
-
             CB.thRoomHandler = new(() =>
             {
                 while (CB.IsAlive)
                 {
                     const int milliSecondsDelay = 5000;
+                    Thread.Sleep(milliSecondsDelay);
 
-                    Thread.Sleep(milliSecondsDelay);        // Cycle delay 5s.
                     CB.ActivatedLifetime -= TimeSpan.FromMilliseconds(milliSecondsDelay);
 
                     if (CB.ActivatedLifetime.TotalSeconds <= 0)
@@ -94,8 +89,23 @@ namespace N2NGO_Core.Models
                         CB.IsAlive = false;
                         break;
                     }
-                    else
-                        continue;
+
+                    for (int i = 0; i < Members.Count; i++)
+                    {
+                        var ccb = Members[i].ClientControlBlock;
+
+                        if (ccb is null)
+                        {
+                            Members.Remove(Members[i]);
+                            continue;
+                            //throw new("Client Control Block null for Members");
+                        }
+
+                        if (!ccb.ClientHandlerThread.IsAlive || !ccb.IsClientAlive)
+                        {
+                            Members.Remove(Members[i]);
+                        }
+                    }
                 }
             });
             CB.thRoomHandler.Start();
@@ -103,6 +113,7 @@ namespace N2NGO_Core.Models
 
         public Member? GetMember(string userKey)
         {
+            lock (this)
             foreach (Member member in Members)
             {
                 if (member.UserKey == userKey)
@@ -114,6 +125,7 @@ namespace N2NGO_Core.Models
 
         public RuledMember? GetRuledMember(string userKey)
         {
+            lock(this)
             foreach (RuledMember ruledMember in RuledMembers)
             {
                 if (ruledMember.UserKey == userKey)

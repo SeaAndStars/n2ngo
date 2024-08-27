@@ -13,7 +13,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>p2p;n2n;c#;n2nmc;n2ngo;core;lgf-sutdio</PackageTags>
     <PackageReleaseNotes>N2N GO Core</PackageReleaseNotes>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>4.0.0.0</FileVersion>
+    <AssemblyVersion>4.0.1.0</AssemblyVersion>
+    <FileVersion>4.0.1.0</FileVersion>
   </PropertyGroup>
 </Project>
