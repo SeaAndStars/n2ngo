@@ -2,6 +2,8 @@
 
 ### 简介
 
+官方网站：[https://mail.bestlgf.pro/N2NGO](https://mail.bestlgf.pro/N2NGO)
+<br/>
 N2N GO 是N2N的一个图形化界面，可以用于各种局域网联机游戏
 本项目/仓库遵循 [GPL3.0](LICENSE) 协议
 
@@ -36,11 +38,7 @@ N2N GO 是N2N的一个图形化界面，可以用于各种局域网联机游戏
 ### 联系我们
 
 ##### N2N GO 官方交流群组 & 频道
-
-|                      QQ交流群 主群                      |                      QQ交流群 分群 ①                      |                      QQ频道                      |
-| :------------------------------------------------------: | :---------------------------------------------------------: | :-----------------------------------------------: |
-| ![QQ交流群 主群](docs/Resources/README_Data/qq_group_0.JPG) | ![QQ交流群 分群 ①](docs/Resources/README_Data/qq_group_1.JPG) | ![QQ频道](docs/Resources/README_Data/qq_channel.JPG) |
-|                        856112671                        |                          456045451                          |                    8128729wjw                    |
+[https://mail.bestlgf.pro/N2NGO/Support](https://mail.bestlgf.pro/N2NGO/Support)
 
 ##### 开发者的联系信息
 
