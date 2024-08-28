@@ -34,11 +34,14 @@ namespace N2NGO.Views.SubPages
             };
             Dispatcher.Invoke(() => DialogJoiningRoom.BeginAnimation(OpacityProperty, _loadingDialogFadeIn));
 
+            var needPass = IsPasswdNeeded.IsChecked == true;
+            var roomCode = RoomConnectText.Text;
+            var roomPass = RoomPasswordText.Text;
             await Task.Run(() =>
             {
                 animationCompletedTask.Task.Wait();
 
-                SharedData.CurrentApp.JoinRoomAsync(IsPasswdNeeded.IsChecked == true, RoomConnectText.Text, RoomPasswordText.Text);
+                SharedData.CurrentApp.JoinRoomAsync(needPass, roomCode, roomPass);
             });
 
             TaskCompletionSource<object> animationCompletedTask1 = new();

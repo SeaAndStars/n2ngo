@@ -405,7 +405,7 @@ namespace N2NGO.Views
 
             SharedData.CurrentApp.Config.Set("locale", SharedData.CurrentApp.Locale.CurrentLocale);
 
-            await Task.Run(() => SharedData.CurrentApp.LeaveRoom());
+            await SharedData.CurrentApp.LeaveRoom();
             SharedData.CurrentApp.N2NGOServerConnection.Close();
 
             var at = new TaskCompletionSource<object>();

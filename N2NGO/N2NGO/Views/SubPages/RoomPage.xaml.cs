@@ -210,7 +210,7 @@ namespace N2NGO.Views.SubPages
 
         private async void ButtonExitRoom_Click(object? sender, RoutedEventArgs? e)
         {
-            await Task.Run(() => SharedData.CurrentApp.LeaveRoom());
+            await SharedData.CurrentApp.LeaveRoom();
             SharedData.CurrentApp.MainWindow.NavigatePage(null);
         }
 

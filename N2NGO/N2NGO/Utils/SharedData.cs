@@ -1152,6 +1152,8 @@ namespace N2NGO.UtilsClass
             public string GetError => _error.ToString();
             public string WriteInput { set { if (_currentProcess is null) throw new NullReferenceException("BinExecutor: Cannot write input: process is null, did you forget to call ExecuteAsync?"); _currentProcess.StandardInput.WriteLine(value); } }
 
+            public bool IsCompleted => BinProcessTask is null || BinProcessTask.IsCompleted;
+
             public Action<string?>? ActionOnOutput { get; set; } = null;
             public Action<string?>? ActionOnError { get; set; } = null;
 
@@ -1160,10 +1162,16 @@ namespace N2NGO.UtilsClass
             /// </summary>
             /// <param name="exec">Command</param>
             /// <returns>If there is an existing <see cref="BinProcessTask"/> that has not been completed, null is returned.</returns>
-            public async Task<int?> ExecuteAsync(string exec, string args)
+            public async Task<int?> ExecuteAsync(string exec, string args, bool clear =true)
             {
-                if (BinProcessTask is not null && !BinProcessTask.IsCompleted)
+                if (!IsCompleted)
                     return null;
+
+                if (clear)
+                {
+                    _output.Clear();
+                    _error.Clear();
+                }
 
                 _currentProcess = new()
                 {
@@ -1394,7 +1402,7 @@ namespace N2NGO.UtilsClass
                 RoomConnection.CurrentRoomCode = roomCode;
                 return RoomConnection.IsConnected = true;
             }
-            public static void LeaveRoom(bool exHandler = true)
+            public static async Task LeaveRoom(bool exHandler = true)
             {
                 TerminateEdge();
                 Dispatcher.Invoke(() => MainWindow.PageRoom.EndRefresh());
@@ -1402,10 +1410,12 @@ namespace N2NGO.UtilsClass
                 RoomConnection.CurrentRoomCode = string.Empty;
                 RoomConnection.MemberID = string.Empty;
                 N2NGOServerConnection.LeaveRoom(exHandler);
+                if (!EdgeN2NExecutor.IsCompleted && EdgeN2NExecutor.BinProcessTask is not null)
+                    await EdgeN2NExecutor.BinProcessTask;
             }
             public static async Task<bool> JoinRoomAsync(bool needPassword, string roomCode, string roomPassword)
             {
-                LeaveRoom();
+                await LeaveRoom();
 
                 roomCode = roomCode.Trim();
                 roomPassword = roomPassword.Trim();
@@ -1413,19 +1423,19 @@ namespace N2NGO.UtilsClass
 
                 if (string.IsNullOrEmpty(roomCode))
                 {
-                    MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title");
+                    Dispatcher.InvokeAsync(() => MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomCodeEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title"));
                     LeaveRoom();
                     return false;
                 }
 
                 if (needPassword && string.IsNullOrEmpty(roomPassword.Trim()))
                 {
-                    MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomPassEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title");
+                    Dispatcher.InvokeAsync(() => MainWindow.DoMessageDialog("@LOCALE_DialogJoinRoom_Failure_RoomPassEmptyInput_Description_Content", "@LOCALE_DialogJoinRoom_Title"));
                     LeaveRoom();
                     return false;
                 }
 
-                DispatcherTimer timer = new() { Interval = TimeSpan.FromSeconds(1) };
+                DispatcherTimer timer = new(DispatcherPriority.Normal, Dispatcher) { Interval = TimeSpan.FromSeconds(1) };
                 timer.Tick += async (_, __) =>
                 {
                     var analysis = N2NEdgeOutputHelper.Analyze(EdgeN2NExecutor.GetOutput);
@@ -1467,7 +1477,7 @@ namespace N2NGO.UtilsClass
 
                 if (await EdgeN2NExecutor.ExecuteAsync(EdgePath, arg) is null)
                 {
-                    Dispatcher.Invoke(() => MainWindow.DoMessageDialog("您当前仍有其他正在进入房间的任务，请查看日志", "进入房间终止"));
+                    Dispatcher.InvokeAsync(() => MainWindow.DoMessageDialog("您当前仍有其他正在进入房间的任务，请查看日志", "进入房间终止"));
 
                     timer.Stop();
                     return false;
@@ -1504,7 +1514,7 @@ namespace N2NGO.UtilsClass
             }
             public static void ResetConnection(bool echo = false, string? serverIp = null, int? serverPort = null, int? supernodeServerPort = null)
             {
-                LeaveRoom(false);
+                LeaveRoom(false).Wait();
 
                 N2NGOServerConnection.Close();
                 N2NGOServerConnection = new(new(IPAddress.Parse(Config.Get("IpGlobalServer", "43.143.37.61")), int.Parse(Config.Get("PortGlobalServer", "7476"))), int.Parse(CurrentApp.Config.Get("PortSupernodeServer", "7478")));
