@@ -17,9 +17,9 @@
     <SignAssembly>False</SignAssembly>
     <PackAsTool>False</PackAsTool>
     <IncludeSymbols>False</IncludeSymbols>
-    <AssemblyVersion>4.0.1.0</AssemblyVersion>
+    <AssemblyVersion>4.0.1.1</AssemblyVersion>
     <Copyright>Copyright © 2024 LGF-Studio. All rights reserved.</Copyright>
-    <FileVersion>4.0.1.0</FileVersion>
+    <FileVersion>4.0.1.1</FileVersion>
     <Description>N2N GO
 </Description>
     <Title>$(AssemblyName)</Title>

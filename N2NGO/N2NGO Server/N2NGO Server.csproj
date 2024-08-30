@@ -6,8 +6,8 @@
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>4.0.1.0</AssemblyVersion>
-    <FileVersion>4.0.1.0</FileVersion>
+    <AssemblyVersion>4.0.1.1</AssemblyVersion>
+    <FileVersion>4.0.1.1</FileVersion>
     <Authors>LGF-Studio</Authors>
     <Title>$(AssemblyName)</Title>
     <Description>N2N GO Server</Description>

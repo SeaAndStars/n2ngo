@@ -29,7 +29,7 @@ namespace N2NGO.UtilsClass
 {
     public static class SharedData
     {
-        public readonly static Version Version = new(4, 0, 1, 0);
+        public readonly static Version Version = new(4, 0, 1, 1);
         public readonly static string VersionTag = "Release";
 
         public readonly static string DefaultRoomPassword = "null";
