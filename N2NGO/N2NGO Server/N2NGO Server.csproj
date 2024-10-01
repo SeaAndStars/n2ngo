@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <RootNamespace>$(MSBuildProjectName.Replace(" ", ""))</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyVersion>4.0.1.1</AssemblyVersion>
@@ -36,10 +36,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ClientLatestVersion.txt">
+    <None Update="Storage\Data\config.default.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="supernode.exe">
+    <None Update="Storage\Resources\ClientLatestVersion.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Storage\Utilities\supernode.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

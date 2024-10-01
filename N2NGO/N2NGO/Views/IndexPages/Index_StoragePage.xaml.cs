@@ -1,5 +1,5 @@
 ﻿using N2NGO.UtilsClass;
-using N2NGO_Core;
+using N2NGOCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,8 +30,8 @@ namespace N2NGO.Views.SubPages
             await Task.Run(async () =>
             {
                 ProgramFiles = SharedData.GetDirectorySize(Environment.CurrentDirectory) ?? 0;
-                DataFiles = SharedData.GetDirectorySize(UserDef.N2NGO_Base_AppData_Path) ?? 0;
-                N2NGODataFiles = SharedData.GetDirectorySize(UserDef.N2NGO_N2NGO_AppData_Path) ?? 0;
+                DataFiles = SharedData.GetDirectorySize(Globals.N2NGO_Base_AppData_Path) ?? 0;
+                N2NGODataFiles = SharedData.GetDirectorySize(Globals.N2NGO_N2NGO_AppData_Path) ?? 0;
 
                 long Total = ProgramFiles + N2NGODataFiles;
                 long OtherData = DataFiles - N2NGODataFiles;
@@ -43,8 +43,8 @@ namespace N2NGO.Views.SubPages
 
                 await StorageTotalUsage.Dispatcher.InvokeAsync(() => StorageTotalUsage.Text = TotalReadable);
                 await StorageProgramFilesUsage.Dispatcher.InvokeAsync(() => StorageProgramFilesUsage.Text = $"{N2NGOProgramFilesReadable}\n{Path.GetFullPath(Environment.CurrentDirectory)}");
-                await StorageDataFilesUsage.Dispatcher.InvokeAsync(() => StorageDataFilesUsage.Text = $"{N2NGODataFilesReadable}\n{Path.GetFullPath(UserDef.N2NGO_N2NGO_AppData_Path)}");
-                await StorageOtherDataFilesUsage.Dispatcher.InvokeAsync(() => StorageOtherDataFilesUsage.Text = $"{OtherDataFilesReadable}\n{Path.GetFullPath(UserDef.N2NGO_Base_AppData_Path)}");
+                await StorageDataFilesUsage.Dispatcher.InvokeAsync(() => StorageDataFilesUsage.Text = $"{N2NGODataFilesReadable}\n{Path.GetFullPath(Globals.N2NGO_N2NGO_AppData_Path)}");
+                await StorageOtherDataFilesUsage.Dispatcher.InvokeAsync(() => StorageOtherDataFilesUsage.Text = $"{OtherDataFilesReadable}\n{Path.GetFullPath(Globals.N2NGO_Base_AppData_Path)}");
             });
         }
 

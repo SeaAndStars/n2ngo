@@ -1,6 +1,6 @@
 ﻿using N2NGO.UtilsClass;
 using N2NGO.Views.SubPages.Dialogs;
-using N2NGO_Core;
+using N2NGOCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,7 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Threading;
-using static N2NGO_Core.Package;
+using static N2NGOCore.Package;
 
 namespace N2NGO.Views.SubPages
 {
@@ -271,8 +271,8 @@ namespace N2NGO.Views.SubPages
                                             string RoomCode;
                                             string RoomName;
                                             bool IsRoomPasswordNeeded;
-                                            N2NGO_Core.Objects.RoomColor ColorMain;
-                                            N2NGO_Core.Objects.RoomColor ColorMinor;
+                                            N2NGOCore.Objects.RoomColor ColorMain;
+                                            N2NGOCore.Objects.RoomColor ColorMinor;
                                             uint MembersCount;
                                             {
                                                 byte[]? edata = roomPackage[0].external_data;
@@ -296,13 +296,13 @@ namespace N2NGO.Views.SubPages
                                                 byte[]? edata = roomPackage[3].external_data;
                                                 if ((Protocol.BaseHeader)roomPackage[3].Header != Protocol.BaseHeader.msg_ulong || edata == null)
                                                     goto invalid;
-                                                ColorMain = new N2NGO_Core.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
+                                                ColorMain = new N2NGOCore.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
                                             }
                                             {
                                                 byte[]? edata = roomPackage[4].external_data;
                                                 if ((Protocol.BaseHeader)roomPackage[4].Header != Protocol.BaseHeader.msg_ulong || edata == null)
                                                     goto invalid;
-                                                ColorMinor = new N2NGO_Core.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
+                                                ColorMinor = new N2NGOCore.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
                                             }
                                             {
                                                 byte[]? edata = roomPackage[5].external_data;
@@ -429,8 +429,8 @@ namespace N2NGO.Views.SubPages
                                             string RoomCode;
                                             string RoomName;
                                             bool IsRoomPasswordNeeded;
-                                            N2NGO_Core.Objects.RoomColor ColorMain;
-                                            N2NGO_Core.Objects.RoomColor ColorMinor;
+                                            N2NGOCore.Objects.RoomColor ColorMain;
+                                            N2NGOCore.Objects.RoomColor ColorMinor;
                                             uint MembersCount;
                                             {
                                                 byte[]? edata = roomPackage[0].external_data;
@@ -454,13 +454,13 @@ namespace N2NGO.Views.SubPages
                                                 byte[]? edata = roomPackage[3].external_data;
                                                 if ((Protocol.BaseHeader)roomPackage[3].Header != Protocol.BaseHeader.msg_ulong || edata == null)
                                                     goto invalid;
-                                                ColorMain = new N2NGO_Core.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
+                                                ColorMain = new N2NGOCore.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
                                             }
                                             {
                                                 byte[]? edata = roomPackage[4].external_data;
                                                 if ((Protocol.BaseHeader)roomPackage[4].Header != Protocol.BaseHeader.msg_ulong || edata == null)
                                                     goto invalid;
-                                                ColorMinor = new N2NGO_Core.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
+                                                ColorMinor = new N2NGOCore.Objects.RoomColor(MsgExternalData.Decode.MsgULong(edata));
                                             }
                                             {
                                                 byte[]? edata = roomPackage[5].external_data;

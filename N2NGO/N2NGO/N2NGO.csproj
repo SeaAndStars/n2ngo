@@ -33,7 +33,15 @@
     <PackageReleaseNotes>N2N GO Client</PackageReleaseNotes>
     <Authors>LGF-Studio</Authors>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <RootNamespace>$(MSBuildProjectName.Replace(" ", ""))</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Resources\MainResc\**" />
+    <EmbeddedResource Remove="Resources\MainResc\**" />
+    <None Remove="Resources\MainResc\**" />
+    <Page Remove="Resources\MainResc\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Data\Images\AdminMember.png" />
@@ -372,24 +380,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources\MainResc.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>MainResc.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\MainResc.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MainResc.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Data\BinRef\Linux\" />
     <Folder Include="Data\BinRef\Windows\n2n\" />
-    <Folder Include="Resources\MainResc\" />
   </ItemGroup>
 
   <ItemGroup>

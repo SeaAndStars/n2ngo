@@ -1,7 +1,7 @@
-﻿using N2NGO_Core.Objects;
+﻿using N2NGOCore.Objects;
 using System.Text.Json.Serialization;
 
-namespace N2NGO_Core.Models
+namespace N2NGOCore.Models
 {
     public class Room
     {

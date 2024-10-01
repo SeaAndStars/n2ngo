@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace N2NGO_Core.Models.Server
+namespace N2NGOCore.Models.Server
 {
     public class ClientControlBlock
     {

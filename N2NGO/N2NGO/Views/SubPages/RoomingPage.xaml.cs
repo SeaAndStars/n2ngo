@@ -66,8 +66,8 @@ namespace N2NGO.Views.SubPages
             }
 
             var roomCreateResult = SharedData.CurrentApp.N2NGOServerConnection.CreateRoom(name, roomInvisible, needPassword, password,
-                new N2NGO_Core.Objects.RoomColor(colorMain.R, colorMain.G, colorMain.B).data,
-                new N2NGO_Core.Objects.RoomColor(colorMinor.R, colorMinor.G, colorMinor.B).data,
+                new N2NGOCore.Objects.RoomColor(colorMain.R, colorMain.G, colorMain.B).data,
+                new N2NGOCore.Objects.RoomColor(colorMinor.R, colorMinor.G, colorMinor.B).data,
                 (ulong)initialLifetime);
 
             if (roomCreateResult.Status != SharedData.N2NGOServerConnection.ProtocolOperationReturnStatus.Success)
@@ -87,7 +87,7 @@ namespace N2NGO.Views.SubPages
             SharedData.CurrentApp.MainWindow.DoMessageYesNoDialog(string.Format("房间创建成功，是否立即加入？\n名称：{0}\n代码：{1}\n管理员密钥：{2}", name, roomCreate[0], roomCreate[1]), "房间已创建",
                 new List<Action<object>>
                 {
-                    (_) =>
+                    async (_) =>
                     {
                         if (_ is not DialogMessage dialogMessage || dialogMessage.MessageContent is not DialogYesNo dialogYesNo)
                             throw new Exception("Cannot get DialogYesNo");

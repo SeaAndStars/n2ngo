@@ -19,9 +19,9 @@
             <Label FontSize="20" Padding="0" Margin="5" Foreground="{DynamicResource MainColorSolidFontBrush}" Content="{DynamicResource LOCALE_QuickJoinRoomRoomPassword}" Background="{x:Null}" BorderBrush="{x:Null}"/>
             <TextBox x:Name="RoomPasswordText" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Center" MinWidth="140" TextBlock.FontSize="14" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" BorderBrush="{x:Null}" Height="33" FontSize="16"/>
         </StackPanel>
-        <CheckBox x:Name="IsPasswdNeeded" Content="{DynamicResource LOCALE_QuickJoinRoomRoomNeedPassword}" Foreground="{DynamicResource MainColorSolidFontBrush}" Background="{DynamicResource MainColorSolidAlphaBrush}" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,11,66" Click="IsPasswdNeeded_Click"/>
+        <CheckBox x:Name="IsAuthenticationEnabledCheckbox" Content="{DynamicResource LOCALE_QuickJoinRoomRoomNeedPassword}" Foreground="{DynamicResource MainColorSolidFontBrush}" Background="{DynamicResource MainColorSolidAlphaBrush}" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,11,66" Click="OnIsPasswdNeededCheckboxClick"/>
 
-        <Button Content="{DynamicResource LOCALE_QuickJoinRoomJoin}" Height="61" Width="195" Click="Button_Click" FontSize="24" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+        <Button Content="{DynamicResource LOCALE_QuickJoinRoomJoin}" Height="61" Width="195" Click="OnJoinButtonClick" FontSize="24" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
 
         <Grid x:Name="DialogJoiningRoom" Background="{DynamicResource MainColorSolidAlphaBrush}" Visibility="Collapsed" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <hc:LoadingCircle Foreground="{DynamicResource MainColorSolidFontBrush}" Background="#FFF70000" HorizontalAlignment="Center" VerticalAlignment="Center"/>

@@ -2,7 +2,7 @@
 using N2NGO.UtilsClass;
 using N2NGO.Views.SubPages;
 using N2NGO.Views.SubPages.Dialogs;
-using N2NGO_Core;
+using N2NGOCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -431,7 +431,7 @@ namespace N2NGO.Views
                     {
                         try
                         {
-                            Process.Start(UserDef.N2NGOUpdateInstallerFilePath);
+                            Process.Start(Globals.N2NGOUpdateInstallerFilePath);
                         }
                         catch (Exception ex)
                         {
@@ -521,7 +521,7 @@ namespace N2NGO.Views
                                         stringBuilder.AppendLine("");
                                     }
 
-                                    Dispatcher.InvokeAsync(() => { DoMessageDialog(stringBuilder.ToString(), "@LOCALE_DialogUpdateInfo_Title"); });
+                                    Dispatcher.Invoke(() => { DoMessageDialog(stringBuilder.ToString(), "@LOCALE_DialogUpdateInfo_Title"); });
                                 }
                                 else
                                 {

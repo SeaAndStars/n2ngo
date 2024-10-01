@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace N2NGO_Core.Objects
+namespace N2NGOCore.Objects
 {
     public struct RoomColor
     {

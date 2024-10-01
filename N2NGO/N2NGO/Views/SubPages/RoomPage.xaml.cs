@@ -161,7 +161,7 @@ namespace N2NGO.Views.SubPages
             _refreshTimer.Stop();
         }
 
-        public void UpdateRoomInfoWithLocal(N2NGO_Core.Models.Room roomInfo)
+        public void UpdateRoomInfoWithLocal(N2NGOCore.Models.Room roomInfo)
         {
             var isConnectedToRoom = SharedData.CurrentApp.RoomConnection.IsConnected;
 
@@ -450,7 +450,7 @@ namespace N2NGO.Views.SubPages
     }
     public class RoomPageRuledMemberModel : RoomPageMemberModel
     {
-        public N2NGO_Core.Models.Room.RuledMember.MemberBehaviour RuledMemberBehaviour { get; set; } = N2NGO_Core.Models.Room.RuledMember.MemberBehaviour.None;
+        public N2NGOCore.Models.Room.RuledMember.MemberBehaviour RuledMemberBehaviour { get; set; } = N2NGOCore.Models.Room.RuledMember.MemberBehaviour.None;
     }
     public class IsAdminBoolToMemberImageConverter : IValueConverter
     {
