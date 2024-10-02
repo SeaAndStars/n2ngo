@@ -1,4 +1,4 @@
-# N2N GO Develop [![License](https://img.shields.io/badge/license-GPL3.0-blue)](LICENSE) ![Language](https://img.shields.io/badge/language-csharp-brightgreen) ![Version](https://img.shields.io/badge/Version-4.0.0-lightblue) [![star](https://gitee.com/xue-jiangbin/n2nmc/badge/star.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/stargazers) [![fork](https://gitee.com/xue-jiangbin/n2nmc/badge/fork.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/members)
+# N2N GO Develop [![License](https://img.shields.io/badge/license-GPL3.0-blue)](LICENSE) ![Language](https://img.shields.io/badge/language-csharp-brightgreen) ![Version](https://img.shields.io/badge/Version-4.0.1.2-lightblue) [![star](https://gitee.com/xue-jiangbin/n2nmc/badge/star.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/stargazers) [![fork](https://gitee.com/xue-jiangbin/n2nmc/badge/fork.svg?theme=gray)](https://gitee.com/xue-jiangbin/n2nmc/members)
 
 ### 简介
 
