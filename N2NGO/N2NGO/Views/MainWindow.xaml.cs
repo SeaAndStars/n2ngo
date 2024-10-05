@@ -76,7 +76,6 @@ namespace N2NGO.Views
             var MainColorBrush = (SolidColorBrush)r["MainColorSolidBrush"];
 
             //BlurFramez.Radius = 0;
-            HandyControl.Controls.Growl.GrowlPanel = PanelMsg;
 
             Opacity = 0;
             SharedData.CurrentApp.Config.Get("UserNickname", "NewToGO");
@@ -486,53 +485,49 @@ namespace N2NGO.Views
                 Task.Run(async () =>
                 {
                     var url = $"https://mail.bestlgf.pro/N2NGO/UpdateInfo?raw=true&depth=50";
-                    using (HttpClient client = new HttpClient())
+                    using var httpClient = new HttpClient();
+                    try
                     {
-                        try
+                        HttpResponseMessage response = await httpClient.GetAsync(url);
+
+                        response.EnsureSuccessStatusCode();
+
+                        string responseBody = await response.Content.ReadAsStringAsync();
+
+                        using var document = JsonDocument.Parse(responseBody);
+                        JsonElement root = document.RootElement;
+
+                        if (root.TryGetProperty("success", out JsonElement success) && success.GetBoolean())
                         {
-                            HttpResponseMessage response = await client.GetAsync(url);
+                            StringBuilder stringBuilder = new();
+                            stringBuilder.AppendLine("https://mail.bestlgf.pro/N2NGO/UpdateInfo\n");
 
-                            response.EnsureSuccessStatusCode();
-
-                            string responseBody = await response.Content.ReadAsStringAsync();
-
-                            using (JsonDocument document = JsonDocument.Parse(responseBody))
+                            foreach (JsonElement version in root.GetProperty("versions").EnumerateArray())
                             {
-                                JsonElement root = document.RootElement;
-
-                                if (root.TryGetProperty("success", out JsonElement success) && success.GetBoolean())
+                                var updateInfo = new
                                 {
-                                    StringBuilder stringBuilder = new();
-                                    stringBuilder.AppendLine("https://mail.bestlgf.pro/N2NGO/UpdateInfo\n");
+                                    version = version.GetProperty("version").GetString(),
+                                    detail = version.GetProperty("detail").GetString(),
+                                    id = version.GetProperty("id").GetString(),
+                                    updateLog = version.GetProperty("updateLog").GetString()
+                                };
 
-                                    foreach (JsonElement version in root.GetProperty("versions").EnumerateArray())
-                                    {
-                                        var updateInfo = new
-                                        {
-                                            version = version.GetProperty("version").GetString(),
-                                            detail = version.GetProperty("detail").GetString(),
-                                            id = version.GetProperty("id").GetString(),
-                                            updateLog = version.GetProperty("updateLog").GetString()
-                                        };
-
-                                        stringBuilder.AppendLine($"[{updateInfo.id}]{updateInfo.version} ({updateInfo.detail}):");
-                                        if (updateInfo.updateLog is not null)
-                                            stringBuilder.AppendLine($"  {updateInfo.updateLog.Replace("\n", "\n  ")}:");
-                                        stringBuilder.AppendLine("");
-                                    }
-
-                                    Dispatcher.Invoke(() => { DoMessageDialog(stringBuilder.ToString(), "@LOCALE_DialogUpdateInfo_Title"); });
-                                }
-                                else
-                                {
-                                    SharedData.CurrentApp.Log.WriteLine($"[AsyncLoading] Failed to retrieve update info from '{url}'.", SharedData.CurrentApp.Log.Module.MainWindow);
-                                }
+                                stringBuilder.AppendLine($"[{updateInfo.id}]{updateInfo.version} ({updateInfo.detail}):");
+                                if (updateInfo.updateLog is not null)
+                                    stringBuilder.AppendLine($"  {updateInfo.updateLog.Replace("\n", "\n  ")}:");
+                                stringBuilder.AppendLine("");
                             }
+
+                            Dispatcher.Invoke(() => { DoMessageDialog(stringBuilder.ToString(), "@LOCALE_DialogUpdateInfo_Title"); });
                         }
-                        catch (Exception e)
+                        else
                         {
-                            SharedData.CurrentApp.Log.WriteLine($"[AsyncLoading] Cannot get update info from '{url}': {e.Message}", SharedData.CurrentApp.Log.Module.MainWindow);
+                            SharedData.CurrentApp.Log.WriteLine($"[AsyncLoading] Failed to retrieve update info from '{url}'.", SharedData.CurrentApp.Log.Module.MainWindow);
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        SharedData.CurrentApp.Log.WriteLine($"[AsyncLoading] Cannot get update info from '{url}': {e.Message}", SharedData.CurrentApp.Log.Module.MainWindow);
                     }
                 });
 

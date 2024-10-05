@@ -91,7 +91,7 @@ namespace N2NGO.Views.SubPages
                         }
                         else
                         {
-                            _member.PingLatency = $"{pingTest.Status.ToString()}";
+                            _member.PingLatency = $"{pingTest.Status}";
                         }
                     }
                     catch
@@ -278,7 +278,8 @@ namespace N2NGO.Views.SubPages
                 return;
 
             Clipboard.SetDataObject(member.IpAddress);
-            string copiedTipSource = "@LOCALE_DialogRoomMemberIpAddressCopied_Content";
+
+            string copiedTipSource;
             switch (member.PingStatus)
             {
                 default:
@@ -378,7 +379,6 @@ namespace N2NGO.Views.SubPages
                 //        break;
                 //    }
             }
-
 
             SharedData.CurrentApp.MainWindow.DoMessageDialog(copiedTipSource, "@LOCALE_DialogRoomMemberIpAddressCopied_Title");
         }

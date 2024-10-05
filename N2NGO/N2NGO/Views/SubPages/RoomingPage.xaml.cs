@@ -26,10 +26,6 @@ namespace N2NGO.Views.SubPages
             CheckIsRoomPasswordNeeded_Click(null, null);
         }
 
-        ~RoomingPage()
-        {
-        }
-
         private void ButtonCreateRoom_Click(object sender, RoutedEventArgs e)
         {
             string name = RoomNameInput.Text;
@@ -45,9 +41,9 @@ namespace N2NGO.Views.SubPages
             }
             catch 
             {
-                var _ = TimeSpan.FromMinutes(10);
-                initialLifetime = _.TotalMilliseconds;
-                RoomInitialLifetimeInput.Text = _.ToString();
+                var defaultLifetime = TimeSpan.FromMinutes(10);
+                initialLifetime = defaultLifetime.TotalMilliseconds;
+                RoomInitialLifetimeInput.Text = defaultLifetime.ToString();
             }
 
             if (!needPassword)
@@ -84,17 +80,19 @@ namespace N2NGO.Views.SubPages
             }
 
             //ButtonCloseRoom.IsEnabled = true;
-            SharedData.CurrentApp.MainWindow.DoMessageYesNoDialog(string.Format("房间创建成功，是否立即加入？\n名称：{0}\n代码：{1}\n管理员密钥：{2}", name, roomCreate[0], roomCreate[1]), "房间已创建",
+            SharedData.CurrentApp.MainWindow.DoMessageYesNoDialog(
+                string.Format("房间创建成功，是否立即加入？\n名称：{0}\n代码：{1}\n管理员密钥：{2}", name, roomCreate[0], roomCreate[1]),
+                "房间已创建",
                 new List<Action<object>>
                 {
-                    async (_) =>
+                    (dialog) =>
                     {
-                        if (_ is not DialogMessage dialogMessage || dialogMessage.MessageContent is not DialogYesNo dialogYesNo)
+                        if (dialog is not DialogMessage dialogMessage || dialogMessage.MessageContent is not DialogYesNo dialogYesNo)
                             throw new Exception("Cannot get DialogYesNo");
 
                         if (dialogYesNo.YesNo == DialogYesNo.YesNoE.Yes)
                         {
-                            SharedData.CurrentApp.JoinRoomAsync(needPassword, roomCreate[0], password);
+                            _ = SharedData.CurrentApp.JoinRoomAsync(needPassword, roomCreate[0], password);
                         }
                     }
                 }

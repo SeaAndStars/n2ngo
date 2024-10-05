@@ -1,24 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace N2NGO.Views.SubPages.Dialogs.MessageDialogs
 {
-    /// <summary>
-    /// DialogPickBrush.xaml 的交互逻辑
-    /// </summary>
     public partial class DialogPickBrush : Page
     {
         public DialogPickBrush()
@@ -30,14 +14,13 @@ namespace N2NGO.Views.SubPages.Dialogs.MessageDialogs
         {
             try
             {
-                int a, r, g, b;
-                if (!int.TryParse(ColorAlphaInput.Text, out a))
+                if (!int.TryParse(ColorAlphaInput.Text, out var a))
                     a = defaultA;
-                if (!int.TryParse(ColorRedInput.Text, out r))
+                if (!int.TryParse(ColorRedInput.Text, out var r))
                     r = defaultR;
-                if (!int.TryParse(ColorGreenInput.Text, out g))
+                if (!int.TryParse(ColorGreenInput.Text, out var g))
                     g = defaultG;
-                if (!int.TryParse(ColorBlueInput.Text, out b))
+                if (!int.TryParse(ColorBlueInput.Text, out var b))
                     b = defaultB;
                 return new(Color.FromArgb((byte)a, (byte)r, (byte)g, (byte)b));
             }

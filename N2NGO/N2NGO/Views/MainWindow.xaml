@@ -62,7 +62,6 @@
 
                     <!-- 消息对话框集合 -->
                     <Grid x:Name="MessageDialogs" Grid.Column="1"/>
-                    <hc1:SimpleStackPanel x:Name="PanelMsg" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"/>
 
                 </Grid>
             </Border>
