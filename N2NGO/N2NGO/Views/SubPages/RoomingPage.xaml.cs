@@ -1,4 +1,4 @@
-﻿using N2NGO.UtilsClass;
+﻿using N2NGO.Utils;
 using N2NGO.Views.SubPages.Dialogs;
 using N2NGO.Views.SubPages.Dialogs.MessageDialogs;
 using System;
@@ -47,26 +47,26 @@ namespace N2NGO.Views.SubPages
             }
 
             if (!needPassword)
-                password = SharedData.DefaultRoomPassword;
+                password = Globals.DefaultRoomPassword;
 
             if (needPassword && string.IsNullOrEmpty(password.Trim()))
             {
-                SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoom_Failure_Invalid_RoomPasswordInput_Content", "@LOCALE_DialogCreateRoom_Failure_Title");
+                Globals.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoom_Failure_Invalid_RoomPasswordInput_Content", "@LOCALE_DialogCreateRoom_Failure_Title");
                 return;
             }
 
             if (false && string.IsNullOrEmpty(name.Trim()))   // Disabled
             {
-                SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoom_Failure_Invalid_RoomNameInput_Content", "@LOCALE_DialogCreateRoom_Failure_Title");
+                Globals.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoom_Failure_Invalid_RoomNameInput_Content", "@LOCALE_DialogCreateRoom_Failure_Title");
                 return;
             }
 
-            var roomCreateResult = SharedData.CurrentApp.N2NGOServerConnection.CreateRoom(name, roomInvisible, needPassword, password,
+            var roomCreateResult = Globals.CurrentApp.N2NGOServerConnection.CreateRoom(name, roomInvisible, needPassword, password,
                 new N2NGOCore.Objects.RoomColor(colorMain.R, colorMain.G, colorMain.B).data,
                 new N2NGOCore.Objects.RoomColor(colorMinor.R, colorMinor.G, colorMinor.B).data,
                 (ulong)initialLifetime);
 
-            if (roomCreateResult.Status != SharedData.N2NGOServerConnection.ProtocolOperationReturnStatus.Success)
+            if (roomCreateResult.Status != N2NGOServerConnection.ProtocolOperationReturnStatus.Success)
             {
                 return;
             }
@@ -74,13 +74,13 @@ namespace N2NGO.Views.SubPages
             var roomCreate = roomCreateResult.Value;
             if (roomCreate == null || roomCreate[0] == null || roomCreate[1] == null)
             {
-                SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoom_Failure_Invalid_String_Array_Content", "@LOCALE_DialogCreateRoom_Title");
+                Globals.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoom_Failure_Invalid_String_Array_Content", "@LOCALE_DialogCreateRoom_Title");
 
                 return;
             }
 
             //ButtonCloseRoom.IsEnabled = true;
-            SharedData.CurrentApp.MainWindow.DoMessageYesNoDialog(
+            Globals.CurrentApp.MainWindow.DoMessageYesNoDialog(
                 string.Format("房间创建成功，是否立即加入？\n名称：{0}\n代码：{1}\n管理员密钥：{2}", name, roomCreate[0], roomCreate[1]),
                 "房间已创建",
                 new List<Action<object>>
@@ -92,7 +92,7 @@ namespace N2NGO.Views.SubPages
 
                         if (dialogYesNo.YesNo == DialogYesNo.YesNoE.Yes)
                         {
-                            _ = SharedData.CurrentApp.JoinRoomAsync(needPassword, roomCreate[0], password);
+                            _ = Globals.CurrentApp.JoinRoomAsync(needPassword, roomCreate[0], password);
                         }
                     }
                 }
@@ -107,14 +107,14 @@ namespace N2NGO.Views.SubPages
                 GroupPasswordInput.IsEnabled = bNeedPassword;
                 if (bNeedPassword)
                 {
-                    SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoomSecurity_Content", "@LOCALE_DialogCreateRoomSecurity_Title");
+                    Globals.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoomSecurity_Content", "@LOCALE_DialogCreateRoomSecurity_Title");
                 }
             }
         }
 
         private void SetMain_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.CurrentApp.MainWindow.DoMessagePickBrushDialog("@LOCALE_DialogSetMainColor_Content", "@LOCALE_DialogSetMainColor_Title"
+            Globals.CurrentApp.MainWindow.DoMessagePickBrushDialog("@LOCALE_DialogSetMainColor_Content", "@LOCALE_DialogSetMainColor_Title"
                 , new List<Action<object>> {
                     (_)=> {
                         if (_ is not DialogMessage dialogMessage)
@@ -143,7 +143,7 @@ namespace N2NGO.Views.SubPages
 
         private void SetMinor_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.CurrentApp.MainWindow.DoMessagePickBrushDialog("@LOCALE_DialogSetMinorColor_Content", "@LOCALE_DialogSetMinorColor_Title"
+            Globals.CurrentApp.MainWindow.DoMessagePickBrushDialog("@LOCALE_DialogSetMinorColor_Content", "@LOCALE_DialogSetMinorColor_Title"
                 , new List<Action<object>> {
                     (_)=> {
                         if (_ is not DialogMessage dialogMessage)

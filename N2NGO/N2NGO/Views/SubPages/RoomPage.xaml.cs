@@ -1,5 +1,5 @@
 ﻿using HandyControl.Tools.Extension;
-using N2NGO.UtilsClass;
+using N2NGO.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -53,20 +53,20 @@ namespace N2NGO.Views.SubPages
         /// </summary>
         private void Refresh()
         {
-            if (!SharedData.CurrentApp.RoomConnection.IsConnected || SharedData.CurrentApp.RoomConnection.CurrentRoomCode == string.Empty)
+            if (!Globals.CurrentApp.RoomConnection.IsConnected || Globals.CurrentApp.RoomConnection.CurrentRoomCode == string.Empty)
             {
                 return;
             }
 
             try
             {
-                var edgeDeviceAllocation = SharedData.N2NEdgeOutputHelper.GetEdgeDeviceAllocation(SharedData.CurrentApp.EdgeN2NExecutor.GetOutput);
+                var edgeDeviceAllocation = N2NEdgeOutputHelper.GetEdgeDeviceAllocation(Globals.CurrentApp.EdgeN2NExecutor.GetOutput);
 
-                var CurrentUser_UserNickname = SharedData.CurrentApp.Config.Get("UserNickname") ?? "null_local";
-                var CurrentUser_IpAddress = edgeDeviceAllocation[SharedData.N2NEdgeOutputHelper.EdgeDeviceAllocating.IP] ?? "...";
-                SharedData.CurrentApp.N2NGOServerConnection.MemberPush(CurrentUser_UserNickname, CurrentUser_IpAddress);
+                var CurrentUser_UserNickname = Globals.CurrentApp.Config.Get("UserNickname") ?? "null_local";
+                var CurrentUser_IpAddress = edgeDeviceAllocation[N2NEdgeOutputHelper.EdgeDeviceAllocating.IP] ?? "...";
+                Globals.CurrentApp.N2NGOServerConnection.MemberPush(CurrentUser_UserNickname, CurrentUser_IpAddress);
 
-                var members = SharedData.CurrentApp.N2NGOServerConnection.MemberPull();
+                var members = Globals.CurrentApp.N2NGOServerConnection.MemberPull();
 
                 if ((!members.IsSuccessfulStatusCode) || (members.Value is null))
                     throw new($"MemberPull fails with {members.Status}");
@@ -106,7 +106,7 @@ namespace N2NGO.Views.SubPages
                     modelMembers.Add(_member);
 
                     // Check permission
-                    if (member.IsAdmin.Value && (member.ID == SharedData.CurrentApp.RoomConnection.MemberID))
+                    if (member.IsAdmin.Value && (member.ID == Globals.CurrentApp.RoomConnection.MemberID))
                         imAdmin = true;
                 }
                 foreach (var ruledMember in members.Value.Item2)
@@ -136,7 +136,7 @@ namespace N2NGO.Views.SubPages
             }
             catch (Exception ex)
             {
-                Dispatcher.InvokeAsync(() => SharedData.CurrentApp.Log.WriteLine($"An Exception occurred while pulling room data: {ex.Message}", SharedData.CurrentApp.Log.Module.MainWindow_RoomPage));
+                Dispatcher.InvokeAsync(() => Globals.CurrentApp.Log.WriteLine($"An Exception occurred while pulling room data: {ex.Message}", Globals.CurrentApp.Log.Module.MainWindow_RoomPage));
             }
         }
 
@@ -163,7 +163,7 @@ namespace N2NGO.Views.SubPages
 
         public void UpdateRoomInfoWithLocal(N2NGOCore.Models.Room roomInfo)
         {
-            var isConnectedToRoom = SharedData.CurrentApp.RoomConnection.IsConnected;
+            var isConnectedToRoom = Globals.CurrentApp.RoomConnection.IsConnected;
 
             CurrentRoomCode.Text = roomInfo.RoomCode ?? "null";
             CurrentRoomName.Text = roomInfo.RoomName ?? "null";
@@ -172,8 +172,8 @@ namespace N2NGO.Views.SubPages
 
             if (isConnectedToRoom)
             {
-                var edgeDeviceAllocation = SharedData.N2NEdgeOutputHelper.GetEdgeDeviceAllocation(SharedData.CurrentApp.EdgeN2NExecutor.GetOutput);
-                CurrentRoomIpAddress.Text = edgeDeviceAllocation[SharedData.N2NEdgeOutputHelper.EdgeDeviceAllocating.IP] ?? "...";
+                var edgeDeviceAllocation = N2NEdgeOutputHelper.GetEdgeDeviceAllocation(Globals.CurrentApp.EdgeN2NExecutor.GetOutput);
+                CurrentRoomIpAddress.Text = edgeDeviceAllocation[N2NEdgeOutputHelper.EdgeDeviceAllocating.IP] ?? "...";
             }
             else
             {
@@ -210,14 +210,14 @@ namespace N2NGO.Views.SubPages
 
         private async void ButtonExitRoom_Click(object? sender, RoutedEventArgs? e)
         {
-            await SharedData.CurrentApp.LeaveRoom();
-            SharedData.CurrentApp.MainWindow.NavigatePage(null);
+            await Globals.CurrentApp.LeaveRoom();
+            Globals.CurrentApp.MainWindow.NavigatePage(null);
         }
 
         private void IpAddressButton_Initialized(object sender, EventArgs e)
         {
             if (sender is Button button)
-                SharedData.UIAnimation.InitButton(button);
+                CustomUI.InitButton(button);
         }
 
         private void MemberCard_MouseEnter(object sender, MouseEventArgs e)
@@ -380,7 +380,7 @@ namespace N2NGO.Views.SubPages
                 //    }
             }
 
-            SharedData.CurrentApp.MainWindow.DoMessageDialog(copiedTipSource, "@LOCALE_DialogRoomMemberIpAddressCopied_Title");
+            Globals.CurrentApp.MainWindow.DoMessageDialog(copiedTipSource, "@LOCALE_DialogRoomMemberIpAddressCopied_Title");
         }
 
         private bool _showAdminPanel = true;
@@ -409,12 +409,12 @@ namespace N2NGO.Views.SubPages
 
         private void ButtonAdminCloseRoom_Click(object sender, RoutedEventArgs e)
         {
-            Task.Run(() => { SharedData.CurrentApp.N2NGOServerConnection.AdminCloseRoom(); Dispatcher.Invoke(() => ButtonExitRoom_Click(null, null)); });
+            Task.Run(() => { Globals.CurrentApp.N2NGOServerConnection.AdminCloseRoom(); Dispatcher.Invoke(() => ButtonExitRoom_Click(null, null)); });
         }
 
         private void ButtonAdminActivateRoom_Click(object sender, RoutedEventArgs e)
         {
-            Task.Run(() => SharedData.CurrentApp.N2NGOServerConnection.AdminActivateRoom());
+            Task.Run(() => Globals.CurrentApp.N2NGOServerConnection.AdminActivateRoom());
         }
 
         private void ButtonAdminKick_Click(object sender, RoutedEventArgs e)

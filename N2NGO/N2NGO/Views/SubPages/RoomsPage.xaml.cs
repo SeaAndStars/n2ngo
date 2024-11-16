@@ -1,4 +1,4 @@
-﻿using N2NGO.UtilsClass;
+﻿using N2NGO.Utils;
 using N2NGO.Views.SubPages.Dialogs;
 using N2NGOCore;
 using System;
@@ -216,16 +216,16 @@ namespace N2NGO.Views.SubPages
                             // Cards.Items.Add(new RoomCardModel { Title = "点我刷新", IsFunctionButton = true, Text = "刷新" });
                         });
 
-                        lock (SharedData.CurrentApp.N2NGOServerConnection)
+                        lock (Globals.CurrentApp.N2NGOServerConnection)
                             try
                             {
-                                if (!SharedData.CurrentApp.N2NGOServerConnection.Peek())
+                                if (!Globals.CurrentApp.N2NGOServerConnection.Peek())
                                     goto end;
 
                                 if (page_index == null)
                                 {
-                                    SharedData.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader._rooms_pull_rooms_pages));
-                                    Package? rooms_pages_pkg_get = SharedData.CurrentApp.N2NGOServerConnection.Receive();
+                                    Globals.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader._rooms_pull_rooms_pages));
+                                    Package? rooms_pages_pkg_get = Globals.CurrentApp.N2NGOServerConnection.Receive();
                                     if (rooms_pages_pkg_get != null && (Protocol.BaseHeader)rooms_pages_pkg_get.Value.Header == Protocol.BaseHeader.msg_ulong && rooms_pages_pkg_get.Value.external_data != null)
                                     {
                                         ulong pages = MsgExternalData.Decode.MsgULong(rooms_pages_pkg_get.Value.external_data);
@@ -246,10 +246,10 @@ namespace N2NGO.Views.SubPages
                                     page_index = 0;
                                 }
 
-                                SharedData.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader._rooms_pull_rooms));
-                                SharedData.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong((UInt32)page_index)));
+                                Globals.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader._rooms_pull_rooms));
+                                Globals.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader.msg_ulong, Package.MsgExternalData.Encode.MsgULong((UInt32)page_index)));
 
-                                Package? rooms_count_pkg_get = SharedData.CurrentApp.N2NGOServerConnection.Receive();
+                                Package? rooms_count_pkg_get = Globals.CurrentApp.N2NGOServerConnection.Receive();
                                 if (rooms_count_pkg_get != null)
                                 {
                                     if ((Protocol.BaseHeader)rooms_count_pkg_get.Value.Header == Protocol.BaseHeader.msg_ulong && rooms_count_pkg_get.Value.external_data != null)
@@ -261,7 +261,7 @@ namespace N2NGO.Views.SubPages
                                             Package[] roomPackage = new Package[6];
                                             for (int i = 0; i < roomPackage.Length; i++)
                                             {
-                                                var pkg_get = SharedData.CurrentApp.N2NGOServerConnection.Receive();
+                                                var pkg_get = Globals.CurrentApp.N2NGOServerConnection.Receive();
                                                 if (pkg_get == null || pkg_get.Value.external_data == null)
                                                     goto invalid;
 
@@ -332,14 +332,14 @@ namespace N2NGO.Views.SubPages
                                     }
                                 }
                             invalid:
-                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.DoMessageDialog("无效的N2N GO 服务器协议", "刷新页面"));
+                                Globals.CurrentApp.Dispatcher.InvokeAsync(() => Globals.CurrentApp.MainWindow.DoMessageDialog("无效的N2N GO 服务器协议", "刷新页面"));
                             end:
                                 DialogOut(DialogLoadingRooms, Dispatcher);
                                 return;
                             }
                             catch (Exception ex)
                             {
-                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.DoMessageDialog($"在刷新房间列表时发生异常：{ex}"));
+                                Globals.CurrentApp.Dispatcher.InvokeAsync(() => Globals.CurrentApp.MainWindow.DoMessageDialog($"在刷新房间列表时发生异常：{ex}"));
                                 DialogOut(DialogLoadingRooms, Dispatcher);
                                 return;
                             }
@@ -356,7 +356,7 @@ namespace N2NGO.Views.SubPages
                 });
 
                 sw.Stop();
-                Dispatcher.InvokeAsync(() => SharedData.CurrentApp.Log.WriteLine($"Refresh Time: {sw.ElapsedMilliseconds}ms({sw.ElapsedTicks}ticks)", SharedData.CurrentApp.Log.Module.MainWindow_RoomsPage));
+                Dispatcher.InvokeAsync(() => Globals.CurrentApp.Log.WriteLine($"Refresh Time: {sw.ElapsedMilliseconds}ms({sw.ElapsedTicks}ticks)", Globals.CurrentApp.Log.Module.MainWindow_RoomsPage));
             });
         }
 
@@ -398,16 +398,16 @@ namespace N2NGO.Views.SubPages
                             IsRefreshing = true;
                         });
 
-                        lock (SharedData.CurrentApp.N2NGOServerConnection)
+                        lock (Globals.CurrentApp.N2NGOServerConnection)
                             try
                             {
-                                if (!SharedData.CurrentApp.N2NGOServerConnection.Peek())
+                                if (!Globals.CurrentApp.N2NGOServerConnection.Peek())
                                     goto end;
 
-                                SharedData.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader._rooms_pull_rooms_searched));
-                                SharedData.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader.msg_string_long, MsgExternalData.Encode.MsgStringLong(search)));
+                                Globals.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader._rooms_pull_rooms_searched));
+                                Globals.CurrentApp.N2NGOServerConnection.Send(MakePackage(Protocol.BaseHeader.msg_string_long, MsgExternalData.Encode.MsgStringLong(search)));
 
-                                Package? rooms_count_pkg_get = SharedData.CurrentApp.N2NGOServerConnection.Receive();
+                                Package? rooms_count_pkg_get = Globals.CurrentApp.N2NGOServerConnection.Receive();
                                 if (rooms_count_pkg_get != null)
                                 {
                                     if ((Protocol.BaseHeader)rooms_count_pkg_get.Value.Header == Protocol.BaseHeader.msg_ulong && rooms_count_pkg_get.Value.external_data != null)
@@ -419,7 +419,7 @@ namespace N2NGO.Views.SubPages
                                             Package[] roomPackage = new Package[6];
                                             for (int i = 0; i < roomPackage.Length; i++)
                                             {
-                                                var pkg_get = SharedData.CurrentApp.N2NGOServerConnection.Receive();
+                                                var pkg_get = Globals.CurrentApp.N2NGOServerConnection.Receive();
                                                 if (pkg_get == null || pkg_get.Value.external_data == null)
                                                     goto invalid;
 
@@ -490,14 +490,14 @@ namespace N2NGO.Views.SubPages
                                     }
                                 }
                             invalid:
-                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.DoMessageDialog("无效的N2N GO 服务器协议", "刷新页面"));
+                                Globals.CurrentApp.Dispatcher.InvokeAsync(() => Globals.CurrentApp.MainWindow.DoMessageDialog("无效的N2N GO 服务器协议", "刷新页面"));
                             end:
                                 DialogOut(DialogLoadingRooms, Dispatcher);
                                 return;
                             }
                             catch (Exception ex)
                             {
-                                SharedData.CurrentApp.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.DoMessageDialog($"在刷新房间列表时发生异常：{ex}"));
+                                Globals.CurrentApp.Dispatcher.InvokeAsync(() => Globals.CurrentApp.MainWindow.DoMessageDialog($"在刷新房间列表时发生异常：{ex}"));
                                 DialogOut(DialogLoadingRooms, Dispatcher);
                                 return;
                             }
@@ -514,7 +514,7 @@ namespace N2NGO.Views.SubPages
                 });
 
                 sw.Stop();
-                Dispatcher.InvokeAsync(() => SharedData.CurrentApp.Log.WriteLine($"Refresh Time: {sw.ElapsedMilliseconds}ms({sw.ElapsedTicks}ticks)", SharedData.CurrentApp.Log.Module.MainWindow_RoomsPage));
+                Dispatcher.InvokeAsync(() => Globals.CurrentApp.Log.WriteLine($"Refresh Time: {sw.ElapsedMilliseconds}ms({sw.ElapsedTicks}ticks)", Globals.CurrentApp.Log.Module.MainWindow_RoomsPage));
             });
         }
 
@@ -604,7 +604,7 @@ namespace N2NGO.Views.SubPages
                         animationCompletedTask.SetResult(0);
 
                         RoomsPageRoomCardModel card = (RoomsPageRoomCardModel)((Grid)sender).DataContext;
-                        var rJoin = SharedData.CurrentApp.JoinRoomAsync(card.IsRoomPasswordNeeded, card.RoomCode, ((DialogRoomInfo)CardDialogBorderFrame.Content).TextBoxPasswd.Text);
+                        var rJoin = Globals.CurrentApp.JoinRoomAsync(card.IsRoomPasswordNeeded, card.RoomCode, ((DialogRoomInfo)CardDialogBorderFrame.Content).TextBoxPasswd.Text);
                         DialogOut(DialogJoiningRoom, Dispatcher);
                     };
                     DialogJoiningRoom.BeginAnimation(OpacityProperty, _loadingDialogFadeIn);
@@ -632,7 +632,7 @@ namespace N2NGO.Views.SubPages
 
         private void Button_Initialized(object sender, EventArgs e)
         {
-            SharedData.UIAnimation.InitButton((Button)sender);
+            CustomUI.InitButton((Button)sender);
         }
 
         public void SwitchGridFunc(bool? set = null)
@@ -678,7 +678,7 @@ namespace N2NGO.Views.SubPages
         public bool IsRoomPasswordNeeded { get; set; } = false;
         public uint MembersCount { get; set; } = 0;
 
-        public string IsRoomPasswordNeededText => (SharedData.CurrentApp.Get.FindResource(IsRoomPasswordNeeded? "LOCALE_RoomNeedPassword" : "LOCALE_RoomDontNeedPassword") as string)?? "null";
+        public string IsRoomPasswordNeededText => (Globals.CurrentApp.Get.FindResource(IsRoomPasswordNeeded? "LOCALE_RoomNeedPassword" : "LOCALE_RoomDontNeedPassword") as string)?? "null";
     }
 }
 

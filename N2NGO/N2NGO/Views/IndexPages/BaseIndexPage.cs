@@ -1,4 +1,5 @@
-﻿using System;
+﻿using N2NGO.Utils;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
@@ -8,7 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace N2NGO.UtilsClass
+namespace N2NGO.Views.IndexPages
 {
     public abstract class BaseIndexPage : Page
     {
@@ -20,7 +21,7 @@ namespace N2NGO.UtilsClass
 
         public BaseIndexPage()
         {
-            
+
         }
 
         protected void PlayIndexerIn()
@@ -38,9 +39,9 @@ namespace N2NGO.UtilsClass
                     // TranslateTransform
                     if (_ is TranslateTransform ttt)
                     {
-                        it.BeginAnimation(UIElement.OpacityProperty, null);
+                        it.BeginAnimation(OpacityProperty, null);
                         it.Opacity = 0;
-                        it.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation
+                        it.BeginAnimation(OpacityProperty, new DoubleAnimation
                         {
                             BeginTime = TimeSpan.FromSeconds(i * 0.12),
                             To = 1,
@@ -74,7 +75,7 @@ namespace N2NGO.UtilsClass
         }
 
         /// <summary>
-        /// Initialize indexer
+        /// Update indexer
         /// </summary>
         /// <param name="obj">UI Element based on <see cref="Decorator"></see></param>
 
@@ -87,11 +88,11 @@ namespace N2NGO.UtilsClass
                     indexPage_BaseIndexPage.Dispatcher.InvokeAsync(() => indexPage_BaseIndexPage.Page_Navigated());
             }
 
-            SharedData.CurrentApp.MainWindow.NavigatePage(indexPage);
+            Globals.CurrentApp.MainWindow.NavigatePage(indexPage);
         }
         protected static void NavigatePage(Page? page)
         {
-            SharedData.CurrentApp.MainWindow.NavigatePage(page);
+            Globals.CurrentApp.MainWindow.NavigatePage(page);
         }
         protected static void InitIndexer(object obj)
         {
@@ -234,13 +235,13 @@ namespace N2NGO.UtilsClass
         }
 
         protected abstract void Indexer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e);
-        
+
         protected virtual void Page_Navigated() { }
 
         protected virtual void Page_Loaded(object sender, RoutedEventArgs e)
         {
             PlayIndexerIn();
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Page)sender));
+            CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>((Page)sender));
         }
     }
 

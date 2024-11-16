@@ -1,4 +1,4 @@
-﻿using N2NGO.UtilsClass;
+﻿using N2NGO.Utils;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,7 +30,7 @@ namespace N2NGO.Views.SubPages
             DoubleAnimation _loadingDialogFadeIn = new() { To = 1, Duration = TimeSpan.FromSeconds(0.20), EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut } };
             _loadingDialogFadeIn.Completed += async (_, _) =>
             {
-                await SharedData.CurrentApp.JoinRoomAsync(needPass, roomCode, roomPass);
+                await Globals.CurrentApp.JoinRoomAsync(needPass, roomCode, roomPass);
                 joiningCompletion.SetResult();
             };
             Dispatcher.Invoke(() => DialogJoiningRoom.BeginAnimation(OpacityProperty, _loadingDialogFadeIn));
@@ -53,7 +53,7 @@ namespace N2NGO.Views.SubPages
                 GroupPasswordInput.IsEnabled = bNeedPassword;
                 if (bNeedPassword)
                 {
-                    SharedData.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoomSecurity_Content", "@LOCALE_DialogCreateRoomSecurity_Title");
+                    Globals.CurrentApp.MainWindow.DoMessageDialog("@LOCALE_DialogCreateRoomSecurity_Content", "@LOCALE_DialogCreateRoomSecurity_Title");
                 }
             }
         }

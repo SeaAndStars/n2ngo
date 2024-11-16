@@ -1,64 +1,48 @@
-﻿using N2NGO.UtilsClass;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using N2NGO.Utils;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace N2NGO.Views.SubPages
+namespace N2NGO.Views.IndexPages;
+
+public partial class Index_AdvancedPage : BaseIndexPage
 {
-    /// <summary>
-    /// Index_AdvancedPage.xaml 的交互逻辑
-    /// </summary>
-    public partial class Index_AdvancedPage : BaseIndexPage
+    public Index_AdvancedPage()
     {
-        public Index_AdvancedPage()
+        InitializeComponent();
+    }
+    
+    protected override void Indexer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        // Click
+        var indexer = (Indexer)((Border)sender).DataContext;
+
+        switch (indexer.NagivKey)
         {
-            InitializeComponent();
-        }
-        
-        protected override void Indexer_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            // Click
-            var indexer = (Indexer)((Border)sender).DataContext;
+            default: break;
 
-            switch (indexer.NagivKey)
-            {
-                default: break;
+            case "goback":
+                {
+                    NavigateIndexPage(null);
+                    break;
+                }
 
-                case "goback":
-                    {
-                        NavigateIndexPage(null);
-                        break;
-                    }
+            case "Settings":
+                {
+                    NavigatePage(Globals.CurrentApp.MainWindow.PageSettings);
+                    break;
+                }
 
-                case "Settings":
-                    {
-                        NavigatePage(SharedData.CurrentApp.MainWindow.PageSettings);
-                        break;
-                    }
+            case "Storage":
+                {
+                    NavigateIndexPage(Globals.CurrentApp.MainWindow.PageIndex.StorageIndexPage);
+                    break;
+                }
 
-                case "Storage":
-                    {
-                        NavigateIndexPage(SharedData.CurrentApp.MainWindow.PageIndex.StorageIndexPage);
-                        break;
-                    }
-
-                case "CheckUpdate":
-                    {
-                        Task.Run(() => SharedData.CurrentApp.CheckN2NGOClientUpdate());
-                        break;
-                    }
-            }
+            case "CheckUpdate":
+                {
+                    Task.Run(() => Globals.CurrentApp.CheckN2NGOClientUpdate());
+                    break;
+                }
         }
     }
 }

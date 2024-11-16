@@ -1,4 +1,4 @@
-﻿using N2NGO.UtilsClass;
+﻿using N2NGO.Utils;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -75,7 +75,7 @@ namespace N2NGO.Views
         {
             if (RefTerminalWindowTextWriter is null)
             {
-                SharedData.CurrentApp.Log.WriteLine("Cannot clear buffer, RefTerminalWindowTextWriter is null", SharedData.CurrentApp.Log.Module.TerminalWindow);
+                Globals.CurrentApp.Log.WriteLine("Cannot clear buffer, RefTerminalWindowTextWriter is null", Globals.CurrentApp.Log.Module.TerminalWindow);
                 return;
             }
             RefTerminalWindowTextWriter.Clear();

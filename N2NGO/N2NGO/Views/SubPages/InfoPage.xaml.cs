@@ -1,4 +1,4 @@
-﻿using N2NGO.UtilsClass;
+﻿using N2NGO.Utils;
 using N2NGO.Views.SubPages.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -83,27 +83,27 @@ namespace N2NGO.Views.SubPages
         private void Run_未来之乡_gitee(object sender, MouseButtonEventArgs e)
         {
             var url = "https://gitee.com/xue-jiangbin";
-            SharedData.MakeMessageBoxContentClipboard(url, "未来之乡 - Gitee");
+            Globals.CurrentApp.MakeMessageBoxContentClipboard(url, "未来之乡 - Gitee");
         }
         private void Run_LGF_github(object sender, MouseButtonEventArgs e)
         {
             var url = "https://github.com/control0forver";
-            SharedData.MakeMessageBoxContentClipboard(url, "LGF - GitHub");
+            Globals.CurrentApp.MakeMessageBoxContentClipboard(url, "LGF - GitHub");
         }
         private void Run_LGF_gitee(object sender, MouseButtonEventArgs e)
         {
             var url = "https://gitee.com/lgf-studio";
-            SharedData.MakeMessageBoxContentClipboard(url, "LGF - Gitee");
+            Globals.CurrentApp.MakeMessageBoxContentClipboard(url, "LGF - Gitee");
         }
         private void Run_n2n_github(object sender, MouseButtonEventArgs e)
         {
             var url = "https://github.com/ntop/n2n";
-            SharedData.MakeMessageBoxContentClipboard(url, "n2n - GitHub");
+            Globals.CurrentApp.MakeMessageBoxContentClipboard(url, "n2n - GitHub");
         }
         private void Run_N2NGO_gitee(object sender, MouseButtonEventArgs e)
         {
             var url = "https://gitee.com/xue-jiangbin/n2nmc";
-            SharedData.MakeMessageBoxContentClipboard(url, "N2N GO - Gitee");
+            Globals.CurrentApp.MakeMessageBoxContentClipboard(url, "N2N GO - Gitee");
         }
     }
 }

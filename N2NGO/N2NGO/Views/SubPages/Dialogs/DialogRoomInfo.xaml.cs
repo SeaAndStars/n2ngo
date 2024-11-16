@@ -1,30 +1,23 @@
-﻿using N2NGO.UtilsClass;
-using System;
+﻿using N2NGO.Utils;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 
-namespace N2NGO.Views.SubPages.Dialogs
+namespace N2NGO.Views.SubPages.Dialogs;
+
+public partial class DialogRoomInfo : Page
 {
-    /// <summary>
-    /// DialogRoomInfo.xaml 的交互逻辑
-    /// </summary>
-    public partial class DialogRoomInfo : Page
+    public DialogRoomInfo(RoomsPageRoomCardModel card, RoutedEventHandler funcClick, RoutedEventHandler cancelClick)
     {
-        public DialogRoomInfo(RoomsPageRoomCardModel card, RoutedEventHandler funcClick, RoutedEventHandler cancelClick)
-        {
-            InitializeComponent();
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>(grid));
-            SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>(grid));
-            SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>(grid));
+        InitializeComponent();
+        CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>(grid));
+        CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<TextBox>(grid));
+        CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<Label>(grid));
 
-            GroupPassword.Visibility = card.IsRoomPasswordNeeded ? Visibility.Visible : Visibility.Collapsed;
+        GroupPassword.Visibility = card.IsRoomPasswordNeeded ? Visibility.Visible : Visibility.Collapsed;
 
-            this.DataContext = card;
+        this.DataContext = card;
 
-            FuncButton.Click += funcClick;
-            ButtonCancel.Click += cancelClick;
-        }
+        FuncButton.Click += funcClick;
+        ButtonCancel.Click += cancelClick;
     }
 }
