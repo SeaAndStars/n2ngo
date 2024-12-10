@@ -1,6 +1,6 @@
 ﻿namespace N2NGOCore;
 
-public static class Globals
+public static class Vars
 {
     public static class ExtendServerOptions
     {

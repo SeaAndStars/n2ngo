@@ -1,5 +1,4 @@
-﻿using N2NGO.UtilsClass;
-using N2NGO.Views.SubPages.Dialogs.MessageDialogs;
+﻿using N2NGO.Views.SubPages.Dialogs.MessageDialogs;
 using N2NGO.Views.SubPages.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -14,6 +13,7 @@ using System.Windows.Threading;
 using HandyControl.Controls;
 using SharpVectors.Dom;
 using SharpVectors.Converters;
+using N2NGO.Utils;
 
 namespace N2NGO.Views.SubPages
 {
@@ -34,8 +34,8 @@ namespace N2NGO.Views.SubPages
 
         public void UpdateColorPaletteSelectionItems()
         {
-            if (SharedData.CurrentApp.Config == null)
-                throw new NullReferenceException(nameof(SharedData.CurrentApp.Config));
+            if (Globals.CurrentApp.Config == null)
+                throw new NullReferenceException(nameof(Globals.CurrentApp.Config));
 
             var builtinColorPaletteNames = App.Current.FindResource("BuiltinColorPaletteNames") as Array;
             if (builtinColorPaletteNames == null)
@@ -47,7 +47,7 @@ namespace N2NGO.Views.SubPages
             {
                 ColorPaletteSeletion.Items.Add(item);
             }
-            ColorPaletteSeletion.SelectedIndex = int.Parse(SharedData.CurrentApp.Config.Get("CurrentColorPalette", "0"));
+            ColorPaletteSeletion.SelectedIndex = int.Parse(Globals.CurrentApp.Config.Get("CurrentColorPalette", "0"));
         }
 
         //private void SelectBackgroundImageButton_Click(object sender, RoutedEventArgs e)
@@ -73,8 +73,8 @@ namespace N2NGO.Views.SubPages
 
             if (i > 1)
             {
-                SharedData.CurrentApp.MainWindow.SetBackColor((byte)e.NewValue);
-                SharedData.CurrentApp.Config.Set("WindowBackgroundAlpha", ((int)e.NewValue).ToString());
+                Globals.CurrentApp.MainWindow.SetBackColor((byte)e.NewValue);
+                Globals.CurrentApp.Config.Set("WindowBackgroundAlpha", ((int)e.NewValue).ToString());
             }
             else
                 ++i;
@@ -82,8 +82,8 @@ namespace N2NGO.Views.SubPages
 
         private void ResetConfigButton_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.CurrentApp.Config.Clear();
-            SharedData.CurrentApp.MainWindow.DoMessageDialog("重启应用以生效。", "设置");
+            Globals.CurrentApp.Config.Clear();
+            Globals.CurrentApp.MainWindow.DoMessageDialog("重启应用以生效。", "设置");
         }
 
         private void ColorPaletteSeletion_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -94,11 +94,11 @@ namespace N2NGO.Views.SubPages
             if (sender is not HandyControl.Controls.ComboBox combo)
                 throw new ArgumentNullException(nameof(sender));
 
-            if (SharedData.CurrentApp.MainWindow.isInitialized)
-                SharedData.CurrentApp.Config.Set("CurrentColorPalette", combo.SelectedIndex.ToString());
+            if (Globals.CurrentApp.MainWindow.isInitialized)
+                Globals.CurrentApp.Config.Set("CurrentColorPalette", combo.SelectedIndex.ToString());
 
             if (e.AddedItems[0] is string selectedItem)
-                SharedData.CurrentApp.MainWindow.Dispatcher.InvokeAsync(() => SharedData.CurrentApp.MainWindow.UpdateColorPalette(selectedItem));
+                Globals.CurrentApp.MainWindow.Dispatcher.InvokeAsync(() => Globals.CurrentApp.MainWindow.UpdateColorPalette(selectedItem));
         }
 
         private void LocaleSeletion_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -110,18 +110,18 @@ namespace N2NGO.Views.SubPages
                 throw new ArgumentNullException(nameof(sender));
 
             if (e.AddedItems[0] is string selectedItem)
-                SharedData.CurrentApp.Locale.UpdateLocale(selectedItem);
+                Globals.CurrentApp.Locale.UpdateLocale(selectedItem);
 
         }
 
         private void ShowConsoleButton_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.CurrentApp.MainWindow.DebugTerminalWindow.Show();
+            Globals.CurrentApp.MainWindow.DebugTerminalWindow.Show();
         }
 
         private void EditServerSelection_Click(object sender, RoutedEventArgs e)
         {
-            SharedData.CurrentApp.MainWindow.DoMessageInputDialog("@LOCALE_DialogCustomServer_Description_Content", "@LOCALE_DialogCustomServer_Title"
+            Globals.CurrentApp.MainWindow.DoMessageInputDialog("@LOCALE_DialogCustomServer_Description_Content", "@LOCALE_DialogCustomServer_Title"
                 , new List<Action<object>> {
                     (_)=> {
                         if (_ is not DialogMessage dialogMessage)
@@ -130,10 +130,10 @@ namespace N2NGO.Views.SubPages
                         if (dialogMessage.MessageContent is not DialogInput dialogInput)
                             throw new Exception("dialogMessage.MessageContent is not DialogInput");
 
-                        SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint = IPEndPoint.Parse(dialogInput.InputBox.Text);
-                        SharedData.CurrentApp.Config.Set("IpGlobalServer",SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Address.ToString());
-                        SharedData.CurrentApp.Config.Set("PortGlobalServer",SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Port.ToString());
-                        SharedData.CurrentApp.Config.Set("PortSupernodeServer",SharedData.CurrentApp.N2NGOServerConnection.ServerSupernodePort.ToString());
+                        Globals.CurrentApp.N2NGOServerConnection.ServerIPEndPoint = IPEndPoint.Parse(dialogInput.InputBox.Text);
+                        Globals.CurrentApp.Config.Set("IpGlobalServer",Globals.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Address.ToString());
+                        Globals.CurrentApp.Config.Set("PortGlobalServer",Globals.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.Port.ToString());
+                        Globals.CurrentApp.Config.Set("PortSupernodeServer",Globals.CurrentApp.N2NGOServerConnection.ServerSupernodePort.ToString());
                     } },
 
                 (_) =>
@@ -144,7 +144,7 @@ namespace N2NGO.Views.SubPages
                     if (dialogMessage.MessageContent is not DialogInput dialogInput)
                         throw new Exception("dialogMessage.MessageContent is not DialogInput");
 
-                    dialogInput.InputBox.Text = SharedData.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.ToString();
+                    dialogInput.InputBox.Text = Globals.CurrentApp.N2NGOServerConnection.ServerIPEndPoint.ToString();
                     dialogInput.InputBox.SelectAll();
                 });
         }
@@ -345,7 +345,7 @@ namespace N2NGO.Views.SubPages
             if (value == null)
                 return null;
 
-            if (SharedData.CurrentApp.Get.TryFindResource($"BuiltinColorPalette_{value}") is not ResourceDictionary res)
+            if (Globals.CurrentApp.Get.TryFindResource($"BuiltinColorPalette_{value}") is not ResourceDictionary res)
                 return null;
 
             return new SolidColorBrush((Color)res["Palette_500"]);
@@ -364,7 +364,7 @@ namespace N2NGO.Views.SubPages
             if (value is not string objAsString)
                 return null;
 
-            var res = SharedData.CurrentApp.Locale.ReadLocal(objAsString);
+            var res = Globals.CurrentApp.Locale.ReadLocal(objAsString);
             if (res == null)
                 return null;
             return res.Language;
@@ -382,7 +382,7 @@ namespace N2NGO.Views.SubPages
             if (value is not string objAsString)
                 return null;
 
-            var res = SharedData.CurrentApp.Locale.ReadLocal(objAsString);
+            var res = Globals.CurrentApp.Locale.ReadLocal(objAsString);
             if (res == null)
                 return null;
             return $"/Data/FlagIcons/{res.RegionCode.ToLower()}.svg";

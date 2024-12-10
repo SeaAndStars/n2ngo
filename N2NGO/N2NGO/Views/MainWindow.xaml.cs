@@ -1,8 +1,8 @@
 ﻿using CT.WPF.MagicEffects;
-using N2NGO.UtilsClass;
+using N2NGO.Utils;
+using N2NGO.Views.IndexPages;
 using N2NGO.Views.SubPages;
 using N2NGO.Views.SubPages.Dialogs;
-using N2NGOCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,7 +58,7 @@ namespace N2NGO.Views
         {
             Stopwatch swbm = Stopwatch.StartNew();
 
-            SharedData.CurrentApp.PrintMemSet("MainWindow Initialization Begin");
+            Globals.CurrentApp.PrintMemSet("MainWindow Initialization Begin");
 
             App.Current.MainWindow = this;
             InitializeComponent();
@@ -70,53 +70,52 @@ namespace N2NGO.Views
             PageRoom = new();
             PageInfo = new();
             PageIndex = new();
-            SharedData.CurrentApp.PrintMemSet("Pages Initialized by MainWindow");
+            Globals.CurrentApp.PrintMemSet("Pages Initialized by MainWindow");
 
             var r = App.Current.Resources;
             var MainColorBrush = (SolidColorBrush)r["MainColorSolidBrush"];
 
             //BlurFramez.Radius = 0;
-            HandyControl.Controls.Growl.GrowlPanel = PanelMsg;
 
             Opacity = 0;
-            SharedData.CurrentApp.Config.Get("UserNickname", "NewToGO");
+            Globals.CurrentApp.Config.Get("UserNickname", "NewToGO");
 
-            if (SharedData.CurrentApp.Config.Get("FirstRun_1", "1") == "1")
+            if (Globals.CurrentApp.Config.Get("FirstRun_1", "1") == "1")
             {
-                SharedData.CurrentApp.Config.Set("IpGlobalServer", "43.143.37.61");
-                SharedData.CurrentApp.Config.Set("PortGlobalServer", "7476");
-                SharedData.CurrentApp.Config.Set("PortSupernodeServer", "7478");
-                SharedData.CurrentApp.Config.Set("FirstRun_1", "0");
+                Globals.CurrentApp.Config.Set("IpGlobalServer", "43.143.37.61");
+                Globals.CurrentApp.Config.Set("PortGlobalServer", "7476");
+                Globals.CurrentApp.Config.Set("PortSupernodeServer", "7478");
+                Globals.CurrentApp.Config.Set("FirstRun_1", "0");
             }
-            if (SharedData.CurrentApp.Config.Get("FirstRun", "1") == "1")
+            if (Globals.CurrentApp.Config.Get("FirstRun", "1") == "1")
             {
                 var culture = CultureInfo.CurrentCulture;
                 var locale = culture.Name;
-                var localeHead = SharedData.CurrentApp.Locale.ReadLocal(locale);
+                var localeHead = Globals.CurrentApp.Locale.ReadLocal(locale);
                 if (localeHead == null)
                 {
                     DoMessageDialog($"暂无针对您当前的地区语言的翻译副本({culture.NativeName})，我们将会为您启用默认语言", "抱歉");
-                    SharedData.CurrentApp.Config.Set("locale", "default");
+                    Globals.CurrentApp.Config.Set("locale", "default");
                     locale = "default";
                 }
-                SharedData.CurrentApp.Locale.UpdateLocale(locale);
+                Globals.CurrentApp.Locale.UpdateLocale(locale);
                 PageSettings.LocaleSeletion.SelectedItem = locale;
             }
             else
             {
-                var locale = SharedData.CurrentApp.Config.Get("locale", "default");
-                var localeHead = SharedData.CurrentApp.Locale.ReadLocal(locale);
+                var locale = Globals.CurrentApp.Config.Get("locale", "default");
+                var localeHead = Globals.CurrentApp.Locale.ReadLocal(locale);
                 if (localeHead == null)
                 {
                     DoMessageDialog($"暂无针对您当前使用的语言的翻译副本({locale})，我们将会为您启用默认语言", "抱歉");
-                    SharedData.CurrentApp.Config.Set("locale", "default");
+                    Globals.CurrentApp.Config.Set("locale", "default");
                     locale = "default";
                 }
-                SharedData.CurrentApp.Locale.UpdateLocale(locale);
+                Globals.CurrentApp.Locale.UpdateLocale(locale);
                 PageSettings.LocaleSeletion.SelectedItem = locale;
             }
 
-            var s = SharedData.CurrentApp.Config.Get("WindowBackgroundAlpha", "245");  // 245 190 198 209
+            var s = Globals.CurrentApp.Config.Get("WindowBackgroundAlpha", "245");  // 245 190 198 209
             if (!int.TryParse(s, out int alpha))
                 alpha = 245;
 
@@ -124,10 +123,10 @@ namespace N2NGO.Views
             SetWindowMaxNormalButtonImage();
             PageSettings.BackgroundOpacitySlider.Value = alpha;
 
-            SharedData.CurrentApp.Log.WriteLine("Console output will be redirected to Terminal Window!", SharedData.CurrentApp.Log.Module.MainWindow);
+            Globals.CurrentApp.Log.WriteLine("Console output will be redirected to Terminal Window!", Globals.CurrentApp.Log.Module.MainWindow);
             DebugTerminalWindow = new()
             {
-                Title = $"N2N GO({SharedData.VersionString}) Debug Console",
+                Title = $"N2N GO({Globals.VersionString}) Debug Console",
             };
             Console.SetOut(new TerminalWindowTextWriter(DebugTerminalWindow));
 
@@ -149,8 +148,8 @@ namespace N2NGO.Views
 
             GC.Collect();
             swbm.Stop();
-            SharedData.CurrentApp.Log.WriteLine($"MainWindow initialization finished({swbm.Elapsed})", SharedData.CurrentApp.Log.Module.MainWindow);
-            SharedData.CurrentApp.PrintMemSet("MainWindow Initialization End");
+            Globals.CurrentApp.Log.WriteLine($"MainWindow initialization finished({swbm.Elapsed})", Globals.CurrentApp.Log.Module.MainWindow);
+            Globals.CurrentApp.PrintMemSet("MainWindow Initialization End");
         }
 
         ulong __frameCounter = 0;
@@ -176,44 +175,44 @@ namespace N2NGO.Views
         public void RefreshUIAnimations()
         {
             {
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>(this));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageRooms.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageRooming.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageQuickJoin.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageSettings.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageIndex.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageRoom.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<Label>((Grid)PageInfo.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<Label>(this));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<Label>((Grid)PageRooms.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<Label>((Grid)PageRooming.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<Label>((Grid)PageQuickJoin.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<Label>((Grid)PageSettings.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<Label>((Grid)PageIndex.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<Label>((Grid)PageRoom.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<Label>((Grid)PageInfo.Content));
 
 
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>(this));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageRooms.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageRooming.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageQuickJoin.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageSettings.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageIndex.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageRoom.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<TextBox>((Grid)PageInfo.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<TextBox>(this));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<TextBox>((Grid)PageRooms.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<TextBox>((Grid)PageRooming.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<TextBox>((Grid)PageQuickJoin.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<TextBox>((Grid)PageSettings.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<TextBox>((Grid)PageIndex.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<TextBox>((Grid)PageRoom.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<TextBox>((Grid)PageInfo.Content));
 
 
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>(this));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageRooms.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageRooming.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageQuickJoin.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageSettings.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageIndex.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageRoom.Content));
-                SharedData.UIAnimation.InitCards(SharedData.FindVisualChildren<CheckBox>((Grid)PageInfo.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<CheckBox>(this));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<CheckBox>((Grid)PageRooms.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<CheckBox>((Grid)PageRooming.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<CheckBox>((Grid)PageQuickJoin.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<CheckBox>((Grid)PageSettings.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<CheckBox>((Grid)PageIndex.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<CheckBox>((Grid)PageRoom.Content));
+                CustomUI.InitCards(CustomUIHelpers.FindVisualChildren<CheckBox>((Grid)PageInfo.Content));
             }
 
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>(this));
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageRooms.Content));
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageRooming.Content));
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageQuickJoin.Content));
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageSettings.Content));
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageIndex.Content));
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageRoom.Content));
-            SharedData.UIAnimation.InitButtons(SharedData.FindVisualChildren<Button>((Grid)PageInfo.Content));
+            CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>(this));
+            CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>((Grid)PageRooms.Content));
+            CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>((Grid)PageRooming.Content));
+            CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>((Grid)PageQuickJoin.Content));
+            CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>((Grid)PageSettings.Content));
+            CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>((Grid)PageIndex.Content));
+            CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>((Grid)PageRoom.Content));
+            CustomUI.InitButtons(CustomUIHelpers.FindVisualChildren<Button>((Grid)PageInfo.Content));
         }
         public void SetBackColor(byte? a = null, byte? r = null, byte? g = null, byte? b = null)
         {
@@ -252,7 +251,7 @@ namespace N2NGO.Views
             }
 
 
-            var imgs = SharedData.FindVisualChildren<Image>(this);
+            var imgs = CustomUIHelpers.FindVisualChildren<Image>(this);
             foreach (Image cimg in imgs)
             {
                 var n = cimg.Name;
@@ -277,7 +276,7 @@ namespace N2NGO.Views
 
 
             SetBackColor((byte)PageSettings.BackgroundOpacitySlider.Value);
-            SharedData.UIAnimation.Refresh();
+            CustomUI.Update();
             RefreshUIAnimations();
 
             return;
@@ -403,10 +402,10 @@ namespace N2NGO.Views
         {
             _canClose = false;
 
-            SharedData.CurrentApp.Config.Set("locale", SharedData.CurrentApp.Locale.CurrentLocale);
+            Globals.CurrentApp.Config.Set("locale", Globals.CurrentApp.Locale.CurrentLocale);
 
-            await SharedData.CurrentApp.LeaveRoom();
-            SharedData.CurrentApp.N2NGOServerConnection.Close();
+            await Globals.CurrentApp.LeaveRoom();
+            Globals.CurrentApp.N2NGOServerConnection.Close();
 
             var at = new TaskCompletionSource<object>();
             _fadeOutAnimationEx.Completed += (_, _) => at.SetResult(0);
@@ -424,14 +423,14 @@ namespace N2NGO.Views
 
                 Dispatcher.Invoke(() =>
                 {
-                    SharedData.CurrentApp.Config.SaveConfigDataToFile();
-                    SharedData.CurrentApp.Log.WriteLine("(Exit) Config Wrote", SharedData.CurrentApp.Log.Module.MainWindow);
+                    Globals.CurrentApp.Config.SaveConfigDataToFile();
+                    Globals.CurrentApp.Log.WriteLine("(Exit) Config Wrote", Globals.CurrentApp.Log.Module.MainWindow);
 
-                    if (SharedData.CurrentApp.Config.Get("NeedUpdate", "0") == "1")
+                    if (Globals.CurrentApp.Config.Get("NeedUpdate", "0") == "1")
                     {
                         try
                         {
-                            Process.Start(Globals.N2NGOUpdateInstallerFilePath);
+                            Process.Start(N2NGOCore.Vars.N2NGOUpdateInstallerFilePath);
                         }
                         catch (Exception ex)
                         {
@@ -453,7 +452,7 @@ namespace N2NGO.Views
         {
             Stopwatch swbm = Stopwatch.StartNew();
 
-            SharedData.CurrentApp.PrintMemSet("MainWindow AsyncLoading Begin");
+            Globals.CurrentApp.PrintMemSet("MainWindow AsyncLoading Begin");
             PageRooms.Refresh();
 
             var tg = (this.RenderTransform as TransformGroup) ?? throw new NullReferenceException("[MainWindow] 'this.RenderTransform as TransformGroup' gets null!");
@@ -470,97 +469,93 @@ namespace N2NGO.Views
 
             await Task.Run(() =>
             {
-                if (SharedData.CurrentApp.Config == null)
-                    throw new NullReferenceException(nameof(SharedData.CurrentApp.Config));
+                if (Globals.CurrentApp.Config == null)
+                    throw new NullReferenceException(nameof(Globals.CurrentApp.Config));
 
-                SharedData.CurrentApp.PrintMemSet("MainWindow AsyncLoading SubBegin");
+                Globals.CurrentApp.PrintMemSet("MainWindow AsyncLoading SubBegin");
                 PageSettings.Dispatcher.InvokeAsync(() => PageSettings.UpdateColorPaletteSelectionItems());
                 PageRoom.Dispatcher.InvokeAsync(() =>
                 {
-                    PageRoom.AdminPanelMembers.InitializeWithUIA();
-                    PageRoom.AdminPanelRuledMembers.InitializeWithUIA();
+                    PageRoom.AdminPanelMembers.InitializeWithCustomUI();
+                    PageRoom.AdminPanelRuledMembers.InitializeWithCustomUI();
                 });
 
-                SharedData.CurrentApp.ResetConnection();
+                Globals.CurrentApp.ResetConnection();
 
                 Task.Run(async () =>
                 {
                     var url = $"https://mail.bestlgf.pro/N2NGO/UpdateInfo?raw=true&depth=50";
-                    using (HttpClient client = new HttpClient())
+                    using var httpClient = new HttpClient();
+                    try
                     {
-                        try
+                        HttpResponseMessage response = await httpClient.GetAsync(url);
+
+                        response.EnsureSuccessStatusCode();
+
+                        string responseBody = await response.Content.ReadAsStringAsync();
+
+                        using var document = JsonDocument.Parse(responseBody);
+                        JsonElement root = document.RootElement;
+
+                        if (root.TryGetProperty("success", out JsonElement success) && success.GetBoolean())
                         {
-                            HttpResponseMessage response = await client.GetAsync(url);
+                            StringBuilder stringBuilder = new();
+                            stringBuilder.AppendLine("https://mail.bestlgf.pro/N2NGO/UpdateInfo\n");
 
-                            response.EnsureSuccessStatusCode();
-
-                            string responseBody = await response.Content.ReadAsStringAsync();
-
-                            using (JsonDocument document = JsonDocument.Parse(responseBody))
+                            foreach (JsonElement version in root.GetProperty("versions").EnumerateArray())
                             {
-                                JsonElement root = document.RootElement;
-
-                                if (root.TryGetProperty("success", out JsonElement success) && success.GetBoolean())
+                                var updateInfo = new
                                 {
-                                    StringBuilder stringBuilder = new();
-                                    stringBuilder.AppendLine("https://mail.bestlgf.pro/N2NGO/UpdateInfo\n");
+                                    version = version.GetProperty("version").GetString(),
+                                    detail = version.GetProperty("detail").GetString(),
+                                    id = version.GetProperty("id").GetString(),
+                                    updateLog = version.GetProperty("updateLog").GetString()
+                                };
 
-                                    foreach (JsonElement version in root.GetProperty("versions").EnumerateArray())
-                                    {
-                                        var updateInfo = new
-                                        {
-                                            version = version.GetProperty("version").GetString(),
-                                            detail = version.GetProperty("detail").GetString(),
-                                            id = version.GetProperty("id").GetString(),
-                                            updateLog = version.GetProperty("updateLog").GetString()
-                                        };
-
-                                        stringBuilder.AppendLine($"[{updateInfo.id}]{updateInfo.version} ({updateInfo.detail}):");
-                                        if (updateInfo.updateLog is not null)
-                                            stringBuilder.AppendLine($"  {updateInfo.updateLog.Replace("\n", "\n  ")}:");
-                                        stringBuilder.AppendLine("");
-                                    }
-
-                                    Dispatcher.Invoke(() => { DoMessageDialog(stringBuilder.ToString(), "@LOCALE_DialogUpdateInfo_Title"); });
-                                }
-                                else
-                                {
-                                    SharedData.CurrentApp.Log.WriteLine($"[AsyncLoading] Failed to retrieve update info from '{url}'.", SharedData.CurrentApp.Log.Module.MainWindow);
-                                }
+                                stringBuilder.AppendLine($"[{updateInfo.id}]{updateInfo.version} ({updateInfo.detail}):");
+                                if (updateInfo.updateLog is not null)
+                                    stringBuilder.AppendLine($"  {updateInfo.updateLog.Replace("\n", "\n  ")}:");
+                                stringBuilder.AppendLine("");
                             }
+
+                            Dispatcher.Invoke(() => { DoMessageDialog(stringBuilder.ToString(), "@LOCALE_DialogUpdateInfo_Title"); });
                         }
-                        catch (Exception e)
+                        else
                         {
-                            SharedData.CurrentApp.Log.WriteLine($"[AsyncLoading] Cannot get update info from '{url}': {e.Message}", SharedData.CurrentApp.Log.Module.MainWindow);
+                            Globals.CurrentApp.Log.WriteLine($"[AsyncLoading] Failed to retrieve update info from '{url}'.", Globals.CurrentApp.Log.Module.MainWindow);
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        Globals.CurrentApp.Log.WriteLine($"[AsyncLoading] Cannot get update info from '{url}': {e.Message}", Globals.CurrentApp.Log.Module.MainWindow);
                     }
                 });
 
-                if (SharedData.CurrentApp.Config.Get("FirstRun", "1") == "1")
+                if (Globals.CurrentApp.Config.Get("FirstRun", "1") == "1")
                 {
                     if (FirstRun())
-                        SharedData.CurrentApp.Config.Set("FirstRun", "0");
+                        Globals.CurrentApp.Config.Set("FirstRun", "0");
                     else
                         Dispatcher.InvokeAsync(() => { DoMessageDialog("FirstRun Method returns false!"); });
                 }
 
-                var connected = SharedData.CurrentApp.Peek();
+                var connected = Globals.CurrentApp.Peek();
 
-                if (SharedData.CurrentApp.Config.Get("NeedUpdate", "0") == "1")
+                if (Globals.CurrentApp.Config.Get("NeedUpdate", "0") == "1")
                 {
                     Dispatcher.InvokeAsync(() => DoMessageDialog("N2N GO 上一次更新未成功，将会在本次关闭后重新尝试。", "更新"));
                 }
                 else
                 {
-                    if (connected) SharedData.CurrentApp.CheckN2NGOClientUpdate();
+                    if (connected) Globals.CurrentApp.CheckN2NGOClientUpdate();
                 }
 
-                SharedData.CurrentApp.PrintMemSet("MainWindow AsyncLoading Sub Finished");
+                Globals.CurrentApp.PrintMemSet("MainWindow AsyncLoading Sub Finished");
             });
 
             swbm.Stop();
-            SharedData.CurrentApp.Log.WriteLine($"App asynchronous loading finished({swbm.Elapsed})", SharedData.CurrentApp.Log.Module.MainWindow);
-            SharedData.CurrentApp.PrintMemSet("MainWindow AsyncLoading End");
+            Globals.CurrentApp.Log.WriteLine($"App asynchronous loading finished({swbm.Elapsed})", Globals.CurrentApp.Log.Module.MainWindow);
+            Globals.CurrentApp.PrintMemSet("MainWindow AsyncLoading End");
         }
         private void SetWindowMaxNormalButtonImage()
         {
@@ -644,7 +639,7 @@ namespace N2NGO.Views
         {
             var b = new SolidColorBrush(((SolidColorBrush)TitleBorder.Background).Color);
             TitleBorder.Background = b;
-            b.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)((ResourceDictionary)SharedData.CurrentApp.Get.Resources["CurrentColorPalette"])["Palette_400"], Duration = TimeSpan.FromSeconds(0.25) });
+            b.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)((ResourceDictionary)Globals.CurrentApp.Get.Resources["CurrentColorPalette"])["Palette_400"], Duration = TimeSpan.FromSeconds(0.25) });
 
         }
 
@@ -652,7 +647,7 @@ namespace N2NGO.Views
         {
             var b = new SolidColorBrush(((SolidColorBrush)TitleBorder.Background).Color);
             TitleBorder.Background = b;
-            b.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)((ResourceDictionary)SharedData.CurrentApp.Get.Resources["CurrentColorPalette"])["Palette_200"], Duration = TimeSpan.FromSeconds(0.25) });
+            b.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation { To = (Color)((ResourceDictionary)Globals.CurrentApp.Get.Resources["CurrentColorPalette"])["Palette_200"], Duration = TimeSpan.FromSeconds(0.25) });
         }
 
         private void WinMove_main(object sender, MouseButtonEventArgs e)
@@ -673,7 +668,7 @@ namespace N2NGO.Views
             if (value is not string objAsString)
                 return value;
 
-            var res = SharedData.CurrentApp.Locale.ReadLocal(objAsString);
+            var res = Globals.CurrentApp.Locale.ReadLocal(objAsString);
             if (res == null)
                 return value;
 

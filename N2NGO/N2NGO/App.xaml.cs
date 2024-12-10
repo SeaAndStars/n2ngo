@@ -1,6 +1,6 @@
 ﻿// 那些梦想就应该作为成长的代价而被遗忘在风里吗？ - LGF
 
-using N2NGO.UtilsClass;
+using N2NGO.Utils;
 using N2NGO.Views;
 using System;
 using System.CodeDom;
@@ -42,7 +42,7 @@ namespace N2NGO
             {
                 _debugConsoleAlloc = true;
 
-                Console.Title = $"N2N GO({SharedData.VersionString}) Debug Console";
+                Console.Title = $"N2N GO({Globals.VersionString}) Debug Console";
             }
             else MessageBox.Show("Cannot alloc a new console", "N2N GO Debug");
 #endif

@@ -1,31 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+﻿using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace N2NGO.Views.SubPages.Dialogs
+namespace N2NGO.Views.SubPages.Dialogs;
+
+public partial class DialogImageView : Window
 {
-    /// <summary>
-    /// DialogImageView.xaml 的交互逻辑
-    /// </summary>
-    public partial class DialogImageView : Window
+    public DialogImageView(ImageSource s, string name = "Unknown")
     {
-        public DialogImageView(ImageSource s, string name = "Unknown")
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            ImageBox.Source = s;
-            Title += " - " + name;
-        }
+        ImageBox.Source = s;
+        Title += " - " + name;
     }
 }

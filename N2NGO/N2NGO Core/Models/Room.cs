@@ -1,5 +1,4 @@
-﻿using N2NGOCore.Objects;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace N2NGOCore.Models
 {
@@ -57,13 +56,13 @@ namespace N2NGOCore.Models
         [JsonInclude] public bool? IsRoomInvisible = false;
         [JsonInclude] public bool? IsRoomPasswordNeeded = false;
         [JsonInclude] public string? RoomPassword = "null";
-        [JsonInclude] public RoomColor? MainColor = new RoomColor();
-        [JsonInclude] public RoomColor? MinorColor = new RoomColor();
+        [JsonInclude] public Objects.RoomColor? MainColor = new();
+        [JsonInclude] public Objects.RoomColor? MinorColor = new();
 
-        [JsonInclude] public ControlBlock CB = new ControlBlock() { IsAlive = true, ActivatedLifetime = new TimeSpan(0, 10, 0), LastActivatedTime = DateTime.Now, AdminKey = new() { RandomKeyString() } };
+        [JsonInclude] public ControlBlock CB = new() { IsAlive = true, ActivatedLifetime = new TimeSpan(0, 10, 0), LastActivatedTime = DateTime.Now, AdminKey = new() { RandomKeyString() } };
         [JsonInclude] public RoomAccessMode AccessMode = RoomAccessMode.BlockList;
-        [JsonInclude] public List<Member> Members = new List<Member>();
-        [JsonInclude] public List<RuledMember> RuledMembers = new List<RuledMember>();
+        [JsonInclude] public List<Member> Members = new();
+        [JsonInclude] public List<RuledMember> RuledMembers = new();
 
         public Room()
         {
