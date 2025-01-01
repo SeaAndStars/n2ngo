@@ -1,16 +1,17 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:system="clr-namespace:System;assembly=netstandard">
-    <!-- Locale Resource Dictionary Header -->
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=netstandard">
+    <!--  Locale Resource Dictionary Header  -->
     <system:String x:Key="LHEAD_Name">default</system:String>
     <system:String x:Key="LHEAD_Language">English (Default)</system:String>
     <system:String x:Key="LHEAD_ISOLanguageCode">en</system:String>
     <system:String x:Key="LHEAD_RegionCode">US</system:String>
 
-    <!-- User Resources Definitions -->
+    <!--  User Resources Definitions  -->
     <system:String x:Key="LOCALE_Index-GoBack_Title">Back</system:String>
     <system:String x:Key="LOCALE_Index-GoBack_Description">Go Back to the Previous Index</system:String>
-    
+
     <system:String x:Key="LOCALE_Index-Community_Title">Community</system:String>
     <system:String x:Key="LOCALE_Index-Community_Description">Let's get started here!</system:String>
     <system:String x:Key="LOCALE_Index-Hosting_Title">Hosting</system:String>
@@ -21,7 +22,7 @@
     <system:String x:Key="LOCALE_Index-Advanced_Description">Advanced Content</system:String>
     <system:String x:Key="LOCALE_Index-About_Title">About</system:String>
     <system:String x:Key="LOCALE_Index-About_Description">Information About Us</system:String>
-    
+
     <system:String x:Key="LOCALE_Index_AboutPage-AboutUs_Title">About Us</system:String>
     <system:String x:Key="LOCALE_Index_AboutPage-AboutUs_Description" xml:space="preserve">Founder 未来之乡&#13;Developers&#13;未来之乡 LDX LGF </system:String>
 
@@ -34,7 +35,7 @@
 
     <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Title">Join</system:String>
     <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Description">Manually join a room</system:String>
-    
+
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Title">View Rooms</system:String>
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Description">Check public rooms here</system:String>
 
@@ -48,7 +49,7 @@
 
     <system:String x:Key="LOCALE_DialogSetMainColor_Title">New Main Color</system:String>
     <system:String x:Key="LOCALE_DialogSetMainColor_Content">Edit Color</system:String>
-    
+
     <system:String x:Key="LOCALE_DialogSetMinorColor_Title">New Minor Color</system:String>
     <system:String x:Key="LOCALE_DialogSetMinorColor_Content">Edit Color</system:String>
 
@@ -68,24 +69,30 @@
 
     <system:String x:Key="LOCALE_DialogEnterRoom_Title">Entering Room</system:String>
     <system:String x:Key="LOCALE_DialogEnterRoom_Fail_Not_Connected_Content">You have not joined any room.</system:String>
-    
+
     <system:String x:Key="LOCALE_DialogCreateRoom_Title">Creating Room</system:String>
     <system:String x:Key="LOCALE_DialogCreateRoom_Failure_Invalid_String_Array_Content">An exception occurs when creating a room.</system:String>
     <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Title">Security</system:String>
-    <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Content">Currently your connection to our servers is not securely encrypted and the servers will also store data in plaintext.&#13;
-This means that our connection can be monitored and stolen by third parties and that the server administrators will also be able to see our data in plaintext.&#13;
-Therefore, please do not give us your important personal data!</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Content">
+        Currently your connection to our servers is not securely encrypted and the servers will also store data in plaintext.&#13;
+        This means that our connection can be monitored and stolen by third parties and that the server administrators will also be able to see our data in plaintext.&#13;
+        Therefore, please do not give us your important personal data!
+    </system:String>
 
     <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Title">Clipboard</system:String>
     <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Content">IP Address has been copied to the clipborad.</system:String>
-    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_TimedOut_Content">Oops, looks like something is wrong, if you can't access the address, just wait, it will fix it automatically! :)&#13;
-(IP Address is copied to clipborad)</system:String>
-    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Unknown_Content">Oops, it looks like something is wrong, you may not be able to access the address, and we're not sure why, please try again later! :( &#13;
-(IP Address is copied to clipborad)</system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_TimedOut_Content">
+        Oops, looks like something is wrong, if you can't access the address, just wait, it will fix it automatically! :)&#13;
+        (IP Address is copied to clipborad)
+    </system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Unknown_Content">
+        Oops, it looks like something is wrong, you may not be able to access the address, and we're not sure why, please try again later! :( &#13;
+        (IP Address is copied to clipborad)
+    </system:String>
 
     <system:String x:Key="LOCALE_DialogViewUserKey_Title">Viewing User Key</system:String>
     <system:String x:Key="LOCALE_DialogViewUserKey_Description_Content">The User Key is the unique identifier of your current session with the server, it is unique and you will get a new User Key every time you reset the connection, please do not disclose it.&#13;&#13;Press 'Yes' to Continue</system:String>
-    
+
     <system:String x:Key="LOCALE_DialogCustomServer_Title">Custom Server</system:String>
     <system:String x:Key="LOCALE_DialogCustomServer_Description_Content">Including server address and port</system:String>
 

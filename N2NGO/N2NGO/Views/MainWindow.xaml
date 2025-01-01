@@ -1,44 +1,66 @@
 ﻿<Window
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:N2NGO"
-        xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-
-        xmlns:hc="clr-namespace:HandyControl.Controls;assembly=HandyControl"
-        xmlns:hc1="https://handyorg.github.io/handycontrol" xmlns:system="clr-namespace:System;assembly=netstandard" xmlns:MagicEffects="clr-namespace:CT.WPF.MagicEffects;assembly=CT.WPF.MagicEffects" 
-        xmlns:local1="clr-namespace:N2NGO.Views" x:Class="N2NGO.Views.MainWindow"
-        xmlns:walterlv="clr-namespace:Walterlv.Windows.Effects;assembly=Walterlv.Themes.FluentDesign"
-        mc:Ignorable="d"
-        Title="N2N GO" Height="600" Width="930"
-        Activated="Window_Activated" Deactivated="Window_Deactivated" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged" PreviewKeyDown="Window_PreviewKeyDown"
-        TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
-        FontFamily="{DynamicResource MainFont}" Background="{x:Null}" Icon="/Data/Images/N2N GO.png">
+    x:Class="N2NGO.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:MagicEffects="clr-namespace:CT.WPF.MagicEffects;assembly=CT.WPF.MagicEffects"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="clr-namespace:HandyControl.Controls;assembly=HandyControl"
+    xmlns:hc1="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:N2NGO"
+    xmlns:local1="clr-namespace:N2NGO.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=netstandard"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:walterlv="clr-namespace:Walterlv.Windows.Effects;assembly=Walterlv.Themes.FluentDesign"
+    Title="N2N GO"
+    Width="930"
+    Height="600"
+    Activated="Window_Activated"
+    AllowsTransparency="True"
+    Background="{x:Null}"
+    Closing="Window_Closing"
+    Deactivated="Window_Deactivated"
+    FontFamily="{DynamicResource MainFont}"
+    Icon="/Data/Images/N2N GO.png"
+    Loaded="Window_Loaded"
+    PreviewKeyDown="Window_PreviewKeyDown"
+    RenderOptions.BitmapScalingMode="HighQuality"
+    RenderOptions.EdgeMode="Unspecified"
+    StateChanged="Window_StateChanged"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextHintingMode="Fixed"
+    TextOptions.TextRenderingMode="ClearType"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
+    mc:Ignorable="d">
     <Window.RenderTransform>
         <TransformGroup>
-            <ScaleTransform/>
-            <TranslateTransform/>
+            <ScaleTransform />
+            <TranslateTransform />
         </TransformGroup>
     </Window.RenderTransform>
 
     <Border x:Name="RootControl" Background="{x:Null}">
         <Grid Margin="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="51"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="51" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!--内容-->
-            <Border x:Name="ContentRoot" Grid.Row="1" Margin="15,0,15,20" CornerRadius="0,0,8,8">
+            <!--  内容  -->
+            <Border
+                x:Name="ContentRoot"
+                Grid.Row="1"
+                Margin="15,0,15,20"
+                CornerRadius="0,0,8,8">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="AUTO"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="AUTO" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <!-- 主内容区域 -->
+                    <!--  主内容区域  -->
                     <!--Image x:Name="ImageBackgroundImage" Source="/Data/Images/ai.png" Grid.Column="1" Stretch="UniformToFill" RenderTransformOrigin="0.5,0.5">
                         <Image.RenderTransform>
                             <TransformGroup>
@@ -52,77 +74,159 @@
                     <Frame x:Name="Cover" Background="#AAf5f6f7" Grid.Column="1"/>-->
 
                     <Grid x:Name="FramezGrid" Grid.Column="1">
-                        <Frame x:Name="Framez" NavigationUIVisibility="Hidden" BorderThickness="2,0,2,2">
+                        <Frame
+                            x:Name="Framez"
+                            BorderThickness="2,0,2,2"
+                            NavigationUIVisibility="Hidden">
                             <Frame.Effect>
-                                <BlurEffect x:Name="MainFrameBlurEffect" KernelType="Gaussian" Radius="0"/>
+                                <BlurEffect
+                                    x:Name="MainFrameBlurEffect"
+                                    KernelType="Gaussian"
+                                    Radius="0" />
                             </Frame.Effect>
                             <Frame.BorderBrush>
-                                <walterlv:RevealBorderBrush/>
+                                <walterlv:RevealBorderBrush />
                             </Frame.BorderBrush>
                         </Frame>
                     </Grid>
 
-                    <!-- 消息对话框集合 -->
-                    <Grid x:Name="MessageDialogs" Grid.Column="1"/>
+                    <!--  消息对话框集合  -->
+                    <Grid x:Name="MessageDialogs" Grid.Column="1" />
 
                 </Grid>
             </Border>
 
-            <!--标题栏-->
-            <Border BorderThickness="2" CacheMode="BitmapCache" Grid.RowSpan="3" Background="{Binding Background, ElementName=TitleBorder}" Margin="10,10,10,0" Height="44" VerticalAlignment="Top">
+            <!--  标题栏  -->
+            <Border
+                Grid.RowSpan="3"
+                Height="44"
+                Margin="10,10,10,0"
+                VerticalAlignment="Top"
+                Background="{Binding Background, ElementName=TitleBorder}"
+                BorderThickness="2"
+                CacheMode="BitmapCache">
                 <Border.BitmapEffect>
-                    <DropShadowBitmapEffect Direction="270" Opacity="0.7" ShadowDepth="3"/>
+                    <DropShadowBitmapEffect
+                        Direction="270"
+                        Opacity="0.7"
+                        ShadowDepth="3" />
                 </Border.BitmapEffect>
                 <Border.BorderBrush>
-                    <walterlv:RevealBorderBrush/>
+                    <walterlv:RevealBorderBrush />
                 </Border.BorderBrush>
             </Border>
-            <Border x:Name="TitleBorder" BorderThickness="2" MouseLeftButtonDown="WinMove_main" Grid.RowSpan="3" Background="{DynamicResource Palette_500}" Margin="10,10,10,0" Height="44" VerticalAlignment="Top">
+            <Border
+                x:Name="TitleBorder"
+                Grid.RowSpan="3"
+                Height="44"
+                Margin="10,10,10,0"
+                VerticalAlignment="Top"
+                Background="{DynamicResource Palette_500}"
+                BorderThickness="2"
+                MouseLeftButtonDown="WinMove_main">
                 <Border.Resources>
                     <ResourceDictionary>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MenuButtonStyle}"/>
+                        <Style BasedOn="{StaticResource MenuButtonStyle}" TargetType="{x:Type Button}" />
                     </ResourceDictionary>
                 </Border.Resources>
                 <Border.BorderBrush>
-                    <walterlv:RevealBorderBrush/>
+                    <walterlv:RevealBorderBrush />
                 </Border.BorderBrush>
-                <Grid x:Name="grid" Height="40" VerticalAlignment="Top">
-                    <Button Width="90" Height="40" Margin="0" Click="ButtonBack_Click" HorizontalAlignment="Left" VerticalAlignment="Stretch">
-                        <Image x:Name="LBImage_Wnd_Btn_Back" Width="35" Height="35" Stretch="Fill" Source="/Data/Images/icon/wnd_btn_back.png">
+                <Grid
+                    x:Name="grid"
+                    Height="40"
+                    VerticalAlignment="Top">
+                    <Button
+                        Width="90"
+                        Height="40"
+                        Margin="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Stretch"
+                        Click="ButtonBack_Click">
+                        <Image
+                            x:Name="LBImage_Wnd_Btn_Back"
+                            Width="35"
+                            Height="35"
+                            Source="/Data/Images/icon/wnd_btn_back.png"
+                            Stretch="Fill">
                             <Image.Effect>
-                                <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
+                                <MagicEffects:TexturedColorReplaceEffect
+                                    ReplacementColor="#000000"
+                                    TargetColor="#FFFFFF"
+                                    Tolerance="1.5" />
                             </Image.Effect>
                         </Image>
                     </Button>
-                    <Button x:Name="TestButton" Margin="100,0,0,0" Click="TestButton_Click" Content="Test" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <Label x:Name="LabelTitle" Content="     N2N GO     " Style="{StaticResource TitleStyle}" FontSize="24" FontWeight="Normal" />
-                    <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <Button
+                        x:Name="TestButton"
+                        Margin="100,0,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Click="TestButton_Click"
+                        Content="Test" />
+                    <Label
+                        x:Name="LabelTitle"
+                        Content="     N2N GO     "
+                        FontSize="24"
+                        FontWeight="Normal"
+                        Style="{StaticResource TitleStyle}" />
+                    <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal">
                         <StackPanel.Resources>
                             <Style TargetType="{x:Type Image}">
-                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                                <Setter Property="Margin" Value="0"/>
-                                <Setter Property="FlowDirection" Value="LeftToRight"/>
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="FlowDirection" Value="LeftToRight" />
                             </Style>
                         </StackPanel.Resources>
-                        <Button x:Name="ButtonClose" Width="55" Click="ButtonClose_Click" VerticalAlignment="Stretch">
-                            <Image x:Name="LBImage_Wnd_Btn_Close" Source="/Data/Images/icon/wnd_btn_close.png" Width="25">
+                        <Button
+                            x:Name="ButtonClose"
+                            Width="55"
+                            VerticalAlignment="Stretch"
+                            Click="ButtonClose_Click">
+                            <Image
+                                x:Name="LBImage_Wnd_Btn_Close"
+                                Width="25"
+                                Source="/Data/Images/icon/wnd_btn_close.png">
                                 <Image.Effect>
-                                    <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
+                                    <MagicEffects:TexturedColorReplaceEffect
+                                        ReplacementColor="#000000"
+                                        TargetColor="#FFFFFF"
+                                        Tolerance="1.5" />
                                 </Image.Effect>
                             </Image>
                         </Button>
-                        <Button x:Name="ButtonWindowMaxNormal" Width="55" Click="ButtonWindowMaxNormal_Click" VerticalAlignment="Stretch">
-                            <Image x:Name="LBImage_Wnd_Btn_MaxNormal" Source="/Data/Images/icon/wnd_btn_normal.png" Width="25">
+                        <Button
+                            x:Name="ButtonWindowMaxNormal"
+                            Width="55"
+                            VerticalAlignment="Stretch"
+                            Click="ButtonWindowMaxNormal_Click">
+                            <Image
+                                x:Name="LBImage_Wnd_Btn_MaxNormal"
+                                Width="25"
+                                Source="/Data/Images/icon/wnd_btn_normal.png">
                                 <Image.Effect>
-                                    <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
+                                    <MagicEffects:TexturedColorReplaceEffect
+                                        ReplacementColor="#000000"
+                                        TargetColor="#FFFFFF"
+                                        Tolerance="1.5" />
                                 </Image.Effect>
                             </Image>
                         </Button>
-                        <Button x:Name="ButtonWindowMin" Width="55" Click="ButtonWindowMin_Click" VerticalAlignment="Stretch">
-                            <Image x:Name="LBImage_Wnd_Btn_Min" Source="/Data/Images/icon/wnd_btn_min.png" Width="25">
+                        <Button
+                            x:Name="ButtonWindowMin"
+                            Width="55"
+                            VerticalAlignment="Stretch"
+                            Click="ButtonWindowMin_Click">
+                            <Image
+                                x:Name="LBImage_Wnd_Btn_Min"
+                                Width="25"
+                                Source="/Data/Images/icon/wnd_btn_min.png">
                                 <Image.Effect>
-                                    <MagicEffects:TexturedColorReplaceEffect TargetColor="#FFFFFF" ReplacementColor="#000000" Tolerance="1.5"/>
+                                    <MagicEffects:TexturedColorReplaceEffect
+                                        ReplacementColor="#000000"
+                                        TargetColor="#FFFFFF"
+                                        Tolerance="1.5" />
                                 </Image.Effect>
                             </Image>
                         </Button>
@@ -137,8 +241,27 @@
                     </Image.Effect>
                 </Image>
             </Button>-->
-            <Border x:Name="DebugOverlay" Visibility="Collapsed" IsHitTestVisible="False" Background="#8C272727" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,5,0,0" Grid.Row="1" Width="140">
-                <Label x:Name="DebugLabel_FPS" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{DynamicResource Palette_50}" HorizontalAlignment="Stretch" Content="FPS: 0" FontSize="22" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Height="95"/>
+            <Border
+                x:Name="DebugOverlay"
+                Grid.Row="1"
+                Width="140"
+                Margin="15,5,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="#8C272727"
+                IsHitTestVisible="False"
+                Visibility="Collapsed">
+                <Label
+                    x:Name="DebugLabel_FPS"
+                    Height="95"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    VerticalContentAlignment="Top"
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}"
+                    Content="FPS: 0"
+                    FontSize="22"
+                    Foreground="{DynamicResource Palette_50}" />
             </Border>
         </Grid>
     </Border>

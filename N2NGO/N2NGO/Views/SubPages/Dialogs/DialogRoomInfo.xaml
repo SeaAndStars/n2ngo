@@ -1,55 +1,111 @@
 ﻿<Page
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:N2NGO.Views.SubPages.Dialogs"
-        xmlns:hc="https://handyorg.github.io/handycontrol" x:Class="N2NGO.Views.SubPages.Dialogs.DialogRoomInfo"
-        mc:Ignorable="d"
-      TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
-        Title="DialogRoomInfo" Height="230" Width="280" Background="{DynamicResource Palette_800}" FontFamily="{DynamicResource MainFont}">
+    x:Class="N2NGO.Views.SubPages.Dialogs.DialogRoomInfo"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:N2NGO.Views.SubPages.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="DialogRoomInfo"
+    Width="280"
+    Height="230"
+    Background="{DynamicResource Palette_800}"
+    FontFamily="{DynamicResource MainFont}"
+    RenderOptions.BitmapScalingMode="HighQuality"
+    RenderOptions.EdgeMode="Unspecified"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextHintingMode="Fixed"
+    TextOptions.TextRenderingMode="ClearType"
+    mc:Ignorable="d">
     <Grid x:Name="grid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Label x:Name="RoomTitle" Grid.Row="0" Content="{Binding RoomName}" VerticalAlignment="Top" Background="{DynamicResource Palette_500}" BorderBrush="{x:Null}" FontSize="20" Foreground="{DynamicResource Palette_50}" Padding="8,0,8,0" Height="35" HorizontalAlignment="Stretch"/>
+        <Label
+            x:Name="RoomTitle"
+            Grid.Row="0"
+            Height="35"
+            Padding="8,0,8,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            Background="{DynamicResource Palette_500}"
+            BorderBrush="{x:Null}"
+            Content="{Binding RoomName}"
+            FontSize="20"
+            Foreground="{DynamicResource Palette_50}" />
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <StackPanel x:Name="RoomInfos" Grid.Row="0" Background="{DynamicResource Palette_500}" Margin="8,8,8,5">
-                <Label HorizontalAlignment="Left" Margin="2">
+            <StackPanel
+                x:Name="RoomInfos"
+                Grid.Row="0"
+                Margin="8,8,8,5"
+                Background="{DynamicResource Palette_500}">
+                <Label Margin="2" HorizontalAlignment="Left">
                     <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <Image Height="20" Source="/Data/Images/Members.png"/>
-                        <Run Text="{Binding MembersCount}"/>
+                        <Image Height="20" Source="/Data/Images/Members.png" />
+                        <Run Text="{Binding MembersCount}" />
                     </TextBlock>
                 </Label>
-                <Label HorizontalAlignment="Left" Margin="0">
+                <Label Margin="0" HorizontalAlignment="Left">
                     <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <Run Text="{Binding RoomCode}"/>
+                        <Run Text="{Binding RoomCode}" />
                     </TextBlock>
                 </Label>
-                <Label HorizontalAlignment="Left" Margin="0">
+                <Label Margin="0" HorizontalAlignment="Left">
                     <TextBlock HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <Run Text="{DynamicResource LOCALE_CurrentRoomPasswordNeeded}"/>
-                        <Run Text="{Binding IsRoomPasswordNeeded}"/>
+                        <Run Text="{DynamicResource LOCALE_CurrentRoomPasswordNeeded}" />
+                        <Run Text="{Binding IsRoomPasswordNeeded}" />
                     </TextBlock>
                 </Label>
             </StackPanel>
 
             <Grid Grid.Row="1">
-                <Grid x:Name="GroupPassword" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">
+                <Grid
+                    x:Name="GroupPassword"
+                    Margin="6,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="{DynamicResource Palette_50}" FontSize="16" Margin="0,0,0,0" Text="{DynamicResource LOCALE_CreateRoomRoomPassword}" Padding="0,0,5,0"/>
-                        <TextBox x:Name="TextBoxPasswd" Background="{DynamicResource Palette_300}" Foreground="{DynamicResource Palette_50}" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="110" BorderBrush="{x:Null}"/>
+                        <TextBlock
+                            Margin="0,0,0,0"
+                            Padding="0,0,5,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Foreground="{DynamicResource Palette_50}"
+                            Text="{DynamicResource LOCALE_CreateRoomRoomPassword}" />
+                        <TextBox
+                            x:Name="TextBoxPasswd"
+                            MinWidth="110"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="{DynamicResource Palette_300}"
+                            BorderBrush="{x:Null}"
+                            Foreground="{DynamicResource Palette_50}" />
                     </StackPanel>
                 </Grid>
 
                 <Grid>
-                    <Button x:Name="ButtonCancel" Content="{DynamicResource LOCALE_CardRoomInfo_CancelButton}" Margin="0,0,0,35" VerticalAlignment="Bottom" Padding="3,0,3,0" HorizontalAlignment="Right" Height="28" />
-                    <Button x:Name="FuncButton" Content="{DynamicResource LOCALE_CardRoomInfo_ConnectButton}" Margin="0,0,0,0" VerticalAlignment="Bottom" Padding="5,0,5,0" Height="30" HorizontalAlignment="Right" />
+                    <Button
+                        x:Name="ButtonCancel"
+                        Height="28"
+                        Margin="0,0,0,35"
+                        Padding="3,0,3,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Content="{DynamicResource LOCALE_CardRoomInfo_CancelButton}" />
+                    <Button
+                        x:Name="FuncButton"
+                        Height="30"
+                        Margin="0,0,0,0"
+                        Padding="5,0,5,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Content="{DynamicResource LOCALE_CardRoomInfo_ConnectButton}" />
                 </Grid>
             </Grid>
         </Grid>

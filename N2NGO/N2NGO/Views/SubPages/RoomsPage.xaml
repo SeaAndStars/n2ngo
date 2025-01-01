@@ -1,110 +1,270 @@
-﻿<Page x:Class="N2NGO.Views.SubPages.RoomsPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:N2NGO.Views.SubPages"
-      xmlns:hc="https://handyorg.github.io/handycontrol"
-      xmlns:walterlv="clr-namespace:Walterlv.Windows.Effects;assembly=Walterlv.Themes.FluentDesign"
-      mc:Ignorable="d" 
-      TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
-      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
-      Title="Page1">
+﻿<Page
+    x:Class="N2NGO.Views.SubPages.RoomsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:N2NGO.Views.SubPages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:walterlv="clr-namespace:Walterlv.Windows.Effects;assembly=Walterlv.Themes.FluentDesign"
+    Title="Page1"
+    d:DesignHeight="{StaticResource PageDesignHeight}"
+    d:DesignWidth="{StaticResource PageDesignWidth}"
+    FontFamily="{DynamicResource MainFont}"
+    RenderOptions.BitmapScalingMode="HighQuality"
+    RenderOptions.EdgeMode="Unspecified"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextHintingMode="Fixed"
+    TextOptions.TextRenderingMode="ClearType"
+    mc:Ignorable="d">
     <Grid x:Name="grid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition x:Name="GridColDef2" Width="auto"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition x:Name="GridColDef2" Width="auto" />
         </Grid.ColumnDefinitions>
 
-        <hc:ScrollViewer VirtualizingStackPanel.IsVirtualizing="True"  VerticalScrollBarVisibility="Auto">
+        <hc:ScrollViewer VerticalScrollBarVisibility="Auto" VirtualizingStackPanel.IsVirtualizing="True">
             <ScrollViewer.Effect>
-                <BlurEffect x:Name="MainBlur" Radius="0"/>
+                <BlurEffect x:Name="MainBlur" Radius="0" />
             </ScrollViewer.Effect>
 
-            <ItemsControl x:Name="Cards" Margin="0,15,0,15" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <ItemsControl
+                x:Name="Cards"
+                Margin="0,15,0,15"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal"/>
+                        <WrapPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border CacheMode="BitmapCache" x:Name="Root" Margin="7,3,7,4" Width="220" Height="140" BorderThickness="1" RenderTransformOrigin="0.5,0.5">
+                        <Border
+                            x:Name="Root"
+                            Width="220"
+                            Height="140"
+                            Margin="7,3,7,4"
+                            BorderThickness="1"
+                            CacheMode="BitmapCache"
+                            RenderTransformOrigin="0.5,0.5">
                             <!--<Border.BorderBrush>
                                 <walterlv:RevealBorderBrush/>
                             </Border.BorderBrush>-->
-                            <Grid x:Name="TempGrid" MouseEnter="TempGrid_MouseEnter" MouseLeave="TempGrid_MouseLeave" MouseDown="TempGrid_MouseDown" MouseUp="TempGrid_MouseUp" Initialized="TempGrid_Initialized" MouseLeftButtonUp="TempGrid_MouseLeftButtonUp">
-                                <Canvas Opacity="0.37" CacheMode="BitmapCache" Background="{Binding ThemeBrushMinor}"/>
-                                <TextBlock Margin="5,35,5,5" Foreground="{DynamicResource Palette_400}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    <Run Text="{DynamicResource LOCALE_CurrentRoomCode}" FontSize="16"/>
-                                    <Run Text="{Binding RoomCode}" FontSize="18"/>
-                                    <LineBreak/>
-                                    <Run Text="{Binding IsRoomPasswordNeededText, Mode=OneWay}" FontSize="15"/>
+                            <Grid
+                                x:Name="TempGrid"
+                                Initialized="TempGrid_Initialized"
+                                MouseDown="TempGrid_MouseDown"
+                                MouseEnter="TempGrid_MouseEnter"
+                                MouseLeave="TempGrid_MouseLeave"
+                                MouseLeftButtonUp="TempGrid_MouseLeftButtonUp"
+                                MouseUp="TempGrid_MouseUp">
+                                <Canvas
+                                    Background="{Binding ThemeBrushMinor}"
+                                    CacheMode="BitmapCache"
+                                    Opacity="0.37" />
+                                <TextBlock
+                                    Margin="5,35,5,5"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Foreground="{DynamicResource Palette_400}">
+                                    <Run FontSize="16" Text="{DynamicResource LOCALE_CurrentRoomCode}" />
+                                    <Run FontSize="18" Text="{Binding RoomCode}" />
+                                    <LineBreak />
+                                    <Run FontSize="15" Text="{Binding IsRoomPasswordNeededText, Mode=OneWay}" />
                                 </TextBlock>
 
-                                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="{DynamicResource Palette_300}" Margin="0,35,5,0">
-                                    <Run FontSize="16" Text="{Binding MembersCount}"/>
-                                    <Image CacheMode="BitmapCache" Height="12" Source="/Data/Images/Members.png"/>
+                                <TextBlock
+                                    Margin="0,35,5,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Foreground="{DynamicResource Palette_300}">
+                                    <Run FontSize="16" Text="{Binding MembersCount}" />
+                                    <Image
+                                        Height="12"
+                                        CacheMode="BitmapCache"
+                                        Source="/Data/Images/Members.png" />
                                 </TextBlock>
 
-                                <TextBlock Text="{Binding RoomName}" Background="{Binding ThemeBrushMain}" FontSize="20" Foreground="{DynamicResource Palette_50}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Padding="3"/>
+                                <TextBlock
+                                    Padding="3"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Background="{Binding ThemeBrushMain}"
+                                    FontSize="20"
+                                    Foreground="{DynamicResource Palette_50}"
+                                    Text="{Binding RoomName}" />
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
 
-                <local:RoomsPageRoomCardModel RoomName="aaa"/>
-                <local:RoomsPageRoomCardModel RoomName="bbb"/>
-                <local:RoomsPageRoomCardModel RoomName="ccc"/>
+                <local:RoomsPageRoomCardModel RoomName="aaa" />
+                <local:RoomsPageRoomCardModel RoomName="bbb" />
+                <local:RoomsPageRoomCardModel RoomName="ccc" />
             </ItemsControl>
         </hc:ScrollViewer>
 
-        <Grid x:Name="GridFunc" Background="{DynamicResource MainColorSolidAlphaBrush}" MouseEnter="GridFunc_MouseEnter" MouseLeave="GridFunc_MouseLeave" MinWidth="48" MaxWidth="350" Width="350" Grid.ColumnSpan="2" HorizontalAlignment="Right">
-            <Label x:Name="LabelStatus" Background="{DynamicResource MainColorSolidAlphaBrush}" Effect="{StaticResource EffectShadow2}" Margin="0,10,0,0" VerticalAlignment="Top" Width="70" Height="35" Content="0" FontSize="18"/>
+        <Grid
+            x:Name="GridFunc"
+            Grid.ColumnSpan="2"
+            Width="350"
+            MinWidth="48"
+            MaxWidth="350"
+            HorizontalAlignment="Right"
+            Background="{DynamicResource MainColorSolidAlphaBrush}"
+            MouseEnter="GridFunc_MouseEnter"
+            MouseLeave="GridFunc_MouseLeave">
+            <Label
+                x:Name="LabelStatus"
+                Width="70"
+                Height="35"
+                Margin="0,10,0,0"
+                VerticalAlignment="Top"
+                Background="{DynamicResource MainColorSolidAlphaBrush}"
+                Content="0"
+                Effect="{StaticResource EffectShadow2}"
+                FontSize="18" />
 
-            <TextBlock Text="{DynamicResource LOCALE_Search}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,62,0,0" FontSize="20" Width="62" Background="{x:Null}"/>
-            <hc:SearchBar x:Name="RoomsSearching" Effect="{StaticResource EffectShadow2}" hc:InfoElement.ShowClearButton="True" hc:InfoElement.Placeholder="{DynamicResource LOCALE_PageRooms-SearchPlaceholder_Content}" Style="{StaticResource SearchBarPlus}" Grid.Column="0" Margin="76,58,0,0" Background="{DynamicResource MainColorSolidAlphaBrush}" Foreground="{DynamicResource MainColorSolidFontBrush}" SelectionBrush="{DynamicResource MainColorHighLightSolidAlphaBrush}" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="264" Height="35" SearchStarted="RoomsSearching_SearchStarted"/>
+            <TextBlock
+                Width="62"
+                Margin="10,62,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="{x:Null}"
+                FontSize="20"
+                Text="{DynamicResource LOCALE_Search}" />
+            <hc:SearchBar
+                x:Name="RoomsSearching"
+                Grid.Column="0"
+                Width="264"
+                Height="35"
+                Margin="76,58,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                hc:InfoElement.Placeholder="{DynamicResource LOCALE_PageRooms-SearchPlaceholder_Content}"
+                hc:InfoElement.ShowClearButton="True"
+                Background="{DynamicResource MainColorSolidAlphaBrush}"
+                BorderBrush="{x:Null}"
+                Effect="{StaticResource EffectShadow2}"
+                Foreground="{DynamicResource MainColorSolidFontBrush}"
+                SearchStarted="RoomsSearching_SearchStarted"
+                SelectionBrush="{DynamicResource MainColorHighLightSolidAlphaBrush}"
+                Style="{StaticResource SearchBarPlus}" />
 
-            <Button x:Name="ButtonRefresh" Content="{DynamicResource LOCALE_Refresh}" Click="ButtonRefresh_Click" Margin="10,120,0,0" Width="79" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top" Height="36" />
+            <Button
+                x:Name="ButtonRefresh"
+                Width="79"
+                Height="36"
+                Margin="10,120,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Click="ButtonRefresh_Click"
+                Content="{DynamicResource LOCALE_Refresh}"
+                FontSize="16" />
 
-            <ScrollViewer VerticalAlignment="Bottom" Height="35" hc:ScrollViewerAttach.Orientation="Horizontal">
+            <ScrollViewer
+                Height="35"
+                VerticalAlignment="Bottom"
+                hc:ScrollViewerAttach.Orientation="Horizontal">
                 <ItemsControl x:Name="PageIndexSelectBoard">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal"/>
+                            <WrapPanel Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Click="PageIndexButton_Click" Content="{Binding}" Width="55" Height="35" Margin="2,0,2,0" HorizontalAlignment="Center" Initialized="Button_Initialized"/>
+                            <Button
+                                Width="55"
+                                Height="35"
+                                Margin="2,0,2,0"
+                                HorizontalAlignment="Center"
+                                Click="PageIndexButton_Click"
+                                Content="{Binding}"
+                                Initialized="Button_Initialized" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
         </Grid>
 
-        <!-- 房间卡片信息 -->
-        <Border x:Name="CardDialogBorder" Visibility="Collapsed" Grid.ColumnSpan="2">
+        <!--  房间卡片信息  -->
+        <Border
+            x:Name="CardDialogBorder"
+            Grid.ColumnSpan="2"
+            Visibility="Collapsed">
             <Border.Background>
-                <LinearGradientBrush EndPoint="0,1" StartPoint="1,0">
-                    <GradientStop Color="#99232323" Offset="0.5"/>
-                    <GradientStop Color="#DD151515" Offset="1"/>
-                    <GradientStop Color="#DD151515" Offset="0"/>
+                <LinearGradientBrush StartPoint="1,0" EndPoint="0,1">
+                    <GradientStop Offset="0.5" Color="#99232323" />
+                    <GradientStop Offset="1" Color="#DD151515" />
+                    <GradientStop Offset="0" Color="#DD151515" />
                 </LinearGradientBrush>
             </Border.Background>
-            <Frame x:Name="CardDialogBorderFrame"/>
+            <Frame x:Name="CardDialogBorderFrame" />
         </Border>
 
-        <!-- 加载等待对话框 -->
-        <Grid x:Name="DialogLoadingRooms" Background="{DynamicResource MainColorSolidAlphaBrush}" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="{Binding Height, ElementName=grid}" Visibility="Collapsed">
-            <hc:LoadingCircle Foreground="{DynamicResource MainColorSolidFontBrush}" Background="#FFF70000" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button x:Name="ButtonCancelLoadingRooms" Content="取消加载"  Margin="0,370,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Click="ButtonCancelLoadingRooms_Click" Height="35" Width="108" />
-            <Label VerticalContentAlignment="Center" Background="{DynamicResource MainColorSolidAlphaBrush}" HorizontalContentAlignment="Center" Content="加载中，请稍后" Foreground="{DynamicResource MainColorSolidFontBrush}" Margin="0,292,0,0" BorderBrush="{x:Null}" VerticalAlignment="Top" Width="172" Height="39" FontSize="16" />
+        <!--  加载等待对话框  -->
+        <Grid
+            x:Name="DialogLoadingRooms"
+            Height="{Binding Height, ElementName=grid}"
+            Margin="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="{DynamicResource MainColorSolidAlphaBrush}"
+            Visibility="Collapsed">
+            <hc:LoadingCircle
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="#FFF70000"
+                Foreground="{DynamicResource MainColorSolidFontBrush}" />
+            <Button
+                x:Name="ButtonCancelLoadingRooms"
+                Width="108"
+                Height="35"
+                Margin="0,370,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Click="ButtonCancelLoadingRooms_Click"
+                Content="取消加载" />
+            <Label
+                Width="172"
+                Height="39"
+                Margin="0,292,0,0"
+                VerticalAlignment="Top"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="{DynamicResource MainColorSolidAlphaBrush}"
+                BorderBrush="{x:Null}"
+                Content="加载中，请稍后"
+                FontSize="16"
+                Foreground="{DynamicResource MainColorSolidFontBrush}" />
         </Grid>
-        <Grid x:Name="DialogJoiningRoom" Background="{DynamicResource MainColorSolidAlphaBrush}" Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="{Binding Height, ElementName=grid}" Visibility="Collapsed">
-            <hc:LoadingCircle Foreground="{DynamicResource MainColorSolidFontBrush}" Background="#FFF70000" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Label VerticalContentAlignment="Center" Background="{DynamicResource MainColorSolidAlphaBrush}" HorizontalContentAlignment="Center" Content="正在进入房间，请稍后" Foreground="{DynamicResource MainColorSolidFontBrush}" Margin="0,292,0,0" BorderBrush="{x:Null}" VerticalAlignment="Top" Height="39" FontSize="16" />
+        <Grid
+            x:Name="DialogJoiningRoom"
+            Height="{Binding Height, ElementName=grid}"
+            Margin="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="{DynamicResource MainColorSolidAlphaBrush}"
+            Visibility="Collapsed">
+            <hc:LoadingCircle
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="#FFF70000"
+                Foreground="{DynamicResource MainColorSolidFontBrush}" />
+            <Label
+                Height="39"
+                Margin="0,292,0,0"
+                VerticalAlignment="Top"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Background="{DynamicResource MainColorSolidAlphaBrush}"
+                BorderBrush="{x:Null}"
+                Content="正在进入房间，请稍后"
+                FontSize="16"
+                Foreground="{DynamicResource MainColorSolidFontBrush}" />
         </Grid>
     </Grid>
 

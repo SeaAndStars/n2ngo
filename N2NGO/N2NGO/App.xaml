@@ -1,19 +1,20 @@
-﻿<Application x:Class="N2NGO.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:system="clr-namespace:System;assembly=netstandard"
-             xmlns:local="clr-namespace:N2NGO"
-             xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-             xmlns:hc="clr-namespace:HandyControl.Controls;assembly=HandyControl"
-             Startup="Application_Startup"
-             StartupUri="Views/MainWindow.xaml">
+﻿<Application
+    x:Class="N2NGO.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:hc="clr-namespace:HandyControl.Controls;assembly=HandyControl"
+    xmlns:local="clr-namespace:N2NGO"
+    xmlns:system="clr-namespace:System;assembly=netstandard"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    Startup="Application_Startup"
+    StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
-                <ResourceDictionary Source="Resources/Dictionaries/UI/ColorPalettes.xaml"/>
-                <ResourceDictionary Source="Resources/Dictionaries/UI/Locales/default.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+                <ResourceDictionary Source="Resources/Dictionaries/UI/ColorPalettes.xaml" />
+                <ResourceDictionary Source="Resources/Dictionaries/UI/Locales/default.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <system:Double x:Key="PageDesignHeight">530</system:Double>
@@ -25,64 +26,70 @@
             <FontFamily x:Key="MonoTerminalFont">/Data/Fonts/#Cascadia Mono</FontFamily>
 
             <Style TargetType="{x:Type TextElement}">
-                <Setter Property="FontFamily" Value="{DynamicResource MainFont}"/>
+                <Setter Property="FontFamily" Value="{DynamicResource MainFont}" />
             </Style>
 
             <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
             <Style TargetType="ListBox">
-                <Setter Property="Background" Value="{DynamicResource Palette_400}"/>
-                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
-                <Setter Property="BorderBrush" Value="{x:Null}"/>
+                <Setter Property="Background" Value="{DynamicResource Palette_400}" />
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}" />
+                <Setter Property="BorderBrush" Value="{x:Null}" />
             </Style>
 
             <Style x:Key="RunLink" TargetType="Run">
-                <Setter Property="Cursor" Value="Hand"/>
-                <Setter Property="TextDecorations" Value="Underline"/>
-                <Setter Property="Foreground" Value="DeepSkyBlue"/>
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="TextDecorations" Value="Underline" />
+                <Setter Property="Foreground" Value="DeepSkyBlue" />
             </Style>
-            
+
             <Style x:Key="TitleStyle" TargetType="Label">
-                <Setter Property="Background" Value="{x:Null}"/>
-                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
-                <Setter Property="BorderBrush" Value="{x:Null}"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="FontSize" Value="20"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="HorizontalAlignment" Value="Center"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Background" Value="{x:Null}" />
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}" />
+                <Setter Property="BorderBrush" Value="{x:Null}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
-            <Style x:Key="ConnectedTitleStyle" BasedOn="{StaticResource TitleStyle}" TargetType="Label">
-                <Setter Property="Background" Value="#80C0FFC0"/>
+            <Style
+                x:Key="ConnectedTitleStyle"
+                BasedOn="{StaticResource TitleStyle}"
+                TargetType="Label">
+                <Setter Property="Background" Value="#80C0FFC0" />
             </Style>
-            
+
             <Style x:Key="ScrollBarStyle" TargetType="ScrollBar">
-                <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-                <Setter Property="Stylus.IsFlicksEnabled" Value="false"/>
-                <Setter Property="Foreground" Value="{DynamicResource Palette_100}"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Focusable" Value="False"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Width" Value="8"/>
-                <Setter Property="MinWidth" Value="8"/>
+                <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+                <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+                <Setter Property="Foreground" Value="{DynamicResource Palette_100}" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Focusable" Value="False" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Width" Value="8" />
+                <Setter Property="MinWidth" Value="8" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ScrollBar">
                             <hc:SimplePanel x:Name="Bg" SnapsToDevicePixels="true">
                                 <Border Background="{TemplateBinding Background}" />
-                                <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}">
+                                <Track
+                                    x:Name="PART_Track"
+                                    IsDirectionReversed="true"
+                                    IsEnabled="{TemplateBinding IsMouseOver}">
                                     <Track.DecreaseRepeatButton>
-                                        <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ScrollBarBaseRepeatButton}"/>
+                                        <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource ScrollBarBaseRepeatButton}" />
                                     </Track.DecreaseRepeatButton>
                                     <Track.IncreaseRepeatButton>
-                                        <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ScrollBarBaseRepeatButton}"/>
+                                        <RepeatButton Command="{x:Static ScrollBar.PageDownCommand}" Style="{StaticResource ScrollBarBaseRepeatButton}" />
                                     </Track.IncreaseRepeatButton>
                                     <Track.Thumb>
-                                        <Thumb Background="{TemplateBinding Foreground}" Style="{StaticResource ScrollBarBaseThumbVertical}"/>
+                                        <Thumb Background="{TemplateBinding Foreground}" Style="{StaticResource ScrollBarBaseThumbVertical}" />
                                     </Track.Thumb>
                                 </Track>
                             </hc:SimplePanel>
@@ -91,11 +98,11 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="Orientation" Value="Horizontal">
-                        <Setter Property="Width" Value="Auto"/>
-                        <Setter Property="MinWidth" Value="0"/>
-                        <Setter Property="Height" Value="8"/>
-                        <Setter Property="MinHeight" Value="8"/>
-                        <Setter Property="BorderThickness" Value="0,1"/>
+                        <Setter Property="Width" Value="Auto" />
+                        <Setter Property="MinWidth" Value="0" />
+                        <Setter Property="Height" Value="8" />
+                        <Setter Property="MinHeight" Value="8" />
+                        <Setter Property="BorderThickness" Value="0,1" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ScrollBar">
@@ -103,13 +110,13 @@
                                         <Border Background="{TemplateBinding Background}" />
                                         <Track x:Name="PART_Track" IsEnabled="{TemplateBinding IsMouseOver}">
                                             <Track.DecreaseRepeatButton>
-                                                <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Style="{StaticResource ScrollBarBaseRepeatButton}"/>
+                                                <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Style="{StaticResource ScrollBarBaseRepeatButton}" />
                                             </Track.DecreaseRepeatButton>
                                             <Track.IncreaseRepeatButton>
-                                                <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}" Style="{StaticResource ScrollBarBaseRepeatButton}"/>
+                                                <RepeatButton Command="{x:Static ScrollBar.PageRightCommand}" Style="{StaticResource ScrollBarBaseRepeatButton}" />
                                             </Track.IncreaseRepeatButton>
                                             <Track.Thumb>
-                                                <Thumb Background="{TemplateBinding Foreground}" Style="{StaticResource ScrollBarBaseThumbHorizontal}"/>
+                                                <Thumb Background="{TemplateBinding Foreground}" Style="{StaticResource ScrollBarBaseThumbHorizontal}" />
                                             </Track.Thumb>
                                         </Track>
                                     </hc:SimplePanel>
@@ -119,50 +126,86 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <Style TargetType="hc:ScrollViewer" BasedOn="{StaticResource ScrollViewerNativeBaseStyle}">
-                <Setter Property="IsInertiaEnabled" Value="True"/>
-                <Setter Property="IsManipulationEnabled" Value="True"/>
+            <Style BasedOn="{StaticResource ScrollViewerNativeBaseStyle}" TargetType="hc:ScrollViewer">
+                <Setter Property="IsInertiaEnabled" Value="True" />
+                <Setter Property="IsManipulationEnabled" Value="True" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ScrollViewer">
                             <ControlTemplate.Resources>
                                 <Storyboard x:Key="StoryboardMouseOver">
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_VerticalScrollBar">
-                                        <EasingDoubleKeyFrame KeyTime="0:0:.1" Value=".8"/>
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_VerticalScrollBar" Storyboard.TargetProperty="Opacity">
+                                        <EasingDoubleKeyFrame KeyTime="0:0:.1" Value=".8" />
                                     </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_HorizontalScrollBar">
-                                        <EasingDoubleKeyFrame KeyTime="0:0:.1" Value=".8"/>
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_HorizontalScrollBar" Storyboard.TargetProperty="Opacity">
+                                        <EasingDoubleKeyFrame KeyTime="0:0:.1" Value=".8" />
                                     </DoubleAnimationUsingKeyFrames>
                                 </Storyboard>
                                 <Storyboard x:Key="StoryboardCommon">
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_VerticalScrollBar">
-                                        <EasingDoubleKeyFrame KeyTime="0:0:.2" Value="0"/>
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_VerticalScrollBar" Storyboard.TargetProperty="Opacity">
+                                        <EasingDoubleKeyFrame KeyTime="0:0:.2" Value="0" />
                                     </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="PART_HorizontalScrollBar">
-                                        <EasingDoubleKeyFrame KeyTime="0:0:.2" Value="0"/>
+                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_HorizontalScrollBar" Storyboard.TargetProperty="Opacity">
+                                        <EasingDoubleKeyFrame KeyTime="0:0:.2" Value="0" />
                                     </DoubleAnimationUsingKeyFrames>
                                 </Storyboard>
                             </ControlTemplate.Resources>
                             <Grid x:Name="Grid" Background="{TemplateBinding Background}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" Grid.RowSpan="2" Grid.ColumnSpan="2" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="0" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
-                                <ScrollBar x:Name="PART_VerticalScrollBar" Opacity="0" Style="{StaticResource ScrollBarStyle}" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}"/>
-                                <ScrollBar x:Name="PART_HorizontalScrollBar" Opacity="0" Style="{StaticResource ScrollBarStyle}" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}"/>
+                                <ScrollContentPresenter
+                                    x:Name="PART_ScrollContentPresenter"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Margin="{TemplateBinding Padding}"
+                                    CanContentScroll="{TemplateBinding CanContentScroll}"
+                                    CanHorizontallyScroll="False"
+                                    CanVerticallyScroll="False"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                <ScrollBar
+                                    x:Name="PART_VerticalScrollBar"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    AutomationProperties.AutomationId="VerticalScrollBar"
+                                    Cursor="Arrow"
+                                    Maximum="{TemplateBinding ScrollableHeight}"
+                                    Minimum="0"
+                                    Opacity="0"
+                                    Style="{StaticResource ScrollBarStyle}"
+                                    ViewportSize="{TemplateBinding ViewportHeight}"
+                                    Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                    Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <ScrollBar
+                                    x:Name="PART_HorizontalScrollBar"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    AutomationProperties.AutomationId="HorizontalScrollBar"
+                                    Cursor="Arrow"
+                                    Maximum="{TemplateBinding ScrollableWidth}"
+                                    Minimum="0"
+                                    Opacity="0"
+                                    Orientation="Horizontal"
+                                    Style="{StaticResource ScrollBarStyle}"
+                                    ViewportSize="{TemplateBinding ViewportWidth}"
+                                    Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                                    Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Trigger.EnterActions>
-                                        <BeginStoryboard Storyboard="{StaticResource StoryboardMouseOver}"/>
+                                        <BeginStoryboard Storyboard="{StaticResource StoryboardMouseOver}" />
                                     </Trigger.EnterActions>
                                     <Trigger.ExitActions>
-                                        <BeginStoryboard Storyboard="{StaticResource StoryboardCommon}"/>
+                                        <BeginStoryboard Storyboard="{StaticResource StoryboardCommon}" />
                                     </Trigger.ExitActions>
                                 </Trigger>
                             </ControlTemplate.Triggers>
@@ -171,16 +214,22 @@
                 </Setter>
             </Style>
 
-            <Style TargetType="Label" BasedOn="{StaticResource LabelBaseStyle}">
-                <Setter Property="Background" Value="{DynamicResource Palette_400}"/>
-                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
-                <Setter Property="BorderBrush" Value="{x:Null}"/>
-                <Setter Property="BorderThickness" Value="0"/>
+            <Style BasedOn="{StaticResource LabelBaseStyle}" TargetType="Label">
+                <Setter Property="Background" Value="{DynamicResource Palette_400}" />
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}" />
+                <Setter Property="BorderBrush" Value="{x:Null}" />
+                <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Label">
-                            <Border Padding="{TemplateBinding Padding}" Effect="{StaticResource EffectShadow3}" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+                                Effect="{StaticResource EffectShadow3}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
@@ -188,71 +237,100 @@
             </Style>
 
             <Style x:Key="ButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="{DynamicResource Palette_500}"/>
-                <Setter Property="Foreground" Value="{DynamicResource Palette_50}"/>
-                <Setter Property="BorderBrush" Value="{x:Null}"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="VerticalAlignment" Value="Top"/>
-                <Setter Property="FontSize" Value="15.6"/>
-                <Setter Property="Padding" Value="12,6,12,6"/>
-                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                <Setter Property="Background" Value="{DynamicResource Palette_500}" />
+                <Setter Property="Foreground" Value="{DynamicResource Palette_50}" />
+                <Setter Property="BorderBrush" Value="{x:Null}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="FontSize" Value="15.6" />
+                <Setter Property="Padding" Value="12,6,12,6" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Effect="{StaticResource EffectShadow3}" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+                                Effect="{StaticResource EffectShadow3}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
 
-            <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+            <Style
+                x:Key="MenuButtonStyle"
+                BasedOn="{StaticResource ButtonStyle}"
+                TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{DynamicResource CornerRadiusCornerRadius}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
 
-            <Style x:Key="CylindricalButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+            <Style
+                x:Key="CylindricalButtonStyle"
+                BasedOn="{StaticResource ButtonStyle}"
+                TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Effect="{StaticResource EffectShadow2}" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="50" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="50"
+                                Effect="{StaticResource EffectShadow2}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
 
-            <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+            <Style BasedOn="{StaticResource ButtonStyle}" TargetType="Button">
                 <Setter Property="Template">
-                <Setter.Value>
+                    <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Effect="{StaticResource EffectShadow3}" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+                                Effect="{StaticResource EffectShadow3}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
 
-            <Style TargetType="hc:ComboBox" BasedOn="{StaticResource ComboBoxBaseStyle}">
-                <Setter Property="Background" Value="{DynamicResource Palette_500}"/>
-                <Setter Property="Foreground" Value="{DynamicResource Palette_100}"/>
-                <Setter Property="BorderBrush" Value="{x:Null}"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="MaxDropDownHeight" Value="220"/>
+            <Style BasedOn="{StaticResource ComboBoxBaseStyle}" TargetType="hc:ComboBox">
+                <Setter Property="Background" Value="{DynamicResource Palette_500}" />
+                <Setter Property="Foreground" Value="{DynamicResource Palette_100}" />
+                <Setter Property="BorderBrush" Value="{x:Null}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="MaxDropDownHeight" Value="220" />
                 <Setter Property="ItemContainerStyle">
                     <Setter.Value>
-                        <Style TargetType="ComboBoxItem" BasedOn="{StaticResource ComboBoxItemBaseStyle}">
+                        <Style BasedOn="{StaticResource ComboBoxItemBaseStyle}" TargetType="ComboBoxItem">
                             <Setter Property="SnapsToDevicePixels" Value="True" />
                             <Setter Property="Padding" Value="{StaticResource DefaultControlPadding}" />
                             <Setter Property="Background" Value="Transparent" />
@@ -263,8 +341,17 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ComboBoxItem">
-                                        <Border x:Name="Bd" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-                                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        <Border
+                                            x:Name="Bd"
+                                            Padding="{TemplateBinding Padding}"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="{DynamicResource CornerRadiusCornerRadius}">
+                                            <ContentPresenter
+                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <MultiTrigger>
@@ -272,13 +359,13 @@
                                                     <Condition Property="IsSelected" Value="False" />
                                                     <Condition Property="IsMouseOver" Value="True" />
                                                 </MultiTrigger.Conditions>
-                                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource Palette_300}" />
+                                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Palette_300}" />
                                             </MultiTrigger>
                                             <MultiTrigger>
                                                 <MultiTrigger.Conditions>
                                                     <Condition Property="IsSelected" Value="True" />
                                                 </MultiTrigger.Conditions>
-                                                <Setter Property="Background" TargetName="Bd" Value="{DynamicResource Palette_500}" />
+                                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Palette_500}" />
                                                 <Setter Property="Foreground" Value="{DynamicResource Palette_50}" />
                                             </MultiTrigger>
                                         </ControlTemplate.Triggers>
@@ -294,26 +381,99 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <Border x:Name="border" Grid.ColumnSpan="2" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" />
-                                <hc:ToggleBlock x:Name="UpDownGeometry" Grid.Column="1" Padding="1,0" Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <Border
+                                    x:Name="border"
+                                    Grid.ColumnSpan="2"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="{DynamicResource CornerRadiusCornerRadius}" />
+                                <hc:ToggleBlock
+                                    x:Name="UpDownGeometry"
+                                    Grid.Column="1"
+                                    Padding="1,0"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Background="Transparent"
+                                    IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
                                     <hc:ToggleBlock.UnCheckedContent>
-                                        <Path Data="{StaticResource DownGeometry}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="14" Stretch="Uniform" Fill="{TemplateBinding Foreground}" Margin="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessSplitConverter}, ConverterParameter='0,0,1,0'}" />
+                                        <Path
+                                            Width="14"
+                                            Margin="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessSplitConverter}, ConverterParameter='0,0,1,0'}"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Data="{StaticResource DownGeometry}"
+                                            Fill="{TemplateBinding Foreground}"
+                                            Stretch="Uniform" />
                                     </hc:ToggleBlock.UnCheckedContent>
                                     <hc:ToggleBlock.CheckedContent>
-                                        <Path Data="{StaticResource UpGeometry}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="14" Stretch="Uniform" Fill="{TemplateBinding Foreground}" Margin="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessSplitConverter}, ConverterParameter='0,0,1,0'}" />
+                                        <Path
+                                            Width="14"
+                                            Margin="{Binding Padding, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ThicknessSplitConverter}, ConverterParameter='0,0,1,0'}"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Data="{StaticResource UpGeometry}"
+                                            Fill="{TemplateBinding Foreground}"
+                                            Stretch="Uniform" />
                                     </hc:ToggleBlock.CheckedContent>
                                 </hc:ToggleBlock>
-                                <hc:ToggleBlock Grid.Column="0" Grid.ColumnSpan="2" Background="Transparent" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" ToggleGesture="LeftClick" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <ContentPresenter Grid.Column="0" Margin="{TemplateBinding Padding}" x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                <Popup x:Name="PART_Popup" PlacementTarget="{Binding ElementName=border}" AllowsTransparency="true" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" PopupAnimation="{StaticResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
-                                    <Decorator Margin="8 0">
-                                        <Border BorderThickness="0,1,0,0" Effect="{StaticResource EffectShadow2}" Margin="0,0,0,8" CornerRadius="{DynamicResource CornerRadiusCornerRadius}" x:Name="dropDownBorder" MinWidth="{Binding ActualWidth, ElementName=border}" MaxHeight="{TemplateBinding MaxDropDownHeight}" BorderBrush="{TemplateBinding BorderBrush}" Background="{DynamicResource Palette_400}">
-                                            <hc:ToggleBlock IsChecked="{Binding HasItems,RelativeSource={RelativeSource TemplatedParent},Mode=OneWay}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                <hc:ToggleBlock
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Background="Transparent"
+                                    IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                    ToggleGesture="LeftClick" />
+                                <ContentPresenter
+                                    x:Name="contentPresenter"
+                                    Grid.Column="0"
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Content="{TemplateBinding SelectionBoxItem}"
+                                    ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                    ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                    IsHitTestVisible="false"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                <Popup
+                                    x:Name="PART_Popup"
+                                    Margin="1"
+                                    AllowsTransparency="true"
+                                    IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Placement="Bottom"
+                                    PlacementTarget="{Binding ElementName=border}"
+                                    PopupAnimation="{StaticResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                                    <Decorator Margin="8,0">
+                                        <Border
+                                            x:Name="dropDownBorder"
+                                            MinWidth="{Binding ActualWidth, ElementName=border}"
+                                            MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                            Margin="0,0,0,8"
+                                            Background="{DynamicResource Palette_400}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="0,1,0,0"
+                                            CornerRadius="{DynamicResource CornerRadiusCornerRadius}"
+                                            Effect="{StaticResource EffectShadow2}">
+                                            <hc:ToggleBlock
+                                                HorizontalContentAlignment="Stretch"
+                                                VerticalContentAlignment="Stretch"
+                                                IsChecked="{Binding HasItems, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
                                                 <hc:ToggleBlock.CheckedContent>
-                                                    <hc:ScrollViewer Margin="2" CanContentScroll="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.CacheLengthUnit="Pixel">
-                                                        <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                    <hc:ScrollViewer
+                                                        Margin="2"
+                                                        CanContentScroll="True"
+                                                        VirtualizingPanel.CacheLengthUnit="Pixel"
+                                                        VirtualizingPanel.IsVirtualizing="True"
+                                                        VirtualizingPanel.ScrollUnit="Pixel"
+                                                        VirtualizingPanel.VirtualizationMode="Recycling">
+                                                        <ItemsPresenter
+                                                            x:Name="ItemsPresenter"
+                                                            KeyboardNavigation.DirectionalNavigation="Contained"
+                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                                     </hc:ScrollViewer>
                                                 </hc:ToggleBlock.CheckedContent>
                                                 <hc:ToggleBlock.UnCheckedContent>
@@ -326,31 +486,31 @@
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="HasItems" Value="false">
-                                    <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+                                    <Setter TargetName="dropDownBorder" Property="Height" Value="95" />
                                 </Trigger>
                                 <Trigger Property="hc:DropDownElement.ConsistentWidth" Value="True">
-                                    <Setter Property="MaxWidth" TargetName="dropDownBorder" Value="{Binding ActualWidth, ElementName=border}"/>
-                                    <Setter Property="MinWidth" TargetName="dropDownBorder" Value="{Binding ActualWidth, ElementName=border}"/>
+                                    <Setter TargetName="dropDownBorder" Property="MaxWidth" Value="{Binding ActualWidth, ElementName=border}" />
+                                    <Setter TargetName="dropDownBorder" Property="MinWidth" Value="{Binding ActualWidth, ElementName=border}" />
                                 </Trigger>
                                 <Trigger Property="hc:DropDownElement.AutoWidth" Value="True">
-                                    <Setter Property="MaxWidth" TargetName="dropDownBorder" Value="{x:Static system:Double.MaxValue}" />
-                                    <Setter Property="MinWidth" TargetName="dropDownBorder" Value="{Binding ActualHeight, ElementName=border}" />
+                                    <Setter TargetName="dropDownBorder" Property="MaxWidth" Value="{x:Static system:Double.MaxValue}" />
+                                    <Setter TargetName="dropDownBorder" Property="MinWidth" Value="{Binding ActualHeight, ElementName=border}" />
                                 </Trigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver" Value="true"/>
-                                        <Condition Property="IsOpen" Value="false" SourceName="PART_Popup"/>
+                                        <Condition Property="IsMouseOver" Value="true" />
+                                        <Condition SourceName="PART_Popup" Property="IsOpen" Value="false" />
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="BorderBrush" Value="{DynamicResource Palette_100}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource Palette_100}" />
                                 </MultiTrigger>
-                                <Trigger Property="IsOpen" Value="True" SourceName="PART_Popup">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource Palette_50}"/>
+                                <Trigger SourceName="PART_Popup" Property="IsOpen" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource Palette_50}" />
                                 </Trigger>
                                 <Trigger Property="IsFocused" Value="True">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource Palette_50}"/>
+                                    <Setter Property="BorderBrush" Value="{DynamicResource Palette_50}" />
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="false">
-                                    <Setter Property="Opacity" Value="0.4"/>
+                                    <Setter Property="Opacity" Value="0.4" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
@@ -359,84 +519,95 @@
             </Style>
 
             <Style TargetType="hc:SimpleStackPanel">
-                <Setter Property="Grid.ColumnSpan" Value="100"/>
-                <Setter Property="Grid.RowSpan" Value="100"/>
+                <Setter Property="Grid.ColumnSpan" Value="100" />
+                <Setter Property="Grid.RowSpan" Value="100" />
             </Style>
 
             <Style TargetType="TabItem">
-                <Setter Property="Foreground" Value="{DynamicResource Palette_200}"/>
-                <Setter Property="Background" Value="{DynamicResource Palette_800}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Palette_200}" />
+                <Setter Property="Background" Value="{DynamicResource Palette_800}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TabItem}">
-                            <Border x:Name="root" Padding="4" Background="{TemplateBinding Background}">
-                                <TextBlock x:Name="label" Visibility="Visible" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{TemplateBinding Header}" ToolTip="{TemplateBinding ToolTip}" Foreground="{TemplateBinding Foreground}" TextTrimming="CharacterEllipsis" />
+                            <Border
+                                x:Name="root"
+                                Padding="4"
+                                Background="{TemplateBinding Background}">
+                                <TextBlock
+                                    x:Name="label"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    Text="{TemplateBinding Header}"
+                                    TextTrimming="CharacterEllipsis"
+                                    ToolTip="{TemplateBinding ToolTip}"
+                                    Visibility="Visible" />
                             </Border>
                             <ControlTemplate.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
-                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true" />
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top" />
                                     </MultiDataTrigger.Conditions>
 
-                                    <Setter Property="Foreground" TargetName="label" Value="{DynamicResource Palette_100}"/>
-                                    <Setter Property="Background" TargetName="root" Value="{DynamicResource Palette_600}"/>
+                                    <Setter TargetName="label" Property="Foreground" Value="{DynamicResource Palette_100}" />
+                                    <Setter TargetName="root" Property="Background" Value="{DynamicResource Palette_600}" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
-                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Left"/>
+                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false" />
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Left" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter Property="Opacity" TargetName="root" Value="0.56"/>
+                                    <Setter TargetName="root" Property="Opacity" Value="0.56" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
-                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Bottom"/>
+                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false" />
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Bottom" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter Property="Opacity" TargetName="root" Value="0.56"/>
+                                    <Setter TargetName="root" Property="Opacity" Value="0.56" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
-                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Right"/>
+                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false" />
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Right" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter Property="Opacity" TargetName="root" Value="0.56"/>
+                                    <Setter TargetName="root" Property="Opacity" Value="0.56" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false"/>
-                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                        <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="false" />
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter Property="Opacity" TargetName="root" Value="0.56"/>
+                                    <Setter TargetName="root" Property="Opacity" Value="0.56" />
                                 </MultiDataTrigger>
 
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true"/>
-                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top"/>
+                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true" />
+                                        <Condition Binding="{Binding TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top" />
                                     </MultiDataTrigger.Conditions>
-                                    <Setter Property="Panel.ZIndex" Value="1"/>
-                                    <Setter Property="Foreground" TargetName="label" Value="{DynamicResource Palette_50}"/>
-                                    <Setter Property="Background" TargetName="root" Value="{DynamicResource Palette_400}"/>
+                                    <Setter Property="Panel.ZIndex" Value="1" />
+                                    <Setter TargetName="label" Property="Foreground" Value="{DynamicResource Palette_50}" />
+                                    <Setter TargetName="root" Property="Background" Value="{DynamicResource Palette_400}" />
                                 </MultiDataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
-            
+
             <Style TargetType="Frame">
-                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="BorderThickness" Value="0" />
             </Style>
 
             <Style x:Key="IndexPageBackgroundImage" TargetType="Image">
-                <Setter Property="Opacity" Value="0.45"/>
-                <Setter Property="Width" Value="333"/>
-                <Setter Property="Height" Value="333"/>
-                <Setter Property="Margin" Value="0,0,0,-25"/>
-                <Setter Property="HorizontalAlignment" Value="Right"/>
-                <Setter Property="VerticalAlignment" Value="Bottom"/>
+                <Setter Property="Opacity" Value="0.45" />
+                <Setter Property="Width" Value="333" />
+                <Setter Property="Height" Value="333" />
+                <Setter Property="Margin" Value="0,0,0,-25" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>

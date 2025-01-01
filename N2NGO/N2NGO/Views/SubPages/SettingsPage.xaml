@@ -1,35 +1,65 @@
-﻿<Page x:Class="N2NGO.Views.SubPages.SettingsPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:N2NGO.Views.SubPages"
-      xmlns:hc="https://handyorg.github.io/handycontrol"
-      xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
-      xmlns:System="clr-namespace:System;assembly=System.Runtime"
-      mc:Ignorable="d" 
-      TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="ClearType" TextOptions.TextHintingMode="Fixed" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Unspecified"
-      d:DesignHeight="{StaticResource PageDesignHeight}" d:DesignWidth="{StaticResource PageDesignWidth}" FontFamily="{DynamicResource MainFont}"
-      Title="Page6">
+﻿<Page
+    x:Class="N2NGO.Views.SubPages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:System="clr-namespace:System;assembly=System.Runtime"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:N2NGO.Views.SubPages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    Title="Page6"
+    d:DesignHeight="{StaticResource PageDesignHeight}"
+    d:DesignWidth="{StaticResource PageDesignWidth}"
+    FontFamily="{DynamicResource MainFont}"
+    RenderOptions.BitmapScalingMode="HighQuality"
+    RenderOptions.EdgeMode="Unspecified"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextHintingMode="Fixed"
+    TextOptions.TextRenderingMode="ClearType"
+    mc:Ignorable="d">
     <Page.Resources>
-        <local:ColorPaletteSelectionConverter x:Key="ColorPaletteConverter"/>
-        <local:LocaleSelectionConverter x:Key="LocaleConverter"/>
-        <local:LocaleSelectionFlagIconConverter x:Key="LocaleFlagIconConverter"/>
+        <local:ColorPaletteSelectionConverter x:Key="ColorPaletteConverter" />
+        <local:LocaleSelectionConverter x:Key="LocaleConverter" />
+        <local:LocaleSelectionFlagIconConverter x:Key="LocaleFlagIconConverter" />
     </Page.Resources>
     <Grid>
-        <svgc:SvgViewbox x:Name="svgtest" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Height="50"/>
+        <svgc:SvgViewbox
+            x:Name="svgtest"
+            Width="50"
+            Height="50"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top" />
 
-        <hc:ComboBox x:Name="ColorPaletteSeletion" HorizontalAlignment="Center" VerticalAlignment="Top" Height="42" Width="326" Margin="0,196,0,0" SelectedIndex="0" SelectionChanged="ColorPaletteSeletion_SelectionChanged">
+        <hc:ComboBox
+            x:Name="ColorPaletteSeletion"
+            Width="326"
+            Height="42"
+            Margin="0,196,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            SelectedIndex="0"
+            SelectionChanged="ColorPaletteSeletion_SelectionChanged">
+
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Rectangle Fill="{Binding Converter={StaticResource ColorPaletteConverter}, Mode=OneWay}" CacheMode="BitmapCache" Width="16" Height="16" Margin="0,2,5,2" >
+                        <Rectangle
+                            Width="16"
+                            Height="16"
+                            Margin="0,2,5,2"
+                            CacheMode="BitmapCache"
+                            Fill="{Binding Converter={StaticResource ColorPaletteConverter}, Mode=OneWay}">
                             <Rectangle.BitmapEffect>
-                                <DropShadowBitmapEffect Direction="270" Opacity="0.7" ShadowDepth="4" Softness="0.6"/>
+                                <DropShadowBitmapEffect
+                                    Direction="270"
+                                    Opacity="0.7"
+                                    ShadowDepth="4"
+                                    Softness="0.6" />
                             </Rectangle.BitmapEffect>
                         </Rectangle>
-                        <TextBlock Text="{Binding}" FontSize="16" />
+                        <TextBlock FontSize="16" Text="{Binding}" />
                     </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
@@ -37,16 +67,35 @@
             <System:String>Green</System:String>
             <System:String>Blue</System:String>
         </hc:ComboBox>
-        <hc:ComboBox x:Name="LocaleSeletion" HorizontalAlignment="Center" VerticalAlignment="Top" Height="42" Width="326" SelectedIndex="0" SelectionChanged="LocaleSeletion_SelectionChanged" Margin="0,148,0,0">
+        <hc:ComboBox
+            x:Name="LocaleSeletion"
+            Width="326"
+            Height="42"
+            Margin="0,148,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            SelectedIndex="0"
+            SelectionChanged="LocaleSeletion_SelectionChanged">
+
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <svgc:SvgViewbox Source="{Binding Converter={StaticResource LocaleFlagIconConverter}, Mode=OneWay}" CacheMode="BitmapCache" SourceUpdated="SvgViewbox_SourceUpdated" Width="25" Height="25" Margin="0,2,5,2">
+                        <svgc:SvgViewbox
+                            Width="25"
+                            Height="25"
+                            Margin="0,2,5,2"
+                            CacheMode="BitmapCache"
+                            Source="{Binding Converter={StaticResource LocaleFlagIconConverter}, Mode=OneWay}"
+                            SourceUpdated="SvgViewbox_SourceUpdated">
                             <svgc:SvgViewbox.BitmapEffect>
-                                <DropShadowBitmapEffect Direction="270" Opacity="0.7" ShadowDepth="4" Softness="0.6"/>
+                                <DropShadowBitmapEffect
+                                    Direction="270"
+                                    Opacity="0.7"
+                                    ShadowDepth="4"
+                                    Softness="0.6" />
                             </svgc:SvgViewbox.BitmapEffect>
                         </svgc:SvgViewbox>
-                        <TextBlock Text="{Binding Converter={StaticResource LocaleConverter}, Mode=OneWay}" FontSize="16"/>
+                        <TextBlock FontSize="16" Text="{Binding Converter={StaticResource LocaleConverter}, Mode=OneWay}" />
                     </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
@@ -54,20 +103,58 @@
             <System:String>zh-CN</System:String>
             <System:String>en-US</System:String>
         </hc:ComboBox>
-        <!--Button x:Name="SelectBackgroundImageButton" FontSize="14" Background="{StaticResource MainColorSolidBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,19,0,0" Height="40" Width="125" Content="选取背景图片" Foreground="White" Click="SelectBackgroundImageButton_Click" /-->
-        <Button x:Name="EditServerSelection" Content="{DynamicResource LOCALE_EditServerSelection}" HorizontalAlignment="Center" Click="EditServerSelection_Click" VerticalAlignment="Center" Height="42" Width="326"/>
-        <Label Background="{DynamicResource Palette_500}" Margin="0,318,0,0" VerticalAlignment="Top" Width="326" FontSize="16" Height="35" HorizontalContentAlignment="Center">
+        <!--  Button x:Name="SelectBackgroundImageButton" FontSize="14" Background="{StaticResource MainColorSolidBrush}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,19,0,0" Height="40" Width="125" Content="选取背景图片" Foreground="White" Click="SelectBackgroundImageButton_Click" /  -->
+        <Button
+            x:Name="EditServerSelection"
+            Width="326"
+            Height="42"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Click="EditServerSelection_Click"
+            Content="{DynamicResource LOCALE_EditServerSelection}" />
+        <Label
+            Width="326"
+            Height="35"
+            Margin="0,318,0,0"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Center"
+            Background="{DynamicResource Palette_500}"
+            FontSize="16">
             <StackPanel Orientation="Horizontal">
-                <Slider x:Name="BackgroundOpacitySlider" Value="50" Minimum="0" Maximum="255" Background="{DynamicResource MainColorBrush}" ValueChanged="BackgroundOpacitySlider_ValueChanged" HorizontalAlignment="Center" Width="149" VerticalAlignment="Center"/>
+                <Slider
+                    x:Name="BackgroundOpacitySlider"
+                    Width="149"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="{DynamicResource MainColorBrush}"
+                    Maximum="255"
+                    Minimum="0"
+                    ValueChanged="BackgroundOpacitySlider_ValueChanged"
+                    Value="50" />
                 <TextBlock>
-                    <Run x:Name="OpacitySliderLabel"/>
-                    <Run Text="{DynamicResource LOCALE_BackgroundOpacity}" FontSize="12"/>
+                    <Run x:Name="OpacitySliderLabel" />
+                    <Run FontSize="12" Text="{DynamicResource LOCALE_BackgroundOpacity}" />
                 </TextBlock>
             </StackPanel>
         </Label>
 
-        <Button x:Name="ResetConfigButton" Content="{DynamicResource LOCALE_ResetSettings}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,375,0,0" Width="284" Height="36" Click="ResetConfigButton_Click"/>
+        <Button
+            x:Name="ResetConfigButton"
+            Width="284"
+            Height="36"
+            Margin="0,375,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Click="ResetConfigButton_Click"
+            Content="{DynamicResource LOCALE_ResetSettings}" />
 
-        <Button x:Name="ShowConsoleButton" Content="{DynamicResource LOCALE_ShowConsole}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="43" Click="ShowConsoleButton_Click" Margin="0,0,10,10"/>
+        <Button
+            x:Name="ShowConsoleButton"
+            Height="43"
+            Margin="0,0,10,10"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Click="ShowConsoleButton_Click"
+            Content="{DynamicResource LOCALE_ShowConsole}" />
     </Grid>
 </Page>

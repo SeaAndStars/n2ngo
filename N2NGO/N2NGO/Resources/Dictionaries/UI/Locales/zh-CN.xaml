@@ -1,6 +1,7 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:system="clr-namespace:System;assembly=netstandard">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=netstandard">
     <system:String x:Key="LHEAD_Name">zh-CN</system:String>
     <system:String x:Key="LHEAD_Language">中文 (简体)</system:String>
     <system:String x:Key="LHEAD_ISOLanguageCode">zh</system:String>
@@ -8,7 +9,7 @@
 
     <system:String x:Key="LOCALE_Index-GoBack_Title">返回</system:String>
     <system:String x:Key="LOCALE_Index-GoBack_Description">返回至上一个索引</system:String>
-    
+
     <system:String x:Key="LOCALE_Index-Community_Title">大厅</system:String>
     <system:String x:Key="LOCALE_Index-Community_Description">让我们在这里开始！</system:String>
     <system:String x:Key="LOCALE_Index-Hosting_Title">主持</system:String>
@@ -32,7 +33,7 @@
 
     <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Title">快速加入</system:String>
     <system:String x:Key="LOCALE_Index_ClientingPage-QuickJoin_Description">手动加入指定房间</system:String>
-    
+
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Title">查看</system:String>
     <system:String x:Key="LOCALE_Index_CommunityPage-View_Description">在这里查看公开的房间</system:String>
 
@@ -73,20 +74,26 @@
     <system:String x:Key="LOCALE_DialogCreateRoom_Failure_Invalid_RoomPasswordInput_Content">无效密码</system:String>
     <system:String x:Key="LOCALE_DialogCreateRoom_Failure_Invalid_String_Array_Content">创建房间时出现未知异常。</system:String>
     <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Title">安全性</system:String>
-    <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Content">您当前与我们服务器的连接未采用安全加密措施，并且服务器也将会以明文的方式存储数据。&#13;
-这意味着我们的连接可能会被第三方监视并窃取，并且服务器管理员也将可以看到我们的明文数据。&#13;
-因此，请不要将您的个人重要数据交给我们！</system:String>
+    <system:String x:Key="LOCALE_DialogCreateRoomSecurity_Content">
+        您当前与我们服务器的连接未采用安全加密措施，并且服务器也将会以明文的方式存储数据。&#13;
+        这意味着我们的连接可能会被第三方监视并窃取，并且服务器管理员也将可以看到我们的明文数据。&#13;
+        因此，请不要将您的个人重要数据交给我们！
+    </system:String>
 
     <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Title">剪贴板</system:String>
     <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Content">IP地址已复制到剪贴板。</system:String>
-    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_TimedOut_Content">哎呀，看起来出了点问题，如果您无法访问该地址，请稍候，它将会自动恢复！:) &#13;
-(IP地址已复制到剪贴板)</system:String>
-    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Unknown_Content">哎呀，看起来出了点问题，您可能无法访问该地址，我们也不确定是何原因，请稍后再试！:( &#13;
-(IP地址已复制到剪贴板)</system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_TimedOut_Content">
+        哎呀，看起来出了点问题，如果您无法访问该地址，请稍候，它将会自动恢复！:) &#13;
+        (IP地址已复制到剪贴板)
+    </system:String>
+    <system:String x:Key="LOCALE_DialogRoomMemberIpAddressCopied_Unknown_Content">
+        哎呀，看起来出了点问题，您可能无法访问该地址，我们也不确定是何原因，请稍后再试！:( &#13;
+        (IP地址已复制到剪贴板)
+    </system:String>
 
     <system:String x:Key="LOCALE_DialogViewUserKey_Title">查看用户密钥</system:String>
     <system:String x:Key="LOCALE_DialogViewUserKey_Description_Content">User Key 是您当前与服务器连接Session 的唯一标识，它是独一无二的，并且每次重置连接后您都会获得新的User Key，请不要泄露它。&#13;&#13;点击'是'来查看您的密钥</system:String>
-    
+
     <system:String x:Key="LOCALE_DialogCustomServer_Title">自定义服务器</system:String>
     <system:String x:Key="LOCALE_DialogCustomServer_Description_Content">请输入IP地址以及端口号</system:String>
 
@@ -100,7 +107,7 @@
     <system:String x:Key="LOCALE_DialogJoinRoom_Failure_CheckInfo_Description_Content">加入房间失败，请继续以查看更多信息。</system:String>
 
     <system:String x:Key="LOCALE_DialogUpdateInfo_Title">更新信息</system:String>
-    
+
     <system:String x:Key="LOCALE_PageRooms-SearchPlaceholder_Content">空格分隔房间代码或房间名</system:String>
 
     <system:String x:Key="LOCALE_PageRoom-CurrentRoomLifetime">剩余时间</system:String>
