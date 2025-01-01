@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:N2NGO"
+        xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+
         xmlns:hc="clr-namespace:HandyControl.Controls;assembly=HandyControl"
         xmlns:hc1="https://handyorg.github.io/handycontrol" xmlns:system="clr-namespace:System;assembly=netstandard" xmlns:MagicEffects="clr-namespace:CT.WPF.MagicEffects;assembly=CT.WPF.MagicEffects" 
         xmlns:local1="clr-namespace:N2NGO.Views" x:Class="N2NGO.Views.MainWindow"

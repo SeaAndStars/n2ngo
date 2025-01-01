@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.18362.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x64;x86</Platforms>
@@ -34,6 +34,8 @@
     <Authors>LGF-Studio</Authors>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <RootNamespace>$(MSBuildProjectName.Replace(" ", ""))</RootNamespace>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <AnalysisLevel>6.0</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
