@@ -396,6 +396,7 @@
     <PackageReference Include="HandyControl" Version="3.5.1">
       <GeneratePathProperty></GeneratePathProperty>
     </PackageReference>
+    <PackageReference Include="iNKORE.UI.WPF.Modern" Version="0.9.30" />
     <PackageReference Include="MagicEffects" Version="1.0.0">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
